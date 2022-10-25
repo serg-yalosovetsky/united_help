@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:collection';
 
+import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -20,6 +25,7 @@ class MyApp extends StatelessWidget {
 class OutlinedCardExample extends StatelessWidget {
   const OutlinedCardExample({super.key});
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle timerStyle = TextStyle(fontSize: 18,);
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +42,54 @@ class OutlinedCardExample extends StatelessWidget {
         child: Column(
 
           children: [
-            Image.asset(
-              'images/Best-TED-Talks-From-The-Curator-Himself-.jpg',
-              // width: 300,
-              // height: 100,
+            Container(
+              width: double.infinity,
+              height: 500,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage('images/Best-TED-Talks-From-The-Curator-Himself-.jpg'),
+                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0), bottom: Radius.zero),
+                color: Colors.redAccent,
+              ),
             ),
-            SizedBox(
-            height: 100,
-            child: Center(child: Text('TedX UA про волонтерство', style: optionStyle,)),
+            Container(
+            height: 180,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
+                  child: Center(child: Text('TedX UA про волонтерство', style: optionStyle,)),
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 8, 12),
+                  child: Row(
+                    children: [
+                      Icon(Icons.access_time),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                        child: Text('Постійна зайнятість', style: timerStyle,),
+                      ),
+                    ],
+                  ),
+                ),
+                // Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 8, 30),
+                  child: Row(
+                    children: [
+                      Icon(Icons.location_on),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text('Вул. Валова, 27', style: timerStyle,),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ]),
       ),
@@ -58,8 +104,54 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
+
+class MapSample extends StatefulWidget {
+  @override
+  State<MapSample> createState() => MapSampleState();
+}
+
+class MapSampleState extends State<MapSample> {
+  Completer<GoogleMapController> _controller = Completer();
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
+  static final CameraPosition _kLake = CameraPosition(
+      bearing: 192.8334901395799,
+      target: LatLng(37.43296265331129, -122.08832357078792),
+      tilt: 59.440717697143555,
+      zoom: 19.151926040649414);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: GoogleMap(
+        mapType: MapType.hybrid,
+        initialCameraPosition: _kGooglePlex,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _goToTheLake,
+        label: Text('To the lake!'),
+        icon: Icon(Icons.directions_boat),
+      ),
+    );
+  }
+
+  Future<void> _goToTheLake() async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  }
+}
+
+
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
+  int selected_index = 0;
+  bool selected_list = true;
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const bottom_selected_tab_color = Color.fromRGBO(0, 113, 216, 1);
   static const bottom_unselected_tab_color = Color.fromRGBO(142, 142, 147, 1);
@@ -68,7 +160,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const event_label = 'Мої івенти';
   static const notify_label = 'Сповіщення';
   static const accaunt_label = 'Аккаунт';
-  List<bool> isSelected = [true, false];
+  // List<bool> isSelected = [true, false];
 
 
   static const childrens =  [
@@ -83,21 +175,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   ];
 
 
-
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selected_index = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // List<bool> isSelected = [true, false];
-
+    var bool_2_list = (bool selected_list) => [selected_list, !selected_list];
     ToggleButtons toggle_button = ToggleButtons(
       // list of booleans
-        isSelected: isSelected,
+        isSelected: bool_2_list(selected_list),
         // text color of selected toggle
         selectedColor: Colors.black,
         disabledColor: Colors.black,
@@ -122,12 +211,26 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         // to select or deselect when pressed
         onPressed: (int newIndex) {
           setState( () {
-            isSelected[0] = !isSelected[0];
-            isSelected[1] = !isSelected[1];
+            selected_list = !selected_list;
           });
         }
     );
 
+    Map<bool, List<Widget>> home_body = {
+      true: [
+        Spacer(),
+        OutlinedCardExample(),
+        Spacer(),
+        OutlinedCardExample(),
+        Spacer(),
+        OutlinedCardExample(),
+        Spacer(),
+      ],
+      false: [
+        MapSample(),
+      ],
+
+    };
     List<Widget> _widgetOptions = <Widget>[
       ListView(
         children: <Widget>[
@@ -135,13 +238,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           Center(
             child: toggle_button
           ),
-          Spacer(),
-          OutlinedCardExample(),
-          Spacer(),
-          OutlinedCardExample(),
-          Spacer(),
-          OutlinedCardExample(),
-          Spacer(),
+          ...home_body[selected_list]!,
         ],
       ),
       Text(
@@ -178,7 +275,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       //   title: const Text('BottomNavigationBar Sample'),
       // ),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: _widgetOptions.elementAt(selected_index),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -208,7 +305,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             // backgroundColor: Colors.pink,
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: selected_index,
         selectedItemColor: bottom_selected_tab_color,
         unselectedItemColor: bottom_unselected_tab_color,
         onTap: _onItemTapped,
