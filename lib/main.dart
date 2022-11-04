@@ -5,6 +5,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'bottom_navbar.dart';
+import 'card_list.dart';
+import 'card_screen.dart';
+import 'map.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -22,130 +27,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class OutlinedCardExample extends StatelessWidget {
-  const OutlinedCardExample({super.key});
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const TextStyle timerStyle = TextStyle(fontSize: 18,);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Colors.grey,
-          ),
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
-        ),
-        margin: EdgeInsets.all(20),
-        child: Column(
-
-          children: [
-            Container(
-              width: double.infinity,
-              height: 500,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('images/Best-TED-Talks-From-The-Curator-Himself-.jpg'),
-                ),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0), bottom: Radius.zero),
-                color: Colors.redAccent,
-              ),
-            ),
-            Container(
-            height: 180,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
-                  child: Center(child: Text('TedX UA про волонтерство', style: optionStyle,)),
-                ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 8, 12),
-                  child: Row(
-                    children: [
-                      Icon(Icons.access_time),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                        child: Text('Постійна зайнятість', style: timerStyle,),
-                      ),
-                    ],
-                  ),
-                ),
-                // Spacer(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_on),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('Вул. Валова, 27', style: timerStyle,),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ]),
-      ),
-    );
-  }
-}
 
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({super.key});
 
   @override
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-
-class MapSample extends StatefulWidget {
-  @override
-  State<MapSample> createState() => MapSampleState();
-}
-
-class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
-    );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
 }
 
 
@@ -185,30 +72,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     var bool_2_list = (bool selected_list) => [selected_list, !selected_list];
     ToggleButtons toggle_button = ToggleButtons(
-      // list of booleans
         isSelected: bool_2_list(selected_list),
-        // text color of selected toggle
         selectedColor: Colors.black,
         disabledColor: Colors.black,
-        // text color of not selected toggle
         color: Colors.grey,
-        // fill color of selected toggle
         fillColor: Colors.white,
-        // when pressed, splash color is seen
-        // splashColor: Colors.red,
-        // long press to identify highlight color
         highlightColor: Colors.blue,
-        // if consistency is needed for all text style
         textStyle: const TextStyle(fontWeight: FontWeight.bold),
-        // border properties for each toggle
         renderBorder: true,
         borderColor: Colors.white,
         borderWidth: 1.5,
         borderRadius: BorderRadius.circular(10),
         selectedBorderColor: Colors.grey,
-        // add widgets for which the users need to toggle
         children: childrens,
-        // to select or deselect when pressed
         onPressed: (int newIndex) {
           setState( () {
             selected_list = !selected_list;
@@ -218,16 +94,29 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
     Map<bool, List<Widget>> home_body = {
       true: [
-        Spacer(),
-        OutlinedCardExample(),
-        Spacer(),
-        OutlinedCardExample(),
-        Spacer(),
-        OutlinedCardExample(),
-        Spacer(),
+        const Spacer(),
+        GestureDetector(
+          child: const card_list(),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const JobCard(),
+              ),
+            );
+          },
+        ),
+        const Spacer(),
+        const card_list(),
+        const Spacer(),
+        const card_list(),
+        const Spacer(),
       ],
       false: [
-        MapSample(),
+        Container(
+            height: 200,
+            width: 200,
+            child: MapSample()
+        ),
       ],
 
     };
@@ -235,9 +124,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ListView(
         children: <Widget>[
           Spacer(),
-          Center(
-            child: toggle_button
-          ),
+
           ...home_body[selected_list]!,
         ],
       ),
@@ -254,62 +141,68 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         style: optionStyle,
       ),
     ];
-    Widget card = Center(
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            color: Theme.of(context).colorScheme.outline,
-          ),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-        ),
-        child: const SizedBox(
-          width: 300,
-          height: 100,
-          child: Center(child: Text('Outlined Card')),
-        ),
-      ),
-    );
+
     return Scaffold(
       // appBar: AppBar(
       //   title: const Text('BottomNavigationBar Sample'),
+      //
       // ),
-      body: Center(
-        child: _widgetOptions.elementAt(selected_index),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                  child: toggle_button
+              ),
+              flex: 1
+            ),
+            Expanded(
+              child: Center(
+                child: _widgetOptions.elementAt(selected_index),
+              ),
+              flex: 15,
+            ),
+          ],
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: home_label,
-            // backgroundColor: bottom_tab_color,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: event_label,
-            // backgroundColor: bottom_tab_color,
-
-            // backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: notify_label,
-            // backgroundColor: bottom_tab_color,
-            // backgroundColor: Colors.purple,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: accaunt_label,
-            // backgroundColor: bottom_tab_color,
-
-            // backgroundColor: Colors.pink,
-          ),
-        ],
-        currentIndex: selected_index,
-        selectedItemColor: bottom_selected_tab_color,
-        unselectedItemColor: bottom_unselected_tab_color,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: buildBottomNavigationBar(_onItemTapped, selected_index),
     );
   }
+  //
+  // BottomNavigationBar buildBottomNavigationBar() {
+  //   return BottomNavigationBar(
+  //     items: const <BottomNavigationBarItem>[
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.home),
+  //         label: home_label,
+  //         // backgroundColor: bottom_tab_color,
+  //       ),
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.calendar_today),
+  //         label: event_label,
+  //         // backgroundColor: bottom_tab_color,
+  //
+  //         // backgroundColor: Colors.green,
+  //       ),
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.notifications),
+  //         label: notify_label,
+  //         // backgroundColor: bottom_tab_color,
+  //         // backgroundColor: Colors.purple,
+  //       ),
+  //       BottomNavigationBarItem(
+  //         icon: Icon(Icons.person),
+  //         label: accaunt_label,
+  //         // backgroundColor: bottom_tab_color,
+  //
+  //         // backgroundColor: Colors.pink,
+  //       ),
+  //     ],
+  //     currentIndex: selected_index,
+  //     selectedItemColor: bottom_selected_tab_color,
+  //     unselectedItemColor: bottom_unselected_tab_color,
+  //     onTap: _onItemTapped,
+  //   );
+  // }
+
 }
