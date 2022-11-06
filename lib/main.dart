@@ -165,44 +165,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ],
         ),
       ),
-      bottomNavigationBar: buildBottomNavigationBar(_onItemTapped, selected_index),
+      bottomNavigationBar: buildBottomNavigationBar(),
     );
   }
-  //
-  // BottomNavigationBar buildBottomNavigationBar() {
-  //   return BottomNavigationBar(
-  //     items: const <BottomNavigationBarItem>[
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.home),
-  //         label: home_label,
-  //         // backgroundColor: bottom_tab_color,
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.calendar_today),
-  //         label: event_label,
-  //         // backgroundColor: bottom_tab_color,
-  //
-  //         // backgroundColor: Colors.green,
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.notifications),
-  //         label: notify_label,
-  //         // backgroundColor: bottom_tab_color,
-  //         // backgroundColor: Colors.purple,
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.person),
-  //         label: accaunt_label,
-  //         // backgroundColor: bottom_tab_color,
-  //
-  //         // backgroundColor: Colors.pink,
-  //       ),
-  //     ],
-  //     currentIndex: selected_index,
-  //     selectedItemColor: bottom_selected_tab_color,
-  //     unselectedItemColor: bottom_unselected_tab_color,
-  //     onTap: _onItemTapped,
-  //   );
-  // }
-
 }
