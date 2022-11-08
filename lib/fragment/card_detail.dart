@@ -1,12 +1,5 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import 'bottom_navbar.dart';
+import '../fragment/bottom_navbar.dart';
 
 class card_detail extends StatelessWidget {
   const card_detail({super.key});

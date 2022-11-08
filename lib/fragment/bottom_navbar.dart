@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'card_list.dart';
-import 'card_screen.dart';
+import '../screen/card_screen.dart';
 import 'map.dart';
 
 
+int selected_index = 0;
 
 class buildBottomNavigationBar extends StatefulWidget {
 	const buildBottomNavigationBar({super.key});
@@ -21,7 +22,7 @@ class buildBottomNavigationBar extends StatefulWidget {
 
 
 class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
-	int selected_index = 0;
+	// int selected_index = 0;
 	bool selected_list = true;
 	static const TextStyle optionStyle = TextStyle(
 		fontSize: 30, fontWeight: FontWeight.bold);

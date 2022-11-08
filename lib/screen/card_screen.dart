@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'bottom_navbar.dart';
-import 'card_detail.dart';
-import 'card_list.dart';
+import '../fragment/card_detail.dart';
 
 
 class JobCard extends StatelessWidget {

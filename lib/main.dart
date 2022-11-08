@@ -5,11 +5,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:united_help/fragment/toggle_buttons.dart';
 
-import 'bottom_navbar.dart';
-import 'card_list.dart';
-import 'card_screen.dart';
-import 'map.dart';
+import 'fragment/bottom_navbar.dart';
+import 'fragment/card_list.dart';
+import 'screen/card_screen.dart';
+import 'fragment/map.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -58,6 +59,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     Padding(
       padding: EdgeInsets.symmetric(horizontal: 12),
       child: Text('На мапі', style: TextStyle(fontSize: 18)),
+
     ),
   ];
 
@@ -71,25 +73,41 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     var bool_2_list = (bool selected_list) => [selected_list, !selected_list];
-    ToggleButtons toggle_button = ToggleButtons(
-        isSelected: bool_2_list(selected_list),
-        selectedColor: Colors.black,
-        disabledColor: Colors.black,
-        color: Colors.grey,
-        fillColor: Colors.white,
-        highlightColor: Colors.blue,
-        textStyle: const TextStyle(fontWeight: FontWeight.bold),
-        renderBorder: true,
-        borderColor: Colors.white,
-        borderWidth: 1.5,
-        borderRadius: BorderRadius.circular(10),
-        selectedBorderColor: Colors.grey,
-        children: childrens,
-        onPressed: (int newIndex) {
-          setState( () {
-            selected_list = !selected_list;
-          });
-        }
+
+    Widget toggle_button = Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      color: const Color(0xFFF0F3FF),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
+              textStyle: const TextStyle(fontSize: 20),
+            ),
+            onPressed: () {},
+            child: const Text('Актуальне'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black,
+              shape:
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                  ),
+              textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+              padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
+              backgroundColor: Colors.white,
+            ),
+            onPressed: () {},
+            child: const Text('На мапі'),
+          ),
+        ],
+      ),
     );
 
     Map<bool, List<Widget>> home_body = {
@@ -151,10 +169,23 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: Column(
           children: [
             Expanded(
+              flex: 1,
               child: Center(
-                  child: toggle_button
-              ),
-              flex: 1
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const build_toggle_buttons(),
+                      TextButton(
+                          onPressed: () {},
+                          child: const Icon(
+                              Icons.tune,
+                              color: Colors.black,
+                          ),
+                      ),
+                    ],
+                  )
+              )
             ),
             Expanded(
               child: Center(
