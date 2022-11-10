@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:united_help/fragment/skill_card.dart';
 import '../fragment/bottom_navbar.dart';
 
 class card_detail extends StatelessWidget {
-  const card_detail({super.key});
+  const card_detail({
+      Key? key,
+    required this.title,
+    required this.image,
+    required this.time,
+    required this.location,
+    required this.description,
+    required this.skills,
+  }) : super(key: key);
+  final String title;
+  final String image;
+  final String time;
+  final String location;
+  final String description;
+  final List skills;
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const TextStyle timerStyle = TextStyle(
@@ -11,8 +27,53 @@ class card_detail extends StatelessWidget {
   static const TextStyle timerBoldStyle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
+  Widget return_skills_card(List skills, [int skill_in_row = 2]) {
+    List<Widget> columns = [];
+    int i = 0;
+    while (i <= skills.length/2.ceil()) {
+      List<Widget> rows = [];
+      if (i < skills.length) rows.add(buildSkillCard(skills[i]));
+      if (i + 1 < skills.length) rows.add(buildSkillCard(skills[i+1]));
+      Widget row_widget = Row(
+        children: rows,
+      );
+      columns.add(row_widget);
+      i = i +2;
+    }
+    return Column(children: columns);
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    Widget build_description(String text) {
+      return Container(
+        margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(text, style: timerStyle,)
+        ),
+      );
+    }
+    Widget build_location(String text, IconData icon) {
+     return Container(
+        margin: const EdgeInsets.fromLTRB(20, 6, 8, 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+              child: Text(
+                text,
+                style: timerStyle,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -32,7 +93,7 @@ class card_detail extends StatelessWidget {
                         maxHeight: 450,
                       ),
                       child: Image.asset(
-                        'images/Best-TED-Talks-From-The-Curator-Himself-.jpg',
+                        image,
                         fit: BoxFit.fitWidth,
                       ),
                     ),
@@ -44,59 +105,10 @@ class card_detail extends StatelessWidget {
 					mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                        child: Align(
-						  alignment: Alignment.centerLeft,
-						  child: Text(
-                            'TedX UA про волонтерство',
-                            style: optionStyle,
-                          ),
-                        ),
-                      ),
-                      // Spacer(),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 8, 12),
-                        child: Row(
-                          children: [
-                            Icon(Icons.access_time),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 18, 8, 8),
-                              child: Text(
-                                'Постійна зайнятість',
-                                style: timerStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Spacer(),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                        child: Row(
-                          children: [
-                            Icon(Icons.location_on),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(
-                                'Вул. Валова, 27',
-                                style: timerStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            'Запрошуємо волонтерів до гуманітарного штабу Тернополя. Ми потребуємо допомогу в розвантаженні фур, сортуванні гуманітарної допомоги, пакуванні на фронт й видачі допомоги потребуючим людям.',
-                            style: timerStyle,
-                          ),
-                        ),
-                      ),
+                      build_bold_left_text(title),
+                      build_location(time, Icons.access_time),
+                      build_location(location, Icons.location_on),
+                      build_description(description),
                       Container(
                         margin: const EdgeInsets.fromLTRB(20, 0, 0, 30),
                         child: Padding(
@@ -114,22 +126,7 @@ class card_detail extends StatelessWidget {
                         // height: 500,
                         // width: 500,
                         margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-								buildSkillCard("Microsoft Office"),
-								buildSkillCard("Комунікативність"),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-								buildSkillCard("Пунктуальність"),
-								buildSkillCard("Організованість"),
-                              ],
-                            ),
-                          ],
-                        ),
+                        child: return_skills_card(skills),
                       ),
                     ],
                   ),
@@ -141,26 +138,6 @@ class card_detail extends StatelessWidget {
       ),
       bottomNavigationBar: buildBottomNavigationBar(),
 
-    );
-  }
-
-  Padding buildSkillCard(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(
-              color: Color(0xFFF0F3FF),
-            ),
-            color: Color(0xFFF0F3FF),
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(15),
-        child: Text(
-          title,
-          style: timerStyle,
-        ),
-      ),
     );
   }
 }

@@ -6,12 +6,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:united_help/fragment/toggle_buttons.dart';
+import 'package:united_help/screen/filter_screen.dart';
 
 import 'fragment/bottom_navbar.dart';
 import 'fragment/card_list.dart';
 import 'screen/card_screen.dart';
 import 'fragment/map.dart';
 void main() => runApp(const MyApp());
+
+List<bool> skills_state = [];
+List<bool> locations_state = [];
+List<bool> employment_state = [];
+List<bool> time_start_state = [];
+List<bool> time_end_state = [];
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -21,9 +28,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: _title,
-      home: MyStatefulWidget(),
+      home: const MyStatefulWidget(),
+      theme: ThemeData(fontFamily: 'SF Pro'),
     );
   }
 }
@@ -165,6 +173,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       //   title: const Text('BottomNavigationBar Sample'),
       //
       // ),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -177,7 +186,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     children: [
                       const build_toggle_buttons(),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const FiltersCard(),
+                              ),
+                          );},
                           child: const Icon(
                               Icons.tune,
                               color: Colors.black,
