@@ -24,7 +24,7 @@ class _build_toggle_buttons extends State<build_toggle_buttons> {
 	Widget build_passive_button(String text, int elem) {
 		return TextButton(
 			style: TextButton.styleFrom(
-				foregroundColor: Colors.black,
+				// foregroundColor: Colors.black,
 				padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
 				textStyle: const TextStyle(fontSize: 20),
 			),
@@ -35,14 +35,14 @@ class _build_toggle_buttons extends State<build_toggle_buttons> {
 	Widget build_active_button(String text, int elem) {
 		return ElevatedButton(
 			style: ElevatedButton.styleFrom(
-				foregroundColor: Colors.black,
+				// foregroundColor: Colors.black,
 				shape:
 				RoundedRectangleBorder(
 					borderRadius: BorderRadius.circular(10.0),
 				),
 				textStyle: const TextStyle(fontSize: 20, color: Colors.black),
 				padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
-				backgroundColor: Colors.white,
+				// backgroundColor: Colors.white,
 			),
 			onPressed: () {_onItemTapped(elem);},
 			child: Text(text),

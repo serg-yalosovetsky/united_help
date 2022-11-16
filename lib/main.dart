@@ -7,12 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:united_help/fragment/toggle_buttons.dart';
 import 'package:united_help/screen/filter_screen.dart';
+import 'package:united_help/screen/welcome_role.dart';
 
 import 'fragment/bottom_navbar.dart';
 import 'fragment/card_list.dart';
 import 'screen/card_screen.dart';
 import 'fragment/map.dart';
-void main() => runApp(const MyApp());
+void main() => runApp( WelcomeRoleScreen());
 
 List<bool> skills_state = [];
 List<bool> locations_state = [];
@@ -93,7 +94,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         children: [
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
+              // foregroundColor: Colors.black,
               padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
               textStyle: const TextStyle(fontSize: 20),
             ),
@@ -102,14 +103,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.black,
+              // foregroundColor: Colors.black,
               shape:
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                   ),
               textStyle: const TextStyle(fontSize: 20, color: Colors.black),
               padding: const EdgeInsets.fromLTRB(16.0, 13.0, 13.0, 13.0),
-              backgroundColor: Colors.white,
+              // backgroundColor: Colors.white,
             ),
             onPressed: () {},
             child: const Text('На мапі'),
