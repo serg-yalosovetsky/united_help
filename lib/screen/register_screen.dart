@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:united_help/services/validators.dart';
+import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../services/authenticate.dart';
 
 class RegisterScreen extends StatefulWidget {
 	const RegisterScreen({super.key});
@@ -16,6 +18,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 	final _form_key_email = GlobalKey<FormState>();
 	final _form_key_password = GlobalKey<FormState>();
 	List<bool> button_states = [false, false, false];
+
+	final name_controller = TextEditingController();
+	final email_controller = TextEditingController();
+	final password_controller = TextEditingController();
+
+	@override
+	void dispose() {
+		// Clean up the controller when the widget is disposed.
+		name_controller.dispose();
+		email_controller.dispose();
+		password_controller.dispose();
+		super.dispose();
+	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -34,6 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 					Padding(
 						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
 						child: TextFormField(
+							controller: name_controller,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
 							validator: (value) {
 								if (value == null || value.isEmpty) {
@@ -67,6 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 					Padding(
 						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
 						child: TextFormField(
+							controller: email_controller,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
 							validator: (value) {
 								if (value == null || value.isEmpty) {
@@ -104,6 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 					Padding(
 						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
 						child: TextFormField(
+							controller: password_controller,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
 							validator: (value) {
 								if (value == null || value.isEmpty) {
@@ -198,7 +216,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 											text_style: SFProTextSemibold18,
 											text: 'Зареєструватись',
 											padding: const [72, 47, 72, 0],
-											fun: button_states.every((element) => element) ? () {} : null,
+											fun: button_states.every((element) => element) ? () {
+												Requests.password = 'sergey104781';
+												Requests.username = 'serg';
+												var r = Requests();
+												print(name_controller.text);
+												print(email_controller.text);
+												print(password_controller.text);
+												r.post(
+														'$server_url$register_url',
+														{
+															'username': name_controller.text,
+															'email': email_controller.text,
+															'password': password_controller.text,
+														}
+												);
+												// post_request();
+											} : null,
 										),
 		  	  		  	],
 		  	  		  ),
@@ -210,37 +244,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		);
 	}
 
-	Form create_form() {
-	  return Form(
-			key: _form_key_name,
-			child: Padding(
-			  padding: const EdgeInsets.fromLTRB(31, 31, 31, 0),
-			  child: TextFormField(
-					autovalidateMode: AutovalidateMode.onUserInteraction,
-					validator: (value) {
-			  		if (value == null || value.isEmpty) {
-			  			return 'Ім’я не може бути пустим';
-			  		}
-			  		return null;
-			  	},
-					onChanged: (text) {
-						setState(() {
-							if (_form_key_name.currentState!.validate())
-									button_states[0] = true;
-							else
-									button_states[0] = false;
-						});
-					},
-			  	decoration: InputDecoration(
-			  		border: OutlineInputBorder(
-							borderRadius : BorderRadius.all(Radius.circular(16.0)),
-						),
-			  		hintText: 'Прізвище, ім’я',
-			  	),
-			  ),
-			),
-		);
-	}
 }
 
 
