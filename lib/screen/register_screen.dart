@@ -22,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 	final name_controller = TextEditingController();
 	final email_controller = TextEditingController();
 	final password_controller = TextEditingController();
+	late bool _password_visible;
 
 	@override
 	void dispose() {
@@ -30,6 +31,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		email_controller.dispose();
 		password_controller.dispose();
 		super.dispose();
+	}
+
+	void initState() {
+		_password_visible = false;
 	}
 
 	@override
@@ -70,6 +75,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 									borderRadius : BorderRadius.all(Radius.circular(16.0)),
 								),
 								hintText: 'Прізвище, ім’я',
+								suffixIcon: IconButton(
+									onPressed: name_controller.clear,
+									icon: Icon(
+											Icons.clear,
+									),
+								),
 							),
 						),
 					),
@@ -108,6 +119,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 									borderRadius : BorderRadius.all(Radius.circular(16.0)),
 								),
 								hintText: 'Email',
+								suffixIcon: IconButton(
+									onPressed: email_controller.clear,
+									icon: Icon(
+										Icons.clear,
+									),
+								),
 							),
 						),
 					),
@@ -121,7 +138,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 					Padding(
 						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
 						child: TextFormField(
+							keyboardType: TextInputType.text,
 							controller: password_controller,
+							obscureText: !_password_visible,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
 							validator: (value) {
 								if (value == null || value.isEmpty) {
@@ -146,6 +165,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
 									borderRadius : BorderRadius.all(Radius.circular(16.0)),
 								),
 								hintText: 'Пароль',
+								suffixIcon: IconButton(
+									onPressed: () {
+										setState(() {
+											_password_visible = !_password_visible;
+										});
+									},
+									icon: Icon(
+										// Based on passwordVisible state choose the icon
+										_password_visible
+												? Icons.visibility
+												: Icons.visibility_off,
+										// color: Theme.of(context).primaryColorDark,
+									),
+								),
 							),
 						),
 					),
