@@ -7,36 +7,23 @@ import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../services/authenticate.dart';
 
-class RegisterScreen extends StatefulWidget {
-	const RegisterScreen({super.key});
+class PasswordRecoveryScreen extends StatefulWidget {
+	const PasswordRecoveryScreen({super.key});
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<PasswordRecoveryScreen> createState() => _PasswordRecoveryScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-	final _form_key_name = GlobalKey<FormState>();
+class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 	final _form_key_email = GlobalKey<FormState>();
-	final _form_key_password = GlobalKey<FormState>();
-	List<bool> button_states = [false, false, false];
-	final int name_index = 0;
-	final int email_index = 1;
-	final int password_index = 2;
-	final name_controller = TextEditingController();
+	List<bool> button_states = [false,];
+	final int email_index = 0;
 	final email_controller = TextEditingController();
-	final password_controller = TextEditingController();
-	late bool _password_visible;
 
 	@override
 	void dispose() {
 		// Clean up the controller when the widget is disposed.
-		name_controller.dispose();
 		email_controller.dispose();
-		password_controller.dispose();
 		super.dispose();
-	}
-
-	void initState() {
-		_password_visible = false;
 	}
 
 	@override
@@ -49,46 +36,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 			fontWeight: FontWeight.w600,
 		);
 		const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
-		Widget form_name = Form(
-			key: _form_key_name,
-			child: Column(
-				children: <Widget>[
-					Padding(
-						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
-						child: TextFormField(
-							controller: name_controller,
-							autovalidateMode: AutovalidateMode.onUserInteraction,
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Ім’я не може бути пустим';
-								}
-								return null;
-							},
-							onChanged: (text) {
-								setState(() {
-									if (_form_key_name.currentState!.validate())
-										button_states[name_index] = true;
-									else
-										button_states[name_index] = false;
-								});
-							},
-							decoration: InputDecoration(
-								border: OutlineInputBorder(
-									borderRadius : BorderRadius.all(Radius.circular(16.0)),
-								),
-								hintText: 'Прізвище, ім’я',
-								suffixIcon: IconButton(
-									onPressed: name_controller.clear,
-									icon: Icon(
-											Icons.clear,
-									),
-								),
-							),
-						),
-					),
-				],
-			),
-		);
 		Widget form_email = Form(
 			key: _form_key_email,
 			child: Column(
@@ -133,65 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 				],
 			),
 		);
-		Widget form_password = Form(
-			key: _form_key_password,
-			child: Column(
-				children: <Widget>[
-					Padding(
-						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
-						child: TextFormField(
-							keyboardType: TextInputType.text,
-							controller: password_controller,
-							obscureText: !_password_visible,
-							autovalidateMode: AutovalidateMode.onUserInteraction,
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Пароль не може бути пустим';
-								}
-								String validate_msg = password_validator(value);
-								if (validate_msg.isEmpty){
-									return null;
-								}
-								return validate_msg;
-							},
-							onChanged: (text) {
-								setState(() {
-									if (_form_key_password.currentState!.validate())
-											button_states[password_index] = true;
-									else
-											button_states[password_index] = false;
-								});
-							},
-							decoration: InputDecoration(
-								border: OutlineInputBorder(
-									borderRadius : BorderRadius.all(Radius.circular(16.0)),
-								),
-								hintText: 'Пароль',
-								suffixIcon: IconButton(
-									onPressed: () {
-										setState(() {
-											_password_visible = !_password_visible;
-										});
-									},
-									icon: Icon(
-										// Based on passwordVisible state choose the icon
-										_password_visible
-												? Icons.visibility
-												: Icons.visibility_off,
-										// color: Theme.of(context).primaryColorDark,
-									),
-								),
-							),
-						),
-					),
-
-
-
-				],
-			),
-		);
-
-		return MaterialApp(
+			return MaterialApp(
 		  home: Scaffold(
 				appBar: AppBar(
 					title: Row(
@@ -205,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 							  child: Padding(
 							  	padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
 							  	child: const Text(
-							  		'Реєстрація',
+							  		'Вхід',
 										style: TextStyle(color: Colors.black),
 										textAlign: TextAlign.center,
 							  	),
@@ -237,38 +126,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		  	  		  		Padding(
 		  	  		  			padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
 		  	  		  			child: Image.asset(
-		  	  		  				// ImageConstant.imgGroup26649,
-									'images/img.png',
-									// 'images/Best-TED-Talks-From-The-Curator-Himself-.jpg',
-		  	  		  				height: 184.00,
-		  	  		  				// width: 247.00,
+												'images/img_2.png',
+		  	  		  				height: 78.00,
 		  	  		  			),
 		  	  		  		),
-										form_name,
+										// form_name,
+										Padding(
+											padding: EdgeInsets.fromLTRB(64, 20, 64, 0),
+											child: Text(
+												"Відновлення пароля",
+												overflow: TextOverflow.ellipsis,
+												textAlign: TextAlign.left,
+												style: TextStyle(
+													color: ColorConstant.bluegray900,
+													fontSize:22,
+													fontFamily: 'SF Pro Text',
+													fontWeight: FontWeight.w600,
+													height: 1.00,
+												),
+											),
+										),
+
 										form_email,
-										form_password,
 										welcome_button(
 											text_style: SFProTextSemibold18,
-											text: 'Зареєструватись',
-											padding: const [72, 47, 72, 0],
+											text: 'Надіслати Email',
+											padding: const [72, 24, 72, 0],
 											fun: button_states.every((element) => element) ? () async {
-												Requests.password = 'sergey104781';
-												Requests.username = 'serg';
+												Requests.username = email_controller.text;
 												var r = Requests();
-												print(name_controller.text);
 												print(email_controller.text);
-												print(password_controller.text);
-												await r.post(
-														'$server_url$register_url',
+												var result = await r.post(
+														'$server_url$authenticate_url',
 														{
-															'username': name_controller.text,
-															'email': email_controller.text,
-															'password': password_controller.text,
+															'username': email_controller.text,
 														}
 												);
-												// post_request();
+												print(result['result']);
+												print(result['status_code']);
 											} : null,
 										),
+
 		  	  		  	],
 		  	  		  ),
 		  	  		),

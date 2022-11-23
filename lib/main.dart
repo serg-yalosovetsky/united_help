@@ -6,15 +6,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:united_help/fragment/toggle_buttons.dart';
+import 'package:united_help/screen/email_password_confirmation.dart';
 import 'package:united_help/screen/filter_screen.dart';
+import 'package:united_help/screen/login_screen.dart';
+import 'package:united_help/screen/password_recovery.dart';
 import 'package:united_help/screen/register_screen.dart';
+import 'package:united_help/screen/send_email.dart';
 import 'package:united_help/screen/welcome_role.dart';
 
 import 'fragment/bottom_navbar.dart';
 import 'fragment/card_list.dart';
 import 'screen/card_screen.dart';
 import 'fragment/map.dart';
-void main() => runApp( RegisterScreen());
+void main() => runApp( PasswordRecoveryScreen());
 
 List<bool> skills_state = [];
 List<bool> locations_state = [];

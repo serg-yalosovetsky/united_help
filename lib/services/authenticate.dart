@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:united_help/services/urls.dart';
 
-
+typedef FutureMap = Future<Map<String, dynamic>> ;
 
 class Requests {
   static String? access_token;
@@ -11,12 +11,12 @@ class Requests {
   static String? username;
   static String? password;
 
-  Map<String, dynamic> refreshing_token(String url) {
+  FutureMap refreshing_token(String url) async {
     Map response_map = {};
     if (refresh_token==null) {
       return {'success': false, 'error': 'no refresh_token'};
     }
-    http.post(
+    await http.post(
       Uri.parse('$server_url$refresh_token_url'),
       body: {"refresh": refresh_token,},
       headers: {"accept": "application/json", },
@@ -45,12 +45,11 @@ class Requests {
     return {'success': true,};
   }
 
-
-  Map<String, dynamic> check_authenticate(String url) {
+  FutureMap check_authenticate(String url) async {
     Map response_map = {};
     if (url.startsWith(server_url) && !url.endsWith(register_url)) {
       if (access_token==null) {
-        http.post(
+        await http.post(
             Uri.parse('$server_url$authenticate_url'),
             body: {"username": username,
               "password": password},
@@ -81,16 +80,17 @@ class Requests {
     return {'success': true,};
   }
 
-  Map<String, dynamic> get(String url) {
-    var auth_resp = check_authenticate(url);
+
+  FutureMap get(String url) async {
+    var auth_resp = await check_authenticate(url);
     if (!auth_resp['success']) {
-       return {'result': auth_resp['error'], 'result_code': auth_resp['status_code'], };
+       return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
     }
 
     var result;
     int status_code = 0;
 
-    http.get(
+    await http.get(
         Uri.parse(url),
         headers: {"accept": "application/json", 'Content-Type': 'application/json'},
     ).then((response) {
@@ -102,22 +102,22 @@ class Requests {
       result = error;
       print("Error: $error");
     });
-    return {'result': result, 'result_code': status_code, };
+    return {'result': result, 'status_code': status_code, };
   }
 
 
-  Map<String, dynamic> post(String url, Map body) {
+  FutureMap post(String url, Map body) async {
     print('url $url');
     print('body $body');
-    var auth_resp = check_authenticate(url);
+    var auth_resp = await check_authenticate(url);
 
     if (!auth_resp['success']) {
-      return {'result': auth_resp['error'], 'result_code': auth_resp['status_code'], };
+      return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
     }
     var result;
     int status_code = 0;
 
-    http.post(
+    await http.post(
         Uri.parse(url),
         body: json.encode(body),
         headers: {"accept": "application/json", 'Content-Type': 'application/json'},
@@ -130,7 +130,7 @@ class Requests {
       result = error;
       print("Error: $error");
     });
-    return {'result': result, 'result_code': status_code, };
+    return {'result': result, 'status_code': status_code, };
   }
 
 
