@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
@@ -21,7 +22,6 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 
 	@override
 	void dispose() {
-		// Clean up the controller when the widget is disposed.
 		email_controller.dispose();
 		super.dispose();
 	}
@@ -80,6 +80,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 				],
 			),
 		);
+		
 			return MaterialApp(
 		  home: Scaffold(
 				appBar: AppBar(
@@ -125,10 +126,14 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 		  	  		  	children: [
 		  	  		  		Padding(
 		  	  		  			padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
-		  	  		  			child: Image.asset(
-												'images/img_2.png',
-		  	  		  				height: 78.00,
-		  	  		  			),
+		  	  		  			child: KeyboardVisibilityBuilder(
+													builder: (context, isKeyboardVisible) {
+														return Image.asset(
+															'images/img_2.png',
+															height:	isKeyboardVisible ? 78.0 : 184.0,
+														);
+													}
+											),
 		  	  		  		),
 										// form_name,
 										Padding(

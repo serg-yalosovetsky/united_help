@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'card_list.dart';
@@ -38,6 +39,12 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 	void _onItemTapped(int index) {
 		setState(() {
 			selected_index = index;
+			if (index==0) {
+				context.go('/');
+			}
+			if (index==3) {
+					context.go('/account');
+			}
 		});
 	}
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
@@ -192,13 +193,14 @@ class _LoginScreenState extends State<LoginScreen> {
 		  	  		  	children: [
 		  	  		  		Padding(
 		  	  		  			padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
-		  	  		  			child: Image.asset(
-		  	  		  				// ImageConstant.imgGroup26649,
-									'images/img.png',
-									// 'images/Best-TED-Talks-From-The-Curator-Himself-.jpg',
-		  	  		  				height: 184.00,
-		  	  		  				// width: 247.00,
-		  	  		  			),
+		  	  		  			child: KeyboardVisibilityBuilder(
+													builder: (context, isKeyboardVisible) {
+														return Image.asset(
+															'images/img.png',
+															height:	isKeyboardVisible ? 78.0 : 184.0,
+														);
+														}
+													),
 		  	  		  		),
 										// form_name,
 										form_email,

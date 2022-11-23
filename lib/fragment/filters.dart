@@ -5,6 +5,12 @@ import '../fragment/bottom_navbar.dart';
 import '../main.dart';
 
 
+var locations_state;
+var employment_state;
+var time_start_state;
+var time_end_state;
+var skills_state;
+
 class filters extends StatefulWidget {
   const filters({
       Key? key,

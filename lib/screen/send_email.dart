@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
@@ -58,10 +59,14 @@ class SendEmailScreen extends StatelessWidget {
 		  	  		  	children: [
 		  	  		  		Padding(
 		  	  		  			padding: EdgeInsets.fromLTRB(64, 147, 64, 0),
-		  	  		  			child: Image.asset(
-													'images/img_1.png',
-													height: 184.00,
-		  	  		  			),
+		  	  		  			child: KeyboardVisibilityBuilder(
+													builder: (context, isKeyboardVisible) {
+														return Image.asset(
+															'images/img_1.png',
+															height:	isKeyboardVisible ? 78.0 : 184.0,
+														);
+													}
+											),
 		  	  		  		),
 										Padding(
 											padding: EdgeInsets.fromLTRB(64, 20, 64, 0),
