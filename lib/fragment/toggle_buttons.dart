@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 
 int selected_index = 0;
@@ -18,6 +19,12 @@ class _build_toggle_buttons extends State<build_toggle_buttons> {
 	void _onItemTapped(int index) {
 		setState(() {
 			selected_index = index;
+			if (selected_index == 0) {
+				context.go('/');
+			}
+			if (selected_index == 1) {
+				context.go('/map');
+			}
 		});
 	}
 

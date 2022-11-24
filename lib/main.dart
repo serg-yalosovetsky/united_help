@@ -7,10 +7,10 @@ import 'package:united_help/screen/map.dart';
 import 'package:united_help/screen/password_recovery.dart';
 
 
-void main() => runApp( GoogleMapScreen());
+void main() => runApp( UnitedHelp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class UnitedHelp extends StatelessWidget {
+  const UnitedHelp({super.key});
 
   static const String _title = 'Flutter Code Sample';
 

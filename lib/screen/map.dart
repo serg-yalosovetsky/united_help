@@ -6,6 +6,41 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
+import '../fragment/bottom_navbar.dart';
+
+
+
+
+final Key boxKey = GlobalKey(debugLabel: 'Colored box key');
+
+class ColoredBox extends StatelessWidget {
+  ColoredBox({required Key key}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      child: Text('_number.toString(),'),
+    );
+  }
+}
+
+class BoxContainer extends StatelessWidget {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100.0,
+      child: ColoredBox(
+        key: boxKey,
+      )
+    );
+  }
+}
+
+
 
 Future<Uint8List?> getBytesFromAsset({required String path, required int width})async {
   ByteData data = await rootBundle.load(path);
@@ -51,6 +86,54 @@ dynamic get_markers()  {
 }
 
 
+class MyMarker extends StatelessWidget {
+  // declare a global key and get it trough Constructor
+
+  MyMarker(this.globalKeyMyWidget);
+  final GlobalKey globalKeyMyWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    // wrap your widget with RepaintBoundary and
+    // pass your global key to RepaintBoundary
+    return RepaintBoundary(
+      key: globalKeyMyWidget,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 250,
+            height: 180,
+            decoration:
+            BoxDecoration(color: Colors.black, shape: BoxShape.circle),
+          ),
+          Container(
+              width: 220,
+              height: 150,
+              decoration:
+              BoxDecoration(color: Colors.amber, shape: BoxShape.circle),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.accessibility,
+                    color: Colors.white,
+                    size: 35,
+                  ),
+                  Text(
+                    'Widget',
+                    style: TextStyle(color: Colors.white, fontSize: 25),
+                  ),
+                ],
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+
+
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
 
@@ -60,7 +143,6 @@ class GoogleMapScreen extends StatefulWidget {
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
-  final marker_key = GlobalKey<FormState>();
 
   final LatLng _center = const LatLng(49.958601, 30.227047);
 
@@ -69,13 +151,41 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   }
 
   Set<Marker> markers = get_markers();
+  final GlobalKey globalKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
 
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Maps Sample App'),
+          title: Row(
+            children: [
+              Icon(Icons.arrow_back_ios),
+              const Text(
+                'Назад',
+                style: TextStyle(color: Colors.blue),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: const Text(
+                    'Реєстрація',
+                    style: TextStyle(color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
+              Icon(Icons.arrow_back_ios, color: Colors.white),
+              const Text(
+                'Назад',
+                style: TextStyle(color: Colors.white),
+              ),
+
+            ],
+          ),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.blue,
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
@@ -125,7 +235,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               //     fontSize: 30,
               //     fontColor: Colors.white,
               // ),
-              icon: await MarkerIcon.widgetToIcon(marker_key),
+              // icon: await MarkerIcon.widgetToIcon(globalKey),
+              icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
             );
             setState(()  {
                 markers.add(new_marker);
@@ -134,14 +245,22 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
           },
         ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
+        body: Stack(
+          children: [
+            // MyMarker(globalKey),
+            GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 11.0,
+            ),
+            markers: markers,
           ),
-          markers: markers,
+          Card(),
+          ],
         ),
+        bottomNavigationBar: buildBottomNavigationBar(),
+
       ),
     );
   }
