@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
 import '../fragment/bottom_navbar.dart';
+import '../fragment/card_list.dart';
 import '../fragment/skill_card.dart';
 
 
 class AccountScreen extends StatelessWidget {
 	const AccountScreen({super.key});
-
+	void _showDialog(BuildContext context) {
+		showDialog(
+			context: context,
+			builder: (BuildContext context) {
+				return AlertDialog(
+					title: Text("Alert!!"),
+					content: Text("You are awesome!"),
+					actions: [
+						MaterialButton(
+							child: Text("OK"),
+							onPressed: () {
+								Navigator.of(context).pop();
+							},
+						),
+					],
+				);
+			},
+		);
+	}
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
@@ -22,7 +41,7 @@ class AccountScreen extends StatelessWidget {
 			appBar: AppBar(
 				title: Row(
 					children: [
-						Icon(Icons.arrow_back_ios),
+						Icon(Icons.arrow_back_ios, size: 23,),
 						const Text(
 							'Назад',
 							style: back_style,
@@ -37,16 +56,49 @@ class AccountScreen extends StatelessWidget {
 								),
 							),
 						),
-						Icon(Icons.arrow_back_ios, color: Colors.white),
+						// Icon(Icons.arrow_back_ios, color: Colors.white),
 						const Text(
-							'Назад',
+							'Нfpi',
 							style: TextStyle(color: Colors.white),
 						),
-
 					],
 				),
 				backgroundColor: Colors.white,
 				foregroundColor: Colors.blue,
+				actions: [
+					PopupMenuButton<int>(
+						icon: Icon(Icons.more_horiz_rounded),
+						enableFeedback: true,
+						shape: RoundedRectangleBorder(
+							borderRadius: BorderRadius.circular(10.0),
+						),
+						itemBuilder: (context) => [
+							PopupMenuItem(
+								value: 1,
+								child: Text("Налаштування"),
+							),
+							PopupMenuItem(
+								value: 2,
+								child: Text("Допомога"),
+							),
+							PopupMenuItem(
+								value: 3,
+								child: Text("Вийти з акаунта"),
+							),
+						],
+						offset: Offset(0, 60),
+						color: Colors.white,
+						// elevation: 2,
+						onSelected: (value) {
+							if (value == 1) {
+								_showDialog(context);
+							} else if (value == 2) {
+								_showDialog(context);
+							}
+						},
+					),
+
+				],
 			),
 			body: const SafeArea(
 				child: card_detail(
@@ -262,6 +314,7 @@ class card_detail extends StatelessWidget {
 										),
 									],
 								),
+								card_list(),
 
 							],
 					  ),

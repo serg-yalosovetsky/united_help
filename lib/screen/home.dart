@@ -151,11 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('BottomNavigationBar Sample'),
-      //
-      // ),
-
       body: SafeArea(
         child: Column(
           children: [

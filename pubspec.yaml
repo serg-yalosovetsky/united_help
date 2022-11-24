@@ -41,6 +41,8 @@ dependencies:
   flutter_keyboard_visibility: ^5.4.0
   go_router: ^5.2.0
   shared_preferences: ^2.0.15
+  google_maps_flutter_web: ^0.4.0+3
+  custom_marker: ^1.0.0
 
 dev_dependencies:
   flutter_test:
