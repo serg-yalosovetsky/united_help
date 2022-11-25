@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../constants/colors.dart';
+import '../fragment/welcome_button.dart';
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
+
+	@override
+	Widget build(BuildContext context) {
+
+		return MaterialApp(
+		  home: Scaffold(
+			  appBar: AppBar(
+				  leading: Tooltip(
+					  message: 'Назад',
+				    child: TextButton(
+					  onPressed: () {},
+					  child: Container(
+					    child: Row(
+						  mainAxisSize: MainAxisSize.min,
+				        children: [
+				          // BackButton(
+						//   color: Colors.blue
+				          // ),
+							Icon(
+								Icons.arrow_back_ios,
+								color: Colors.blue,
+							),
+							Text('Назад',
+								style: TextStyle(
+									color: Colors.blue,
+									fontSize:17,
+									fontFamily: 'SF Pro Text',
+									fontWeight: FontWeight.w600,
+									// height: 1.00,
+								),
+							),
+				        ],
+				      ),
+					  ),
+				    ),
+				  ),
+				  title: Text("Реєстрація",
+					  style: TextStyle(
+						  color: Color(0xFF002241),
+						  fontSize:17,
+						  fontFamily: 'SF Pro Text',
+						  fontWeight: FontWeight.w600,
+						  height: 1.00,
+					  ),
+				  ),
+				  centerTitle: true,
+				  backgroundColor: Colors.white,
+				  shadowColor: Colors.white,
+				  surfaceTintColor: Colors.white,
+				  foregroundColor: Colors.white,
+			  ),
+		  	backgroundColor: ColorConstant.whiteA700,
+		  	body: SafeArea(
+		  	  child: Container(
+		  	  	child: SingleChildScrollView(
+		  	  		child: Center(
+		  	  		  child: Column(
+		  	  		  	mainAxisSize: MainAxisSize.min,
+		  	  		  	crossAxisAlignment: CrossAxisAlignment.center,
+		  	  		  	mainAxisAlignment: MainAxisAlignment.start,
+		  	  		  	children: [
+		  	  		  		Padding(
+		  	  		  			padding: EdgeInsets.fromLTRB(64, 74, 64, 0),
+		  	  		  			child: Image.asset(
+									'images/register.png',
+		  	  		  				height: 184.00,
+		  	  		  				// width: 247.00,
+		  	  		  			),
+		  	  		  		),
+
+							Padding(
+								padding: EdgeInsets.fromLTRB(32, 23, 32, 13),
+								child: TextField(
+									decoration: InputDecoration(
+										border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+										hintText: 'Прізвище, ім’я',
+									),
+								),
+							),
+							Padding(
+								padding: const EdgeInsets.fromLTRB(32, 0, 32, 13),
+								child: TextFormField(
+									decoration: InputDecoration(
+										border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+										labelText: 'Email',
+									),
+								),
+							),
+							Padding(
+								padding: const EdgeInsets.fromLTRB(32, 0, 32, 13),
+								child: TextFormField(
+									decoration: InputDecoration(
+										border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+										labelText: 'Пароль',
+									),
+								),
+							),
+							welcome_button(
+								text: 'Зареєструватись',
+								padding: const [72, 44, 72, 0],
+								active: true,
+							),
+
+
+		  	  		  	],
+		  	  		  ),
+		  	  		),
+		  	  	),
+		  	  ),
+		  	),
+		  ),
+		);
+	}
+}
