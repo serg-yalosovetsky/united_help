@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../constants.dart';
 import '../screen/account_screen.dart';
+import '../screen/example.dart';
 import '../screen/home.dart';
 import '../screen/map.dart';
 import '../services/login_state.dart';
@@ -20,6 +21,10 @@ final GoRouter go_router = GoRouter(
     GoRoute(
       path: "/map",
       builder: (context, state) => const GoogleMapScreen(),
+    ),
+    GoRoute(
+      path: "/example",
+      builder: (context, state) => ExampleScreen(),
     ),
   ],
 );

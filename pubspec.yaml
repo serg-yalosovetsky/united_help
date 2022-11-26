@@ -43,6 +43,8 @@ dependencies:
   shared_preferences: ">=2.0.15"
   google_maps_flutter_web: ">=0.4.0+3"
   custom_marker: ">=1.0.0"
+  sentry_flutter: ^6.0.1
+
 
 dev_dependencies:
   flutter_test:
