@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:united_help/services/urls.dart';
@@ -11,17 +12,22 @@ class Requests {
   static String? username;
   static String? password;
 
-  FutureMap refreshing_token(String url) async {
+  FutureMap refreshing_token() async {
     Map response_map = {};
     if (refresh_token==null) {
       return {'success': false, 'error': 'no refresh_token'};
     }
     await http.post(
-      Uri.parse('$server_url$refresh_token_url'),
-      body: {"refresh": refresh_token,},
-      headers: {"accept": "application/json", },
+      Uri.parse('$server_url$refresh_token_url/'),
+      body: json.encode({
+        "refresh": refresh_token,
+      }),
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+        HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+      },
     ).then((response) {
-      response_map = jsonDecode(response.body);
+      response_map = jsonDecode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200) {
         access_token = response_map['access'];
         return {'success': true};
@@ -34,6 +40,8 @@ class Requests {
         };
       }
     }).catchError((error){
+      print("Type: refreshing_token");
+
       print("Error: $error");
       response_map['error'] = error;
       return {
@@ -50,30 +58,42 @@ class Requests {
     if (url.startsWith(server_url) && !url.endsWith(register_url)) {
       if (access_token==null) {
         await http.post(
-            Uri.parse('$server_url$authenticate_url'),
-            body: {"username": username,
-              "password": password},
-            headers: {"accept": "application/json", },
-        ).then((response) {
-            response_map = jsonDecode(response.body);
+            Uri.parse('$server_url$authenticate_url/'),
+            body: json.encode({"username": username, "password": password}),
+            headers: {
+              HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+              HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+            },
+        ).then((response) async {
+          response_map = jsonDecode(response.body);
+          response_map = jsonDecode(utf8.decode(response.bodyBytes));
             if (response.statusCode == 200) {
               access_token = response_map['access'];
               refresh_token = response_map['refresh'];
               return {'success': true};
             }
             else
+              if (response_map['code'] == 'token_not_valid') {
+                var result = await refreshing_token();
+                if (result['success']) {
+                  return {'success': true,};
+                }
+              }
               return {
                 'success': false,
-                'status_code': response.statusCode.toString(),
+                'status_code': response.statusCode,
                 'error': response.body,
                     };
-        }).catchError((error){
-            print("Error: $error");
+        }).catchError((error) async{
+          print("Type: check_authenticate");
+
+          print("Error: $error");
             response_map['error'] = error;
             return {
-              'success': false,
-              'error': error,
-            };
+                  'success': false,
+                  'error': error,
+                };
+
         });
       }
     }
@@ -92,14 +112,20 @@ class Requests {
 
     await http.get(
         Uri.parse(url),
-        headers: {"accept": "application/json", 'Content-Type': 'application/json'},
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+          HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+          HttpHeaders.authorizationHeader: 'Bearer $access_token',
+        },
     ).then((response) {
       status_code = response.statusCode;
-      result = jsonDecode(response.body);
+      result = jsonDecode(utf8.decode(response.bodyBytes));
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");
     }).catchError((error){
       result = error;
+      print("Type: get");
+
       print("Error: $error");
     });
     return {'result': result, 'status_code': status_code, };
@@ -120,14 +146,19 @@ class Requests {
     await http.post(
         Uri.parse(url),
         body: json.encode(body),
-        headers: {"accept": "application/json", 'Content-Type': 'application/json'},
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+          HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+          HttpHeaders.authorizationHeader: 'Bearer $access_token',
+        },
     ).then((response) {
       status_code = response.statusCode;
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}");
-      result = jsonDecode(response.body);
+      result = jsonDecode(utf8.decode(response.bodyBytes));
     }).catchError((error){
       result = error;
+      print("Type: post");
       print("Error: $error");
     });
     return {'result': result, 'status_code': status_code, };

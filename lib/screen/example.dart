@@ -1,40 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:united_help/services/authenticate.dart';
 
-Future<Event> fetchEvent() async {
-	// Requests.password = 'sergey104781';
-	// Requests.username = 'serg';
-	// var r = Requests();
+import '../fragment/skill_card.dart';
+import '../services/urls.dart';
 
-	final response = await http.get(
-			Uri.parse('http://127.0.0.1:8000/events/2/'),
-			headers: {"accept": "application/json",
-				// 'Content-Type': 'application/json',
-			'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY5NDI5MDYzLCJpYXQiOjE2Njk0Mjg3NjMsImp0aSI6IjQ4MjM5N2JmOTkxYjRlNWU4YzZhZGZhOThmZGVlNTc0IiwidXNlcl9pZCI6MX0.nitICMa3leS-CFJHR2UnnW-Tr3NGdsUiyrgLL-8CoQQ',
-			},
+Future<Events> fetchEvents() async {
+	Requests.password = 'sergey104781';
+	Requests.username = 'serg';
+	var r = Requests();
+
+	final response = await r.get(
+			'$server_url$all_events_url'
 	);
 
-
-	// final response = await http.post(
-	// 	Uri.parse('http://127.0.0.1:8000/api/token/'),
-	// 	body: json.encode({"username": "serg",
-	// 		"password": "sergey104781"}),
-	// 	headers: {'accept': 'application/json',
-	// 		'Content-Type': 'application/json',
-	// 	},
-	// );
-
-	if (response.statusCode == 200) {
-		// If the server did return a 200 OK response,
-		// then parse the JSON.
-		return Event.fromJson(jsonDecode(response.body));
+	if (response['status_code'] == 200) {
+		return Events.fromJson(response['result']);
 	} else {
-		// If the server did not return a 200 OK response,
-		// then throw an exception.
 		throw Exception('Failed to load Event');
 	}
 }
@@ -42,19 +28,79 @@ Future<Event> fetchEvent() async {
 class Event {
 	final int userId;
 	final int id;
-	final String title;
+	final String name;
+	final bool enabled;
+	final String description;
+	final String reg_date;
+	final String start_time;
+	final String end_time;
+	final String image;
+	final int city;
+	final String location;
+	final int employment;
+	final int owner;
+	final int required_members;
 
 	const Event({
 		required this.userId,
 		required this.id,
-		required this.title,
+		required this.name,
+		required this.enabled,
+		required this.description,
+		required this.reg_date,
+		required this.start_time,
+		required this.end_time,
+		required this.image,
+		required this.city,
+		required this.location,
+		required this.employment,
+		required this.owner,
+		required this.required_members,
 	});
 
 	factory Event.fromJson(Map<String, dynamic> json) {
 		return Event(
 			userId: json['owner'],
 			id: json['id'],
-			title: json['name'],
+			name: json['name'],
+			enabled: json['enabled'],
+			description: json['description'],
+			reg_date: json['reg_date'],
+			start_time: json['start_time'],
+			end_time: json['end_time'],
+			image: json['image'],
+			city: json['city'],
+			location: json['location'],
+			employment: json['employment'],
+			owner: json['owner'],
+			required_members: json['required_members'],
+		);
+	}
+}
+
+class Events {
+	final int count;
+	final String? next;
+	final String? previous;
+	final List<Event> list;
+
+	const Events({
+		required this.count,
+		required this.list,
+		required this.next,
+		required this.previous,
+	});
+
+	factory Events.fromJson(Map<String, dynamic> json) {
+		var results = <Event>[];
+		for (var event in json['results']) {
+			results.add(Event.fromJson(event)) ;
+		}
+		return Events(
+			count: json['count'],
+			list: results,
+			previous: json['previous'],
+			next: json['next'],
 		);
 	}
 }
@@ -69,12 +115,12 @@ class ExampleScreen extends StatefulWidget {
 }
 
 class _ExampleScreenState extends State<ExampleScreen> {
-	late Future<Event> futureEvent;
+	late Future<Events> futureEvents;
 
 	@override
 	void initState() {
 		super.initState();
-		futureEvent = fetchEvent();
+		futureEvents = fetchEvents();
 	}
 
 	@override
@@ -89,11 +135,111 @@ class _ExampleScreenState extends State<ExampleScreen> {
 					title: const Text('Fetch Data Example'),
 				),
 				body: Center(
-					child: FutureBuilder<Event>(
-						future: futureEvent,
+					child: FutureBuilder<Events>(
+						future: futureEvents,
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								return Text(snapshot.data!.title);
+								// return Text(snapshot.data!.count.toString());
+								return ListView.builder(
+									itemCount: snapshot.data!.count,
+									// prototypeItem: ListTile(
+									// 	title: Text(snapshot.data!.list.first.name),
+									// ),
+									itemBuilder: (context, index) {
+										var event = snapshot.data!.list[index];
+										print(event.image);
+										String employment_string = '';
+										if (event.employment == 0)
+											employment_string = 'Постійна зайнятість';
+										else if (event.employment == 1)
+											employment_string = '${event.start_time}-${event.end_time}';
+										else if (event.employment == 2)
+											employment_string = event.start_time;
+										var card = Container(
+											margin: const EdgeInsets.all(10),
+											child: Card(
+												shape: RoundedRectangleBorder(
+													borderRadius: BorderRadius.circular(20.0),
+												),
+												child: ClipRRect(
+													borderRadius: BorderRadius.circular(20.0),
+
+													child: ConstrainedBox(
+														constraints: const BoxConstraints(
+															minWidth: 70,
+															minHeight: 80,
+															maxWidth: double.infinity,
+															maxHeight: 330,
+														),
+														child: Column(
+																mainAxisSize: MainAxisSize.min,
+																children: [
+																	Flexible(
+																		flex: 1,
+																		child: Image.network(
+																			event.image,
+																			fit: BoxFit.fitWidth,
+																		),
+																		// Image.asset(
+																		// 	'images/Best-TED-Talks-From-The-Curator-Himself-.jpg',
+																		// 	fit: BoxFit.fitWidth,
+																		// ),
+																	),
+																	Flexible(
+																		flex: 1,
+
+																		child: Column(
+																			children: [
+																				Container(
+																					margin: const EdgeInsets.fromLTRB(20, 20, 10, 0),
+																					child: Text(event.name, style: optionStyle,),
+																				),
+																				const Spacer(),
+																				Container(
+																					margin: const EdgeInsets.fromLTRB(20, 0, 8, 12),
+																					child: Row(
+																						children: [
+																							Icon(Icons.access_time),
+																							Padding(
+																								padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+																								child: Text(
+																									employment_string,
+																									style: timerStyle,),
+																							),
+																						],
+																					),
+																				),
+																				// Spacer(),
+																				Container(
+																					margin: const EdgeInsets.fromLTRB(20, 0, 8, 26),
+																					child: Row(
+																						children: [
+																							Icon(Icons.location_on),
+																							Padding(
+																								padding: const EdgeInsets.symmetric(horizontal: 8.0),
+																								child: Text(event.location, style: timerStyle,),
+																							),
+																						],
+																					),
+																				),
+																			],
+																		),
+																	),
+																]),
+													),
+												),
+											),
+										);
+
+
+
+
+										return card;
+										// return ListTile(
+										// 	title: Text(snapshot.data!.list[index].name),
+										// );
+									},
+								);
 							} else if (snapshot.hasError) {
 								return Text('${snapshot.error}');
 							}

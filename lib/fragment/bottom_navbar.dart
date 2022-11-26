@@ -45,6 +45,9 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 			if (index==3) {
 					context.go('/account');
 			}
+			if (index==2) {
+				context.go('/example');
+			}
 		});
 	}
 
