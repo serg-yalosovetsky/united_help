@@ -17,6 +17,7 @@ Future<void> main() async {
   await SentryFlutter.init(
         (options) {
       options.dsn = 'http://7ec014d5153a4ffb9f41355c01378289@sentry.fyuzd.live/8';
+      options.tracesSampleRate = 1.0;
     },
     appRunner: () => runApp(UnitedHelp()),
   );

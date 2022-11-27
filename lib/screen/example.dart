@@ -16,7 +16,7 @@ Future<Events> fetchEvents() async {
 	var r = Requests();
 
 	final response = await r.get(
-			'$server_url$all_events_url'
+			'$server_url$all_events_url/'
 	);
 
 	if (response['status_code'] == 200) {
