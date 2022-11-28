@@ -16,6 +16,7 @@ import 'package:united_help/screen/welcome_role.dart';
 
 import '../fragment/bottom_navbar.dart';
 import '../fragment/card_list.dart';
+import '../fragment/events_list.dart';
 import '../fragment/map.dart';
 import 'card_screen.dart';
 
@@ -102,22 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Map<bool, List<Widget>> home_body = {
       true: [
-        const Spacer(),
-        GestureDetector(
-          child: const card_list(),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const EventScreen(event_id: 1,),
-              ),
-            );
-          },
-        ),
-        const Spacer(),
-        const card_list(),
-        const Spacer(),
-        const card_list(),
-        const Spacer(),
+        EventListScreen(event_query: '',),
       ],
       false: [
         Container(

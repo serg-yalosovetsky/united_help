@@ -26,15 +26,15 @@ Future<Events> fetchEvents(String event_query) async {
 	}
 }
 
-class EventListScreeScreen extends StatefulWidget {
+class EventListScreen extends StatefulWidget {
 	final String event_query;
-	const EventListScreeScreen({super.key, required this.event_query});
+	const EventListScreen({super.key, required this.event_query});
 
 	@override
-	State<EventListScreeScreen> createState() => _EventListScreenState();
+	State<EventListScreen> createState() => _EventListScreenState();
 }
 
-class _EventListScreenState extends State<EventListScreeScreen> {
+class _EventListScreenState extends State<EventListScreen> {
 	late Future<Events> futureEvents;
 
 	@override
