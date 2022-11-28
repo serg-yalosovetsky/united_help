@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/authenticate.dart';
 
@@ -134,7 +131,7 @@ Widget card_builder(event) {
 												margin: const EdgeInsets.fromLTRB(20, 0, 8, 12),
 												child: Row(
 													children: [
-														Icon(Icons.access_time),
+														const Icon(Icons.access_time),
 														Padding(
 															padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
 															child: Text(
@@ -148,7 +145,7 @@ Widget card_builder(event) {
 												margin: const EdgeInsets.fromLTRB(20, 0, 8, 26),
 												child: Row(
 													children: [
-														Icon(Icons.location_on),
+														const Icon(Icons.location_on),
 														Padding(
 															padding: const EdgeInsets.symmetric(horizontal: 8.0),
 															child: Text(event.location, style: timerStyle,),
