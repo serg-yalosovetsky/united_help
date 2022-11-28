@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../constants.dart';
 import '../screen/account_screen.dart';
-import '../screen/example.dart';
+import '../fragment/events_list.dart';
 import '../screen/home.dart';
 import '../screen/map.dart';
 import '../services/login_state.dart';
@@ -24,7 +24,7 @@ final GoRouter go_router = GoRouter(
     ),
     GoRoute(
       path: "/example",
-      builder: (context, state) => ExampleScreen(),
+      builder: (context, state) => EventListScreeScreen(event_query: '',),
     ),
   ],
 );

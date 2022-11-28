@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:united_help/fragment/skill_card.dart';
 import '../fragment/bottom_navbar.dart';
+import '../models/events.dart';
 
 class card_detail extends StatelessWidget {
   const card_detail({
       Key? key,
-    required this.title,
-    required this.image,
-    required this.time,
-    required this.location,
-    required this.description,
-    required this.skills,
+    required this.event,
   }) : super(key: key);
-  final String title;
-  final String image;
-  final String time;
-  final String location;
-  final String description;
-  final List skills;
+  final Event event;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -93,7 +84,7 @@ class card_detail extends StatelessWidget {
                         maxHeight: 450,
                       ),
                       child: Image.asset(
-                        image,
+                        event.image,
                         fit: BoxFit.fitWidth,
                       ),
                     ),
@@ -105,10 +96,10 @@ class card_detail extends StatelessWidget {
 					mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      build_bold_left_text(title),
-                      build_location(time, Icons.access_time),
-                      build_location(location, Icons.location_on),
-                      build_description(description),
+                      build_bold_left_text(event.name),
+                      build_location('${event.start_time}-${event.end_time}', Icons.access_time),
+                      build_location(event.location, Icons.location_on),
+                      build_description(event.description),
                       Container(
                         margin: const EdgeInsets.fromLTRB(20, 0, 0, 30),
                         child: Padding(
@@ -126,7 +117,7 @@ class card_detail extends StatelessWidget {
                         // height: 500,
                         // width: 500,
                         margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                        child: return_skills_card(skills),
+                        child: return_skills_card(event.skills),
                       ),
                     ],
                   ),
