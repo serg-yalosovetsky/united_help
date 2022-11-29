@@ -7,8 +7,6 @@ import '../services/urls.dart';
 
 
 Future<Event> fetchEvent(int event_id) async {
-	Requests.password = 'sergey104781';
-	Requests.username = 'serg';
 	var r = Requests();
 	String url = '$server_url$all_events_url/$event_id';
 

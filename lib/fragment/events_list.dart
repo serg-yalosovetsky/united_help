@@ -11,8 +11,6 @@ import '../services/urls.dart';
 
 
 Future<Events> fetchEvents(String event_query) async {
-	Requests.password = 'sergey104781';
-	Requests.username = 'serg';
 	var r = Requests();
 	String url = '$server_url$all_events_url/';
 	url += event_query;

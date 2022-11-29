@@ -158,7 +158,6 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 											text: 'Надіслати Email',
 											padding: const [72, 24, 72, 0],
 											fun: button_states.every((element) => element) ? () async {
-												Requests.username = email_controller.text;
 												var r = Requests();
 												print(email_controller.text);
 												var result = await r.post(
