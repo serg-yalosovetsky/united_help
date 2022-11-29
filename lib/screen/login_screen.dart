@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../services/appservice.dart';
 import '../services/authenticate.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,6 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
 	final email_controller = TextEditingController();
 	final password_controller = TextEditingController();
 	late bool _password_visible;
+	late AppService _appService;
+	bool is_wrong_password = false;
 
 	@override
 	void dispose() {
@@ -34,6 +38,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
 	void initState() {
 		_password_visible = false;
+		_appService = Provider.of<AppService>(context, listen: false);
+	}
+
+	on_submit ([var args]) async {
+		// Requests.password = password_controller.text;
+		// Requests.username = email_controller.text;
+		var r = Requests();
+		print(email_controller.text);
+		print(password_controller.text);
+		_appService.set_username(email_controller.text);
+		_appService.set_password(password_controller.text);
+		bool result = await _appService.login();
+		if (result){
+			setState(() {
+				is_wrong_password = true;
+			});
+		}
+		print('result = $result');
+		// _form_key_password.currentState.
 	}
 
 	@override
@@ -101,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
 							controller: password_controller,
 							obscureText: !_password_visible,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
+							onSaved: on_submit,
 							validator: (value) {
 								if (value == null || value.isEmpty) {
 									return 'Пароль не може бути пустим';
@@ -131,11 +155,9 @@ class _LoginScreenState extends State<LoginScreen> {
 										});
 									},
 									icon: Icon(
-										// Based on passwordVisible state choose the icon
 										_password_visible
 												? Icons.visibility
 												: Icons.visibility_off,
-										// color: Theme.of(context).primaryColorDark,
 									),
 								),
 							),
@@ -209,22 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
 											text_style: SFProTextSemibold18,
 											text: 'Увійти в акаунт',
 											padding: const [72, 24, 72, 0],
-											fun: button_states.every((element) => element) ? () async {
-												Requests.password = password_controller.text;
-												Requests.username = email_controller.text;
-												var r = Requests();
-												print(email_controller.text);
-												print(password_controller.text);
-												var result = await r.post(
-														'$server_url$authenticate_url',
-														{
-															'username': email_controller.text,
-															'password': password_controller.text,
-														}
-												);
-												print(result['result']);
-												print(result['status_code']);
-											} : null,
+											fun: button_states.every((element) => element) ? on_submit : null,
 										),
 										TextButton(
 											style: TextButton.styleFrom(
@@ -234,7 +241,11 @@ class _LoginScreenState extends State<LoginScreen> {
 											),
 											onPressed: () {},
 											child: const Text('Забули пароль?'),
-										)
+										),
+										is_wrong_password ? Text(
+											'Неверный пароль',
+											style: TextStyle(color: Colors.red),
+										) : Container(),
 		  	  		  	],
 		  	  		  ),
 		  	  		),

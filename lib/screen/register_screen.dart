@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../services/appservice.dart';
 import '../services/authenticate.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -26,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 	final email_controller = TextEditingController();
 	final password_controller = TextEditingController();
 	late bool _password_visible;
-
+	late AppService _appService;
 	@override
 	void dispose() {
 		// Clean up the controller when the widget is disposed.
@@ -38,6 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 	void initState() {
 		_password_visible = false;
+		_appService = Provider.of<AppService>(context, listen: false);
 	}
 
 	@override
@@ -254,13 +257,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 											text: 'Зареєструватись',
 											padding: const [72, 47, 72, 0],
 											fun: button_states.every((element) => element) ? () async {
-												Requests.password = 'sergey104781';
-												Requests.username = 'serg';
 												var r = Requests();
 												print(name_controller.text);
 												print(email_controller.text);
 												print(password_controller.text);
-												await r.post(
+												var result = await r.post(
 														'$server_url$register_url',
 														{
 															'username': name_controller.text,
@@ -268,6 +269,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 															'password': password_controller.text,
 														}
 												);
+												if (result['status_code'] == 200){
+													_appService.set_username(email_controller.text);
+													_appService.set_password(password_controller.text);
+													bool result = await _appService.login();
+												}
 												// post_request();
 											} : null,
 										),

@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -18,23 +19,30 @@ import 'package:united_help/services/appservice.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final SharedPreferences shared_preferences = await SharedPreferences.getInstance();
+  // final SharedPreferences shared_preferences = await SharedPreferences.getInstance();
+  final FlutterSecureStorage secure_storage = FlutterSecureStorage();
+
   await SentryFlutter.init(
         (options) {
       options.dsn = 'http://7ec014d5153a4ffb9f41355c01378289@sentry.fyuzd.live/8';
       options.tracesSampleRate = 1.0;
     },
-    appRunner: () => runApp(UnitedHelp(shared_preferences: shared_preferences,)),
+    appRunner: () => runApp(UnitedHelp(
+      // shared_preferences: shared_preferences,
+      secure_storage: secure_storage,
+    )),
   );
 
 }
 
 
 class UnitedHelp extends StatefulWidget {
-  final SharedPreferences shared_preferences;
+  // final SharedPreferences shared_preferences;
+  final FlutterSecureStorage secure_storage;
   const UnitedHelp({
     Key? super.key,
-    required this.shared_preferences,
+    // required this.shared_preferences,
+    required this.secure_storage,
   });
 
   static const String _title = 'Flutter Code Sample';
@@ -48,7 +56,7 @@ class _UnitedHelpState extends State<UnitedHelp> {
 
   @override
   void initState() {
-    app_service = AppService(widget.shared_preferences);
+    app_service = AppService(widget.secure_storage);
     super.initState();
   }
 
