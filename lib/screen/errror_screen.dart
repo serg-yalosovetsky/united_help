@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:united_help/fragment/welcome_button.dart';
 
-class ErrorPage extends StatefulWidget {
+class ErrorPages extends StatefulWidget {
   final String? error_message;
-  const ErrorPage({this.error_message});
+  const ErrorPages({this.error_message});
 
   @override
   _ErrorPageState createState() => _ErrorPageState();
 }
 
-class _ErrorPageState extends State<ErrorPage>{
+class _ErrorPageState extends State<ErrorPages>{
 
   @override
   void dispose() {
