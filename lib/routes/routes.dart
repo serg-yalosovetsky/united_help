@@ -125,7 +125,7 @@ class AppRouter {
       ),
     ],
     errorBuilder: (context, state) => ErrorPage(error_message: state.error.toString()),
-    redirect: (context, state) {
+    redirect: (state) {
       final login_location = APP_PAGE.login.to_path;
       final home_location = APP_PAGE.home.to_path;
       final splash_location = APP_PAGE.splash.to_path;
