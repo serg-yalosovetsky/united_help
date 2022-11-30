@@ -20,6 +20,8 @@ class AppService with ChangeNotifier {
   bool _loginState = false;
   bool _initialized = false;
   bool _onboarding = false;
+  bool is_try_login = false;
+  bool is_try_register = false;
 
   String init_key = 'init_key';
   String access_key = 'access_token';
@@ -98,6 +100,10 @@ class AppService with ChangeNotifier {
 
   set initialized(bool value) {
     _initialized = value;
+    notifyListeners();
+  }
+  set onboarding(bool value) {
+    _onboarding = value;
     notifyListeners();
   }
 

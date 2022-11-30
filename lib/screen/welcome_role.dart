@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:united_help/fragment/skill_card.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../fragment/welcome_button.dart';
+import '../services/appservice.dart';
 
 class WelcomeRoleScreen extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
+		final app_service = Provider.of<AppService>(context);
 		var SFProTextSemibold18 = TextStyle(
 			color: ColorConstant.whiteA700,
 			fontSize: 18,
@@ -80,16 +83,28 @@ class WelcomeRoleScreen extends StatelessWidget {
 								text: 'Потребую допомогу',
 								padding: const [72, 44, 72, 0],
 								active: true,
+								fun: () {
+									app_service.role = 'refugee';
+									app_service.onboarding = true;
+								},
 							),
 							  welcome_button(
 								  text: 'Волонтер',
 								  padding: const [72, 14, 72, 0],
 								  active: false,
+									fun: () {
+										app_service.role = 'volunteer';
+										app_service.onboarding = true;
+									},
 							  ),
 							  welcome_button(
 								  text: 'Організатор',
 								  padding: const [72, 14, 72, 5],
 								  active: false,
+									fun: () {
+										app_service.role = 'organizer';
+										app_service.onboarding = true;
+									},
 							  ),
 
 

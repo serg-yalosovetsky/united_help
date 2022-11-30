@@ -6,11 +6,13 @@ class welcome_button extends StatelessWidget {
 		required this.text,
 		required this.padding,
 		required this.active,
+		required this.fun,
 	}) : super(key: key);
 
 	final String text;
 	final List<double> padding;
 	final bool active;
+	final Function fun;
 
 
 	@override
@@ -44,7 +46,7 @@ class welcome_button extends StatelessWidget {
 							borderRadius: BorderRadius.circular(22.0),
 						),
 					),
-					onPressed: () {},
+					onPressed: () {fun();},
 					child: Text(
 						text,
 						style: text_style,

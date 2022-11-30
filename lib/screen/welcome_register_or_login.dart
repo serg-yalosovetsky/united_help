@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
 import '../fragment/welcome_button.dart';
+import '../services/appservice.dart';
 
 class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
+		final app_service = Provider.of<AppService>(context);
 
 		return MaterialApp(
 		  home: Scaffold(
@@ -64,12 +68,22 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 								text: 'Зареєструватись',
 								padding: const [72, 44, 72, 0],
 								active: true,
+								fun: () {
+									app_service.is_try_register = true;
+									context.go('/register');
+									},
+
 							),
 							  welcome_button(
 								  text: 'Увійти в акаунт',
 								  padding: const [72, 14, 72, 28],
 								  active: false,
-							  ),
+									fun: () {
+										app_service.is_try_login = true;
+										context.go('/login');
+										},
+
+								),
 							Row(
 							  children: const [
 								  Expanded(

@@ -34,6 +34,8 @@ class _ErrorPageState extends State<ErrorPage>{
                 text: 'Перезавантажити',
                 padding: [84, 16, 84, 0],
                 active: true,
+                fun: () {},
+
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:united_help/screen/login_screen.dart';
 import 'package:united_help/screen/register.dart';
 import 'package:united_help/screen/splash_screen.dart';
+import 'package:united_help/screen/welcome_register_or_login.dart';
 import 'package:united_help/screen/welcome_role.dart';
 
 import '../constants.dart';
@@ -19,6 +20,7 @@ enum APP_PAGE {
   welcome,
   register,
   splash,
+  register_login,
   login,
   home,
   error,
@@ -34,6 +36,8 @@ extension AppPageExtension on APP_PAGE {
         return "/account";
       case APP_PAGE.login:
         return "/login";
+      case APP_PAGE.register_login:
+        return "/register_login";
       case APP_PAGE.splash:
         return "/splash";
       case APP_PAGE.welcome:
@@ -50,6 +54,8 @@ extension AppPageExtension on APP_PAGE {
     switch (this) {
       case APP_PAGE.home:
         return "HOME";
+      case APP_PAGE.register_login:
+        return "REGISTER_LOGIN";
       case APP_PAGE.login:
         return "LOGIN";
       case APP_PAGE.register:
@@ -91,6 +97,11 @@ class AppRouter {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
+        path: APP_PAGE.register_login.to_path,
+        name: APP_PAGE.register_login.to_name,
+        builder: (context, state) => WelcomeRegisterOrLoginScreen(),
+      ),
+      GoRoute(
         path: APP_PAGE.welcome.to_path,
         name: APP_PAGE.welcome.to_name,
         builder: (context, state) => WelcomeRoleScreen(),
@@ -127,6 +138,7 @@ class AppRouter {
     errorBuilder: (context, state) => ErrorPage(error_message: state.error.toString()),
     redirect: (state) {
       final login_location = APP_PAGE.login.to_path;
+      final register_login_location = APP_PAGE.register_login.to_path;
       final home_location = APP_PAGE.home.to_path;
       final splash_location = APP_PAGE.splash.to_path;
       final welcome_location = APP_PAGE.welcome.to_path;
@@ -136,6 +148,7 @@ class AppRouter {
       final is_onboarded = app_service.onboarding;
 
       final is_going_to_login = state.subloc == login_location;
+      final is_going_to_register_login = state.subloc == register_login_location;
       final is_going_to_init = state.subloc == splash_location;
       final is_going_to_onboard = state.subloc == welcome_location;
       print('state.subloc == splash_location ${state.subloc == splash_location}');
@@ -148,11 +161,12 @@ class AppRouter {
       if (!is_init && !is_going_to_init) {
         return splash_location;
         // If not onboard and not going to onboard redirect to OnBoarding
-      } else  if (is_init && !is_onboarded ) {  //&& !is_going_to_onboard
+      } else  if (is_init && !is_onboarded && !is_going_to_onboard ) {
         return APP_PAGE.welcome.to_path;
         // If not logedin and not going to login redirect to Login
-      } else if (is_init && is_onboarded && !is_login && !is_going_to_login) {
-        return login_location;
+      } else if (is_init && is_onboarded && !is_login && !app_service.is_try_login
+                && !is_going_to_register_login && !app_service.is_try_register) {
+        return register_login_location;
         // If all the scenarios are cleared but still going to any of that screen redirect to Home
       } else if (
              (is_login && is_going_to_login) || (app_service.initialized && is_going_to_init) ||

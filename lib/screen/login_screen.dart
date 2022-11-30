@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../fragment/build_app_bar.dart';
+import '../routes/routes.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
 
@@ -38,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 	void initState() {
 		_password_visible = false;
-		_appService = Provider.of<AppService>(context, listen: true);
+		_appService = Provider.of<AppService>(context, listen: false);
 	}
 
 	on_submit ([var args]) async {
@@ -61,6 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		final app_service = Provider.of<AppService>(context);
+
 		var SFProTextSemibold18 = TextStyle(
 			color: ColorConstant.whiteA700,
 			fontSize: 18,
@@ -68,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
 			fontFamily: 'SF Pro Text',
 			fontWeight: FontWeight.w600,
 		);
-		const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
 		Widget form_email = Form(
 			key: _form_key_email,
 			child: Column(
@@ -172,36 +176,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
 		return MaterialApp(
 		  home: Scaffold(
-				appBar: AppBar(
-					title: Row(
-					  children: [
-							Icon(Icons.arrow_back_ios),
-							const Text(
-								'Назад',
-								style: back_style,
-							),
-							Expanded(
-							  child: Padding(
-							  	padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-							  	child: const Text(
-							  		'Вхід',
-										style: TextStyle(color: Colors.black),
-										textAlign: TextAlign.center,
-							  	),
-							  ),
-							),
-
-							Icon(Icons.arrow_back_ios, color: Colors.white),
-							const Text(
-								'Назад',
-								style: TextStyle(color: Colors.white),
-							),
-
-					  ],
-					),
-					backgroundColor: Colors.white,
-					foregroundColor: Colors.blue,
-				),
+				appBar: buildAppBar(() {
+					app_service.is_try_login = false;
+					context.go(APP_PAGE.register_login.to_path);
+				}, 'Вхід'),
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(
 		  	  child: Container(
