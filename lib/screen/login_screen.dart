@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 	void initState() {
 		_password_visible = false;
-		_appService = Provider.of<AppService>(context, listen: false);
+		_appService = Provider.of<AppService>(context, listen: true);
 	}
 
 	on_submit ([var args]) async {

@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import '../routes/routes.dart';
 import '../services/appservice.dart';
 
-class SplashPage extends StatefulWidget {
-  const SplashPage({ Key? key }) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({ Key? key }) : super(key: key);
 
   @override
-  _SplashPageState createState() => _SplashPageState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashScreenState extends State<SplashScreen> {
   late AppService _app_service;
 
   @override
@@ -23,16 +23,27 @@ class _SplashPageState extends State<SplashPage> {
 
   void onStartUp() async {
     await _app_service.onAppStart();
+    print('_app_service.initialized ${_app_service.initialized}');
+    print('_app_service.onboard ${_app_service.onboarding}');
+    print(!_app_service.initialized);
+    print('${_app_service.initialized && !_app_service.onboarding}');
+    _app_service.initialized = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(APP_PAGE.splash.to_name),
-      ),
-      body: const Center(
-        child: CircularProgressIndicator(),
+
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('images/img_15.png', width: 108, height: 67,),
+            Text('UnitedHelp',
+            style: TextStyle(fontSize: 22, ),),
+          ],
+        ),
       ),
     );
   }

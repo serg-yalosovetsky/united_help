@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,8 +16,12 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     final SharedPreferences shared_preferences = await SharedPreferences.getInstance();
-
-    await tester.pumpWidget(UnitedHelp(shared_preferences: shared_preferences));
+    final FlutterSecureStorage secure_storage = FlutterSecureStorage();
+    await tester.pumpWidget(
+        UnitedHelp(
+          shared_preferences: shared_preferences,
+          secure_storage: secure_storage,)
+    );
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 	void initState() {
 		_password_visible = false;
-		_appService = Provider.of<AppService>(context, listen: false);
+		_appService = Provider.of<AppService>(context, listen: true);
 	}
 
 	@override

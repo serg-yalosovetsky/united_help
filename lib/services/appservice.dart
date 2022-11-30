@@ -14,27 +14,27 @@ enum Roles  {
 }
 
 class AppService with ChangeNotifier {
-  late final SharedPreferences sharedPreferences;
+  late final SharedPreferences shared_preferences;
   late final FlutterSecureStorage secure_storage;
-  final StreamController<bool> _loginStateChange = StreamController<bool>.broadcast();
   bool _roleState = false;
   bool _loginState = false;
   bool _initialized = false;
   bool _onboarding = false;
+
+  String init_key = 'init_key';
   String access_key = 'access_token';
   String refresh_key = 'refresh_token';
   String password_key = 'password';
   String username_key = 'username';
   String profile_key = 'profile';
 
-  AppService(this.secure_storage);
+  AppService(this.secure_storage, this.shared_preferences);
 
   Future<String?> get access_token async => await secure_storage.read(key: access_key);
   bool get roleState => _roleState;
   bool get loginState => _loginState;
   bool get initialized => _initialized;
   bool get onboarding => _onboarding;
-  Stream<bool> get loginStateChange => _loginStateChange.stream;
 
 
   Future<bool> login() async {
@@ -68,6 +68,7 @@ class AppService with ChangeNotifier {
 
     if (result['success']){
       await secure_storage.write(key: access_key, value: result[access_key]);
+      _loginState = true;
       notifyListeners();
       return true;
     }
@@ -91,7 +92,7 @@ class AppService with ChangeNotifier {
   set loginState(bool state) {
     // sharedPreferences.setBool(LOGIN_KEY, state);
     _loginState = state;
-    _loginStateChange.add(state);
+    // _loginStateChange.add(state);
     notifyListeners();
   }
 
@@ -100,10 +101,10 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
-  String get role => sharedPreferences.getString(profile_key) ?? '';
+  String get role => shared_preferences.getString(profile_key) ?? '';
   set role(String value) {
     if (Roles.values.contains(role)){
-      sharedPreferences.setString(profile_key, value);
+      shared_preferences.setString(profile_key, value);
       // _role = value;
       _roleState = true;
       notifyListeners();
@@ -111,12 +112,16 @@ class AppService with ChangeNotifier {
   }
 
   Future<void> onAppStart() async {
-    if (!role.isEmpty){
-      _roleState = true;
-    }
-    if (await relogin()) _loginState = true;
-
+    _onboarding = shared_preferences.getBool(init_key) ?? false;
+    _loginState = shared_preferences.getBool(access_key) ?? false;
+    // if (!role.isEmpty){
+    //   _roleState = true;
+    // }
+    // if (await relogin()) _loginState = true;
+    await Future.delayed(const Duration(microseconds: 2));
     _initialized = true;
     notifyListeners();
+    print('initialized');
+
   }
 }

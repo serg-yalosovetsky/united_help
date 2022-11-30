@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:united_help/fragment/welcome_button.dart';
 
 class ErrorPage extends StatefulWidget {
   final String? error_message;
@@ -8,72 +9,34 @@ class ErrorPage extends StatefulWidget {
   _ErrorPageState createState() => _ErrorPageState();
 }
 
-class _ErrorPageState extends State<ErrorPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  final RelativeRectTween _relativeRectTween = RelativeRectTween(
-    begin: RelativeRect.fromLTRB(24, 24, 24, 200),
-    end: RelativeRect.fromLTRB(24, 24, 24, 250),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    _controller =
-    AnimationController(vsync: this, duration: const Duration(seconds: 3))
-      ..repeat(reverse: true);
-  }
+class _ErrorPageState extends State<ErrorPage>{
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: const Color(0xffd8f3dc),
-      body: Stack(
-        children: [
-          PositionedTransition(
-            rect: _relativeRectTween.animate(_controller),
-            child: Container(
-              child: Image.asset('images/brain.png'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('images/img_14.png', width: 150,),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 33),
+              child: Text(widget.error_message ??
+                  '''Упс..Сталась помилка. Перезавантажте, будь ласка''',
+              style: TextStyle(fontSize: 21, color: Color(0xff547FA6)),),
             ),
-          ),
-          Positioned(
-            top: 150,
-            bottom: 0,
-            left: 24,
-            right: 24,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children:  [
-                const Text(
-                  '404',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 50,
-                      letterSpacing: 2,
-                      color: const Color(0xff2f3640),
-                      fontFamily: 'Anton',
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  widget.error_message ?? 'Sorry, we couldn\'t find the page!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: const Color(0xff2f3640),
-                  ),
-                ),
-              ],
+            welcome_button(
+                text: 'Перезавантажити',
+                padding: [84, 16, 84, 0],
+                active: true,
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
