@@ -6,6 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../screen/home.dart';
+
 enum Roles  {
   admin,
   volunteer,
@@ -42,7 +44,7 @@ class AppService with ChangeNotifier {
   bool get loginState => _loginState;
   bool get initialized => _initialized;
   bool get onboarding => _onboarding;
-
+  ListOrMap _list_or_map = ListOrMap.list;
 
   Future<bool> login() async {
     var r = Requests();
@@ -113,6 +115,12 @@ class AppService with ChangeNotifier {
     _initialized = value;
     notifyListeners();
   }
+  set list_or_map(ListOrMap value) {
+    _list_or_map = value;
+    notifyListeners();
+  }
+  ListOrMap get list_or_map => _list_or_map;
+
   set onboarding(bool value) {
     _onboarding = value;
     notifyListeners();

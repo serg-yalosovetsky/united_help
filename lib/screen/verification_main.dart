@@ -143,8 +143,8 @@ class VerificationScreen extends StatelessWidget {
 								padding: const [72, 14, 72, 28],
 								active: false,
 								fun: () {
-									// app_service.is_try_login = true;
-									// context.go('/login');
+									app_service.is_verificated = true;
+									context.go('/home');
 								},
 
 							),

@@ -74,7 +74,7 @@ extension AppPageExtension on APP_PAGE {
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
         return "LOGIN";
-      case APP_PAGE.login:
+      case APP_PAGE.verification:
         return "VERIFICATION";
       case APP_PAGE.password_recovery:
         return 'PASSWORD_RECOVERY';
@@ -181,6 +181,9 @@ class AppRouter {
     ],
     errorBuilder: (context, state) => ErrorPage(error_message: state.error.toString()),
     redirect: (state) {
+
+      bool is_test = true;
+
       final login_location = APP_PAGE.login.to_path;
       final register_login_location = APP_PAGE.register_login.to_path;
       final home_location = APP_PAGE.home.to_path;
@@ -200,33 +203,38 @@ class AppRouter {
       final is_going_to_init = state.subloc == splash_location;
       final is_going_to_onboard = state.subloc == welcome_location;
       final is_going_to_verfication = state.subloc == verification_location;
+      final is_going_to_home = state.subloc == home_location;
 
-      // If not Initialized and not going to Initialized redirect to Splash
-      if (!is_init && !is_going_to_init) {
-          return splash_location;
-        // If not onboard and not going to onboard redirect to OnBoarding
-      } else  if (is_init && !is_onboarded && !is_going_to_onboard ) {
-          return welcome_location;
-        // If not logedin and not going to login redirect to Login
-      } else if (is_init && is_onboarded && !is_login && !is_try_login
-                && !is_going_to_register_login && !is_try_register) {
-          return register_login_location;
-
-      } else if (is_init && is_onboarded && is_login
-                && !is_going_to_verfication && !is_verificated) {
-          return verification_location;
-
-
-        // If all the scenarios are cleared but still going to any of that screen redirect to Home
-      } else if (
-             (is_login && is_going_to_login) || (is_init && is_going_to_init) ||
-             (is_onboarded && is_going_to_onboard)
-                ) {
-        return home_location;
-      } else {
-        // Else Don't do anything
+      //
+      // if (is_test && !is_going_to_home) return home_location;
+      //
+      //
+      // // If not Initialized and not going to Initialized redirect to Splash
+      // if (!is_init && !is_going_to_init) {
+      //     return splash_location;
+      //   // If not onboard and not going to onboard redirect to OnBoarding
+      // } else  if (is_init && !is_onboarded && !is_going_to_onboard ) {
+      //     return welcome_location;
+      //   // If not logedin and not going to login redirect to Login
+      // } else if (is_init && is_onboarded && !is_login && !is_try_login
+      //           && !is_going_to_register_login && !is_try_register) {
+      //     return register_login_location;
+      //
+      // } else if (is_init && is_onboarded && is_login
+      //           && !is_going_to_verfication && !is_verificated) {
+      //     return verification_location;
+      //
+      //
+      //   // If all the scenarios are cleared but still going to any of that screen redirect to Home
+      // } else if (is_login && is_init && is_onboarded && is_verificated
+      //        // (is_login && is_going_to_login) || (is_init && is_going_to_init) ||
+      //        // (is_onboarded && is_going_to_onboard)
+      //           ) {
+      //   return home_location;
+      // } else {
+      //   // Else Don't do anything
         return null;
-      }
+      // }
     },
   );
 
