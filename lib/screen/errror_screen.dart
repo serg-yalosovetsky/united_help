@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:united_help/fragment/welcome_button.dart';
+import 'package:united_help/routes/routes.dart';
 
 class ErrorPage extends StatefulWidget {
   final String? error_message;
@@ -34,7 +36,7 @@ class _ErrorPageState extends State<ErrorPage>{
                 text: 'Перезавантажити',
                 padding: [84, 16, 84, 0],
                 active: true,
-                fun: () {},
+                fun: () {context.go(APP_PAGE.home.to_path);},
 
             ),
           ],

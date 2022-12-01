@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../fragment/build_app_bar.dart';
+import '../routes/routes.dart';
 import '../services/authenticate.dart';
 
 class PasswordRecoveryScreen extends StatefulWidget {
@@ -19,6 +24,16 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 	List<bool> button_states = [false,];
 	final int email_index = 0;
 	final email_controller = TextEditingController();
+	late AppService app_service;
+
+	void initState() {
+		app_service = Provider.of<AppService>(context, listen: false);
+		if (app_service.email.isNotEmpty) {
+			email_controller.text = app_service.email;
+			button_states[0] = true;
+		}
+		app_service.email = '';
+	}
 
 	@override
 	void dispose() {
@@ -83,36 +98,10 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 		
 			return MaterialApp(
 		  home: Scaffold(
-				appBar: AppBar(
-					title: Row(
-					  children: [
-							Icon(Icons.arrow_back_ios),
-							const Text(
-								'Назад',
-								style: back_style,
-							),
-							Expanded(
-							  child: Padding(
-							  	padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-							  	child: const Text(
-							  		'Вхід',
-										style: TextStyle(color: Colors.black),
-										textAlign: TextAlign.center,
-							  	),
-							  ),
-							),
-
-							Icon(Icons.arrow_back_ios, color: Colors.white),
-							const Text(
-								'Назад',
-								style: TextStyle(color: Colors.white),
-							),
-
-					  ],
-					),
-					backgroundColor: Colors.white,
-					foregroundColor: Colors.blue,
-				),
+				appBar: buildAppBar(() {
+					app_service.is_try_login = false;
+					context.go(APP_PAGE.register_login.to_path);
+				}, 'Вхід'),
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(
 		  	  child: Container(

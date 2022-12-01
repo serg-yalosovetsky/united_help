@@ -99,7 +99,9 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-
+    if (!url.endsWith('/')){
+      url += '/';
+    }
     await http.get(
       Uri.parse(url),
       headers: headers,
@@ -137,7 +139,9 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-
+    if (!url.endsWith('/')){
+      url += '/';
+    }
     await http.post(
       Uri.parse(url),
       body: json.encode(body),

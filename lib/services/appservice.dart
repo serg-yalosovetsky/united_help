@@ -22,6 +22,11 @@ class AppService with ChangeNotifier {
   bool _onboarding = false;
   bool is_try_login = false;
   bool is_try_register = false;
+  bool is_register = false;
+  String email = '';
+  String password = '';
+  bool is_register_confirm = false;
+  bool is_verificated = false;
 
   String init_key = 'init_key';
   String access_key = 'access_token';
@@ -86,6 +91,12 @@ class AppService with ChangeNotifier {
     await secure_storage.write(key: username_key, value: str);
     notifyListeners();
   }
+  // Future<String?> get_username() {
+  //   return  secure_storage.read(key: username_key);
+  // }
+  // Future<String?> get_password() async {
+  //   return secure_storage.read(key: password_key);
+  // }
 
   get_access_token() async {
     return await secure_storage.read(key: access_key);

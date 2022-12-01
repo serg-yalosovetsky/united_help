@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../constants/images.dart';
+import '../fragment/build_app_bar.dart';
+import '../routes/routes.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
 
@@ -17,6 +20,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
 	final _form_key_name = GlobalKey<FormState>();
 	final _form_key_email = GlobalKey<FormState>();
 	final _form_key_password = GlobalKey<FormState>();
@@ -28,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 	final email_controller = TextEditingController();
 	final password_controller = TextEditingController();
 	late bool _password_visible;
-	late AppService _appService;
+	late AppService app_service;
 	@override
 	void dispose() {
 		// Clean up the controller when the widget is disposed.
@@ -40,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 	void initState() {
 		_password_visible = false;
-		_appService = Provider.of<AppService>(context, listen: true);
+		app_service = Provider.of<AppService>(context, listen: false);
 	}
 
 	@override
@@ -197,36 +201,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 		return MaterialApp(
 		  home: Scaffold(
-				appBar: AppBar(
-					title: Row(
-					  children: [
-							Icon(Icons.arrow_back_ios),
-							const Text(
-								'Назад',
-								style: back_style,
-							),
-							Expanded(
-							  child: Padding(
-							  	padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-							  	child: const Text(
-							  		'Реєстрація',
-										style: TextStyle(color: Colors.black),
-										textAlign: TextAlign.center,
-							  	),
-							  ),
-							),
-
-							Icon(Icons.arrow_back_ios, color: Colors.white),
-							const Text(
-								'Назад',
-								style: TextStyle(color: Colors.white),
-							),
-
-					  ],
-					),
-					backgroundColor: Colors.white,
-					foregroundColor: Colors.blue,
-				),
+				appBar: buildAppBar(() {
+					app_service.is_try_register = false;
+					context.go(APP_PAGE.register_login.to_path);
+				}, 'Реєстрація'),
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(
 		  	  child: Container(
@@ -269,10 +247,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 															'password': password_controller.text,
 														}
 												);
-												if (result['status_code'] == 200){
-													_appService.set_username(email_controller.text);
-													_appService.set_password(password_controller.text);
-													bool result = await _appService.login();
+												if (result['status_code'] == 201){
+													print('success register');
+													app_service.set_username(email_controller.text);
+													app_service.set_password(password_controller.text);
+													app_service.email = email_controller.text;
+													app_service.password = password_controller.text;
+													// bool result = await app_service.login();
+													app_service.is_register = true;
+													context.go(APP_PAGE.register_confirmation.to_path);
 												}
 												// post_request();
 											} : null,

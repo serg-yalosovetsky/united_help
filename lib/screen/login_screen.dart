@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 	final email_controller = TextEditingController();
 	final password_controller = TextEditingController();
 	late bool _password_visible;
-	late AppService _appService;
+	late AppService app_service;
 	bool is_wrong_password = false;
 
 	@override
@@ -41,7 +41,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
 	void initState() {
 		_password_visible = false;
-		_appService = Provider.of<AppService>(context, listen: false);
+		app_service = Provider.of<AppService>(context, listen: false);
+		if (app_service.is_register) {
+			if (app_service.email.isNotEmpty) {
+				email_controller.text = app_service.email;
+				app_service.email = '';
+			}
+			if (app_service.password.isNotEmpty) {
+				password_controller.text = app_service.password;
+				app_service.password = '';
+			}
+		}
 	}
 
 	on_submit ([var args]) async {
@@ -50,9 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
 		var r = Requests();
 		print(email_controller.text);
 		print(password_controller.text);
-		_appService.set_username(email_controller.text);
-		_appService.set_password(password_controller.text);
-		bool result = await _appService.login();
+		app_service.set_username(email_controller.text);
+		app_service.set_password(password_controller.text);
+		bool result = await app_service.login();
 		if (result){
 			setState(() {
 				is_wrong_password = true;
@@ -217,7 +227,14 @@ class _LoginScreenState extends State<LoginScreen> {
 												padding: const EdgeInsets.fromLTRB(13.0, 22.0, 13.0, 13.0),
 												textStyle: const TextStyle(fontSize: 17),
 											),
-											onPressed: () {},
+											onPressed: () {
+												// app_service.is_try_login = false;
+												if (email_controller.text.isNotEmpty &&
+														_form_key_email.currentState!.validate()) {
+												 	 app_service.email = email_controller.text;
+												}
+												context.go(APP_PAGE.password_recovery.to_path);
+												},
 											child: const Text('Забули пароль?'),
 										),
 										is_wrong_password ? Text(

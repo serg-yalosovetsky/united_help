@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:united_help/screen/login_screen.dart';
-import 'package:united_help/screen/register.dart';
+import 'package:united_help/screen/password_recovery.dart';
 import 'package:united_help/screen/splash_screen.dart';
 import 'package:united_help/screen/welcome_register_or_login.dart';
 import 'package:united_help/screen/welcome_role.dart';
@@ -9,9 +9,13 @@ import 'package:united_help/screen/welcome_role.dart';
 import '../constants.dart';
 import '../screen/account_screen.dart';
 import '../fragment/events_list.dart';
+import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
 import '../screen/home.dart';
 import '../screen/map.dart';
+import '../screen/register_email_confirmation.dart';
+import '../screen/register_screen.dart';
+import '../screen/verification_main.dart';
 import '../services/appservice.dart';
 import '../services/login_state.dart';
 
@@ -21,7 +25,11 @@ enum APP_PAGE {
   register,
   splash,
   register_login,
+  register_confirmation,
+  password_confirmation,
   login,
+  verification,
+  password_recovery,
   home,
   error,
   account,
@@ -34,10 +42,18 @@ extension AppPageExtension on APP_PAGE {
         return "/";
       case APP_PAGE.account:
         return "/account";
+      case APP_PAGE.verification:
+        return "/verification";
       case APP_PAGE.login:
         return "/login";
+      case APP_PAGE.password_recovery:
+        return '/password_recovery';
       case APP_PAGE.register_login:
         return "/register_login";
+      case APP_PAGE.register_confirmation:
+        return "/register_confirmation";
+      case APP_PAGE.password_confirmation:
+        return "/password_confirmation";
       case APP_PAGE.splash:
         return "/splash";
       case APP_PAGE.welcome:
@@ -58,8 +74,16 @@ extension AppPageExtension on APP_PAGE {
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
         return "LOGIN";
+      case APP_PAGE.login:
+        return "VERIFICATION";
+      case APP_PAGE.password_recovery:
+        return 'PASSWORD_RECOVERY';
       case APP_PAGE.register:
         return "REGISTER";
+      case APP_PAGE.register_confirmation:
+        return "REGISTER_CONFIRMATION";
+      case APP_PAGE.password_confirmation:
+        return "PASSWORD_CONFIRMATION";
       case APP_PAGE.account:
         return "ACCOUNT";
       case APP_PAGE.splash:
@@ -97,9 +121,29 @@ class AppRouter {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
+        path: APP_PAGE.verification.to_path,
+        name: APP_PAGE.verification.to_name,
+        builder: (context, state) => VerificationScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.password_recovery.to_path,
+        name: APP_PAGE.password_recovery.to_name,
+        builder: (context, state) => const PasswordRecoveryScreen(),
+      ),
+      GoRoute(
         path: APP_PAGE.register_login.to_path,
         name: APP_PAGE.register_login.to_name,
         builder: (context, state) => WelcomeRegisterOrLoginScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.register_confirmation.to_path,
+        name: APP_PAGE.register_confirmation.to_name,
+        builder: (context, state) => RegisterEmailConfirmationScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.password_confirmation.to_path,
+        name: APP_PAGE.password_confirmation.to_name,
+        builder: (context, state) => EmailPasswordConfirmationScreen(),
       ),
       GoRoute(
         path: APP_PAGE.welcome.to_path,
@@ -142,34 +186,40 @@ class AppRouter {
       final home_location = APP_PAGE.home.to_path;
       final splash_location = APP_PAGE.splash.to_path;
       final welcome_location = APP_PAGE.welcome.to_path;
+      final verification_location = APP_PAGE.verification.to_path;
 
       final is_login = app_service.loginState;
-      var is_init = app_service.initialized;
+      final is_init = app_service.initialized;
       final is_onboarded = app_service.onboarding;
+      final is_try_login = app_service.is_try_login;
+      final is_try_register = app_service.is_try_register;
+      final is_verificated = app_service.is_verificated;
 
       final is_going_to_login = state.subloc == login_location;
       final is_going_to_register_login = state.subloc == register_login_location;
       final is_going_to_init = state.subloc == splash_location;
       final is_going_to_onboard = state.subloc == welcome_location;
-      print('state.subloc == splash_location ${state.subloc == splash_location}');
-      print('!is_init && !is_going_to_init ${!is_init && !is_going_to_init}');
-      print('is_init && !is_onboarded ${is_init && !is_onboarded}');
-      print('!is_onboarded ${ !is_onboarded}');
-      print('is_init  ${is_init }');
-      print('app_service.initialized  ${app_service.initialized }');
+      final is_going_to_verfication = state.subloc == verification_location;
+
       // If not Initialized and not going to Initialized redirect to Splash
       if (!is_init && !is_going_to_init) {
-        return splash_location;
+          return splash_location;
         // If not onboard and not going to onboard redirect to OnBoarding
       } else  if (is_init && !is_onboarded && !is_going_to_onboard ) {
-        return APP_PAGE.welcome.to_path;
+          return welcome_location;
         // If not logedin and not going to login redirect to Login
-      } else if (is_init && is_onboarded && !is_login && !app_service.is_try_login
-                && !is_going_to_register_login && !app_service.is_try_register) {
-        return register_login_location;
+      } else if (is_init && is_onboarded && !is_login && !is_try_login
+                && !is_going_to_register_login && !is_try_register) {
+          return register_login_location;
+
+      } else if (is_init && is_onboarded && is_login
+                && !is_going_to_verfication && !is_verificated) {
+          return verification_location;
+
+
         // If all the scenarios are cleared but still going to any of that screen redirect to Home
       } else if (
-             (is_login && is_going_to_login) || (app_service.initialized && is_going_to_init) ||
+             (is_login && is_going_to_login) || (is_init && is_going_to_init) ||
              (is_onboarded && is_going_to_onboard)
                 ) {
         return home_location;
