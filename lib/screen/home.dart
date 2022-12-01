@@ -6,28 +6,25 @@ import '../services/appservice.dart';
 
 enum ListOrMap { list,  map }
 
-Map<, Color> skyColors = <Sky, Color>{
-  Sky.midnight: const Color(0xff191970),
-  Sky.viridian: const Color(0xff40826d),
-  Sky.cerulean: const Color(0xff007ba7),
+Map<ListOrMap, String> list_or_map_text = <ListOrMap, String>{
+  ListOrMap.list:  'Актуальне',
+  ListOrMap.map:  'На мапі',
 };
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class build_switch_app_bar extends StatefulWidget {
+  const build_switch_app_bar({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<build_switch_app_bar> createState() => _build_switch_app_barState();
 }
 
 
-class _HomeScreenState extends State<HomeScreen> {
+class _build_switch_app_barState extends State<build_switch_app_bar> {
   late AppService _app_service;
-  ListOrMap _selectedSegment = ListOrMap.list;
 
   @override
   void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
-    _selectedSegment = _app_service.list_or_map;
     super.initState();
   }
 
@@ -37,53 +34,62 @@ class _HomeScreenState extends State<HomeScreen> {
 
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
           centerTitle: true,
-          title: CupertinoSlidingSegmentedControl<ListOrMap>(
-            backgroundColor: Color(0xfF0F3FF),
-            groupValue: _selectedSegment,
-            onValueChanged: (ListOrMap? value) {
-              if (value != null) {
-                print(value);
-                _app_service.list_or_map = value;
-                setState(() {
-                  _selectedSegment = value;
-                });
-              }
-            },
-            children: const <ListOrMap, Widget>{
-              ListOrMap.list: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'List',
-                  style: TextStyle(color: Colors.black),
-                ),
+          title: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(9, 0, 19, 0),
+                child: Icon(Icons.tune, color: Colors.white, size: 18,),
               ),
+              CupertinoSlidingSegmentedControl<ListOrMap>(
+                backgroundColor: Color(0xFFF0F3FF),   //Color(0xFFF0F3FF)
+                groupValue: _app_service.list_or_map,
+                onValueChanged: (ListOrMap? value) {
+                  if (value != null) {
+                    print(value);
+                    setState(() {
+                      _app_service.list_or_map = value;
+                    });
+                  }
+                },
+                children: <ListOrMap, Widget>{
+                  ListOrMap.list: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      list_or_map_text[ListOrMap.list] ?? '',
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
 
-              ListOrMap.map: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Map',
-                  style: TextStyle(color: Colors.black),
+                  ListOrMap.map: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      list_or_map_text[ListOrMap.map] ?? '',
+                      style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                      ),
 
-                ),
+                    ),
+                  ),
+                },
               ),
-            },
+              Padding(
+                padding: const EdgeInsets.fromLTRB(9, 0, 19, 0),
+                child: Icon(Icons.tune, color: Color(0xFF1C1C1E), size: 18),
+              ),
+            ],
           ),
         ),
       ),
     );
-      // CupertinoPageScaffold(
-      // navigationBar: CupertinoNavigationBar(
-      //   middle:
 
-    //   ),
-    //   child: Center(
-    //     child: Text(
-    //       'Selected Segment: ${_selectedSegment.name}',
-    //       // style: const TextStyle(color: CupertinoColors.white),
-    //     ),
-    //   ),
-    // );
   }
 }
 

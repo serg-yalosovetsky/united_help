@@ -113,7 +113,7 @@ class AppRouter {
       GoRoute(
         path: APP_PAGE.home.to_path,
         name: APP_PAGE.home.to_name,
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const build_switch_app_bar(),
       ),
       GoRoute(
         path: APP_PAGE.login.to_path,
