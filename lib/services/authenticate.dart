@@ -60,9 +60,12 @@ class Requests {
           HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
         },
     ).then((response) async {
+
       response_map = jsonDecode(response.body);
       response_map = jsonDecode(utf8.decode(response.bodyBytes));
         if (response.statusCode == 200) {
+          print(response_map);
+
           return {
             'success': true,
             'access_token': response_map['access'],
@@ -85,6 +88,15 @@ class Requests {
             };
 
     });
+    if (response_map['access'].toString().isNotEmpty &&
+        response_map['refresh'].toString().isNotEmpty ) {
+        return {
+        'success': true,
+        'access_token': response_map['access'],
+        'refresh_token': response_map['refresh'],
+        };
+    }
+
     return {'success': false,};
   }
 
@@ -125,6 +137,17 @@ class Requests {
     //    return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
     // }
     return clear_get(url, access_token);
+  }
+
+
+  FutureMap get_wrapper(String url, [String? access_token]) async {
+    if (access_token == null){
+      var result = await authenticate('serg', 'sergey104781');
+      if (result['success']){
+        access_token = result['access_token'];
+      }
+    }
+    return get(url, access_token);
   }
 
 

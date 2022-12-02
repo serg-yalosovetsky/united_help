@@ -3,10 +3,16 @@ import 'dart:typed_data';
 import 'package:custom_marker/marker_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
 
 import '../fragment/bottom_navbar.dart';
+import '../fragment/switch_app_bar.dart';
+import '../routes/routes.dart';
+import '../services/appservice.dart';
+import 'filter_screen.dart';
 
 
 
@@ -150,6 +156,13 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     mapController = controller;
   }
 
+
+  late AppService _app_service;
+
+  void initState() {
+    _app_service = Provider.of<AppService>(context, listen: false);
+  }
+
   Set<Marker> markers = get_markers();
   final GlobalKey globalKey = GlobalKey();
   @override
@@ -157,36 +170,27 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Icon(Icons.arrow_back_ios),
-              const Text(
-                'Назад',
-                style: TextStyle(color: Colors.blue),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: const Text(
-                    'Реєстрація',
-                    style: TextStyle(color: Colors.black),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-
-              Icon(Icons.arrow_back_ios, color: Colors.white),
-              const Text(
-                'Назад',
-                style: TextStyle(color: Colors.white),
-              ),
-
-            ],
-          ),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.blue,
-        ),
+        appBar: build_switch_app_bar(_app_service,
+                fun: () {
+                  setState(() {
+                    if (_app_service.list_or_map == ListOrMap.list){
+                      _app_service.list_or_map = ListOrMap.map;
+                      context.go(APP_PAGE.home_map.to_path);
+                    } else {
+                      _app_service.list_or_map = ListOrMap.list;
+                      context.go(APP_PAGE.home_list.to_path);
+                    }
+                 });
+               },
+               to_filters: () {
+                 // context.go(APP_PAGE.filters.to_path);
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                     builder: (context) => FiltersCard(),
+                   ),
+                 );
+               }),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () async {

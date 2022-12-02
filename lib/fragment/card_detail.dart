@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:united_help/fragment/skill_card.dart';
 import '../fragment/bottom_navbar.dart';
 import '../models/events.dart';
+import '../services/show_nice_time.dart';
 
 class card_detail extends StatelessWidget {
   const card_detail({
@@ -35,8 +37,17 @@ class card_detail extends StatelessWidget {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
+    String employment_string = '';
+    if (event.employment == 0)
+      employment_string = 'Постійна зайнятість';
+    else if (event.employment == 1)
+      employment_string = show_nice_time(event.start_time, event.end_time);
+    else if (event.employment == 2)
+      employment_string = show_nice_time(event.start_time);
+
     Widget build_description(String text) {
       return Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
@@ -83,9 +94,9 @@ class card_detail extends StatelessWidget {
                         maxWidth: double.infinity,
                         maxHeight: 450,
                       ),
-                      child: Image.asset(
-                        event.image,
-                        fit: BoxFit.fitWidth,
+                      child: Image(
+                          image: CachedNetworkImageProvider(event.image),
+                          fit: BoxFit.fitWidth
                       ),
                     ),
                   ),
@@ -97,7 +108,7 @@ class card_detail extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       build_bold_left_text(event.name),
-                      build_location('${event.start_time}-${event.end_time}', Icons.access_time),
+                      build_location('$employment_string', Icons.access_time),
                       build_location(event.location, Icons.location_on),
                       build_description(event.description),
                       Container(

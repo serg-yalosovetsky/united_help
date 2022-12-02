@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:united_help/screen/filter_screen.dart';
+import 'package:united_help/screen/home_list.dart';
 import 'package:united_help/screen/login_screen.dart';
 import 'package:united_help/screen/password_recovery.dart';
 import 'package:united_help/screen/splash_screen.dart';
@@ -11,8 +13,8 @@ import '../screen/account_screen.dart';
 import '../fragment/events_list.dart';
 import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
-import '../screen/home.dart';
-import '../screen/map.dart';
+import '../fragment/switch_app_bar.dart';
+import '../screen/home_map.dart';
 import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
 import '../screen/verification_main.dart';
@@ -30,7 +32,9 @@ enum APP_PAGE {
   login,
   verification,
   password_recovery,
-  home,
+  home_list,
+  home_map,
+  filters,
   error,
   account,
 }
@@ -38,8 +42,10 @@ enum APP_PAGE {
 extension AppPageExtension on APP_PAGE {
   String get to_path {
     switch (this) {
-      case APP_PAGE.home:
+      case APP_PAGE.home_list:
         return "/";
+      case APP_PAGE.home_map:
+        return "/map";
       case APP_PAGE.account:
         return "/account";
       case APP_PAGE.verification:
@@ -60,6 +66,8 @@ extension AppPageExtension on APP_PAGE {
         return "/welcome";
       case APP_PAGE.register:
         return "/register";
+      case APP_PAGE.filters:
+        return "/filters";
       case APP_PAGE.error:
         return "/error";
       default:
@@ -68,8 +76,10 @@ extension AppPageExtension on APP_PAGE {
   }
   String get to_name {
     switch (this) {
-      case APP_PAGE.home:
-        return "HOME";
+      case APP_PAGE.home_list:
+        return "HOME_LIST";
+      case APP_PAGE.home_map:
+        return "HOME_MAP";
       case APP_PAGE.register_login:
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
@@ -80,6 +90,8 @@ extension AppPageExtension on APP_PAGE {
         return 'PASSWORD_RECOVERY';
       case APP_PAGE.register:
         return "REGISTER";
+      case APP_PAGE.filters:
+        return "FILTERS";
       case APP_PAGE.register_confirmation:
         return "REGISTER_CONFIRMATION";
       case APP_PAGE.password_confirmation:
@@ -108,12 +120,22 @@ class AppRouter {
 
   late final GoRouter _go_router = GoRouter(
     refreshListenable: app_service,
-    initialLocation: APP_PAGE.home.to_path,
+    initialLocation: APP_PAGE.home_list.to_path,
     routes: <GoRoute>[
       GoRoute(
-        path: APP_PAGE.home.to_path,
-        name: APP_PAGE.home.to_name,
-        builder: (context, state) => const build_switch_app_bar(),
+        path: APP_PAGE.home_list.to_path,
+        name: APP_PAGE.home_list.to_name,
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.home_map.to_path,
+        name: APP_PAGE.home_map.to_name,
+        builder: (context, state) => const GoogleMapScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.filters.to_path,
+        name: APP_PAGE.filters.to_name,
+        builder: (context, state) => const FiltersCard(),
       ),
       GoRoute(
         path: APP_PAGE.login.to_path,
@@ -186,7 +208,7 @@ class AppRouter {
 
       final login_location = APP_PAGE.login.to_path;
       final register_login_location = APP_PAGE.register_login.to_path;
-      final home_location = APP_PAGE.home.to_path;
+      final home_location = APP_PAGE.home_list.to_path;
       final splash_location = APP_PAGE.splash.to_path;
       final welcome_location = APP_PAGE.welcome.to_path;
       final verification_location = APP_PAGE.verification.to_path;

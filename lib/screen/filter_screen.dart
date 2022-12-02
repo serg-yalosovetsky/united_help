@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:united_help/fragment/filters.dart';
+import 'package:united_help/fragment/switch_app_bar.dart';
+import 'package:united_help/services/appservice.dart';
+import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
+import '../routes/routes.dart';
 
 
 class FiltersCard extends StatelessWidget {
@@ -20,16 +26,12 @@ class FiltersCard extends StatelessWidget {
 			"Microsoft Office", "Комунікативність",
 			"Пунктуальність", "Організованість"
 		];
+		// AppService _app_service = Provider.of<AppService>(context, listen: false);
 
 		return Scaffold(
-			appBar: AppBar(
-				title: const Text(
-					'Назад',
-					style: back_style,
-				),
-				backgroundColor: Colors.white,
-				foregroundColor: Colors.blue,
-			),
+			appBar: buildAppBar(() {
+				Navigator.pop(context);
+			}, 'Фільтри', 'Зберегти'),
 			body: SafeArea(
 				child: filters(
 							locations: locations, time_start: time_start, time_end: time_end,

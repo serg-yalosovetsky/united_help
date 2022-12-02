@@ -49,7 +49,7 @@ class Event {
       location: json['location'],
       employment: json['employment'],
       owner: json['owner'],
-      skills: json['skills'],
+      skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
     );
   }
@@ -71,7 +71,7 @@ class Events {
   factory Events.fromJson(Map<String, dynamic> json) {
     var results = <Event>[];
     for (var event in json['results']) {
-      results.add(Event.fromJson(event)) ;
+      results.add(Event.fromJson(event));
     }
     return Events(
       count: json['count'],

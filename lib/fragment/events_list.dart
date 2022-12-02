@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../services/show_nice_time.dart';
 import 'skill_card.dart';
 import '../models/events.dart';
 import '../services/urls.dart';
@@ -15,10 +16,13 @@ Future<Events> fetchEvents(String event_query) async {
 	String url = '$server_url$all_events_url/';
 	url += event_query;
 
-	final response = await r.get(url);
+	final response = await r.get_wrapper(url);
 
 	if (response['status_code'] == 200) {
-		return Events.fromJson(response['result']);
+		var res  = response['result'];
+		print(response['result']);
+		var r = Events.fromJson(res);
+		return r;
 	} else {
 		throw Exception('Failed to load Event');
 	}
@@ -49,7 +53,6 @@ class _EventListScreenState extends State<EventListScreen> {
 						future: futureEvents,
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								// return Text(snapshot.data!.count.toString());
 								return ListView.builder(
 									itemCount: snapshot.data!.count,
 									// prototypeItem: card_builder(snapshot.data!.list.first),
@@ -59,7 +62,7 @@ class _EventListScreenState extends State<EventListScreen> {
 												onTap: () {
 													Navigator.of(context).push(
 														MaterialPageRoute(
-															builder: (context) => EventScreen(event_id: index,),
+															builder: (context) => EventScreen(event: snapshot.data!.list[index],),
 														),
 													);
 												},
@@ -80,15 +83,15 @@ class _EventListScreenState extends State<EventListScreen> {
 
 
 Widget card_builder(event) {
-	// var event = snapshot.data!.list[index];
-	print(event.image);
 	String employment_string = '';
 	if (event.employment == 0)
 		employment_string = 'Постійна зайнятість';
 	else if (event.employment == 1)
-		employment_string = '${event.start_time}-${event.end_time}';
+		employment_string = show_nice_time(event.start_time, event.end_time);
 	else if (event.employment == 2)
-		employment_string = event.start_time;
+		employment_string = show_nice_time(event.start_time);
+
+
 	var card = Container(
 		margin: const EdgeInsets.all(10),
 		child: Card(

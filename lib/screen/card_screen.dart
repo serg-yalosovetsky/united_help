@@ -20,21 +20,21 @@ Future<Event> fetchEvent(int event_id) async {
 }
 
 class EventScreen extends StatefulWidget {
-	final int event_id;
-	const EventScreen({super.key, required this.event_id});
+	final Event event;
+	const EventScreen({super.key, required this.event});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
 }
 
 class _EventScreenState extends State<EventScreen> {
-	late Future<Event> future_event;
+	// late Future<Event> future_event;
 
-	@override
-	void initState() {
-		super.initState();
-		future_event = fetchEvent(widget.event_id);
-	}
+	// @override
+	// void initState() {
+	// 	super.initState();
+	// 	// future_event = fetchEvent(widget.event);
+	// }
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
@@ -47,6 +47,7 @@ class _EventScreenState extends State<EventScreen> {
 		// 	"Microsoft Office", "Комунікативність",
 		// 	"Пунктуальність", "Організованість"
 		// ];
+		// print( widget.event);
 		return Scaffold(
 			appBar: AppBar(
 				title: const Text(
@@ -57,21 +58,21 @@ class _EventScreenState extends State<EventScreen> {
 				foregroundColor: Colors.blue,
 			),
 			body: SafeArea(
-
-				child: FutureBuilder<Event>(
-					future: future_event,
-					builder: (context, snapshot) {
-						if (snapshot.hasData) {
-							// return Text(snapshot.data!.count.toString());
-							return card_detail(event: snapshot.data!);
-							// card_builder(snapshot.data!.list[index]);
-						} else if (snapshot.hasError) {
-							return Text('${snapshot.error}');
-						}
-
-						return const CircularProgressIndicator();
-					}
-				),
+					child: card_detail(event: widget.event),
+				// 	child: FutureBuilder<Event>(
+				// 	future: future_event,
+				// 	builder: (context, snapshot) {
+				// 		if (snapshot.hasData) {
+				// 			// return Text(snapshot.data!.count.toString());
+				// 			return card_detail(event: snapshot.data!);
+				// 			// card_builder(snapshot.data!.list[index]);
+				// 		} else if (snapshot.hasError) {
+				// 			return Text('${snapshot.error}');
+				// 		}
+				//
+				// 		return const CircularProgressIndicator();
+				// 	}
+				// ),
 
 			),
 

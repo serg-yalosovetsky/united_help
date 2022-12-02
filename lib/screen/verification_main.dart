@@ -122,7 +122,7 @@ class VerificationScreen extends StatelessWidget {
 												divider_text,
 												style: TextStyle(
 													color: Color(0xFF748B9F),
-													fontSize: 18,
+													fontSize: 16,
 													// height: 18,
 													fontFamily: 'SF Pro Text',
 													fontWeight: FontWeight.w600,

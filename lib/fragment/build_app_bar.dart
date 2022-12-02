@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-AppBar buildAppBar(Function fun, String title) {
+AppBar buildAppBar(Function fun, String title,
+    [String? action_text_button, Function? fun_button]) {
   const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
   return AppBar(
     title: Row(
