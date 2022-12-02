@@ -29,6 +29,9 @@ class AppService with ChangeNotifier {
   String password = '';
   bool is_register_confirm = false;
   bool is_verificated = false;
+  int _filter_city = -1;
+  bool _open_text_field_choose_other_city = false;
+  List<String> _city_hint = [];
 
   String init_key = 'init_key';
   String access_key = 'access_token';
@@ -110,6 +113,25 @@ class AppService with ChangeNotifier {
     // _loginStateChange.add(state);
     notifyListeners();
   }
+
+  set filter_city (int value) {
+    _filter_city = value;
+    notifyListeners();
+  }
+  int get filter_city => _filter_city;
+
+  set city_hint (List<String> value) {
+    _city_hint = value;
+    notifyListeners();
+  }
+  List<String> get city_hint => _city_hint;
+
+  set open_text_field_choose_other_city (bool value) {
+    _open_text_field_choose_other_city = value;
+    notifyListeners();
+  }
+  bool get open_text_field_choose_other_city => _open_text_field_choose_other_city;
+
 
   set initialized(bool value) {
     _initialized = value;

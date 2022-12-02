@@ -1,4 +1,7 @@
 
+import '../services/authenticate.dart';
+import '../services/urls.dart';
+
 class Event {
   final int userId;
   final int id;
@@ -13,6 +16,7 @@ class Event {
   final String location;
   final int employment;
   final int owner;
+  final int to;
   final List<int> skills;
   final int required_members;
 
@@ -30,6 +34,7 @@ class Event {
     required this.location,
     required this.employment,
     required this.owner,
+    required this.to,
     required this.skills,
     required this.required_members,
   });
@@ -49,6 +54,7 @@ class Event {
       location: json['location'],
       employment: json['employment'],
       owner: json['owner'],
+      to: json['to'],
       skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
     );
@@ -82,3 +88,21 @@ class Events {
   }
 }
 
+
+
+Future<Events> fetchEvents(String event_query) async {
+  var r = Requests();
+  String url = '$server_url$all_events_url/';
+  url += event_query;
+
+  final response = await r.get_wrapper(url);
+
+  if (response['status_code'] == 200) {
+    var res  = response['result'];
+    print(response['result']);
+    var r = Events.fromJson(res);
+    return r;
+  } else {
+    throw Exception('Failed to load Event');
+  }
+}

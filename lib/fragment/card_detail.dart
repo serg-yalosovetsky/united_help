@@ -25,8 +25,8 @@ class card_detail extends StatelessWidget {
     int i = 0;
     while (i <= skills.length/2.ceil()) {
       List<Widget> rows = [];
-      if (i < skills.length) rows.add(buildSkillCard(skills[i]));
-      if (i + 1 < skills.length) rows.add(buildSkillCard(skills[i+1]));
+      if (i < skills.length) rows.add(buildSkillCard(title: skills[i], id: 0));
+      if (i + 1 < skills.length) rows.add(buildSkillCard(title: skills[i+1], id: 0));
       Widget row_widget = Row(
         children: rows,
       );
