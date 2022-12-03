@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:united_help/services/authenticate.dart';
 
 import '../fragment/switch_app_bar.dart';
+import '../models/filter.dart';
 
 enum Roles  {
   admin,
@@ -30,8 +31,16 @@ class AppService with ChangeNotifier {
   bool is_register_confirm = false;
   bool is_verificated = false;
   int _filter_city = -1;
+  int _filter_employment = -1;
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
+  List<String> _skills_hint = [];
+  Employments employment = Employments.full;
+  String time_start = '';
+  String time_end = '';
+  String data_start = '';
+  String data_end = '';
+
 
   String init_key = 'init_key';
   String access_key = 'access_token';
@@ -96,21 +105,13 @@ class AppService with ChangeNotifier {
     await secure_storage.write(key: username_key, value: str);
     notifyListeners();
   }
-  // Future<String?> get_username() {
-  //   return  secure_storage.read(key: username_key);
-  // }
-  // Future<String?> get_password() async {
-  //   return secure_storage.read(key: password_key);
-  // }
 
   get_access_token() async {
     return await secure_storage.read(key: access_key);
   }
 
   set loginState(bool state) {
-    // sharedPreferences.setBool(LOGIN_KEY, state);
     _loginState = state;
-    // _loginStateChange.add(state);
     notifyListeners();
   }
 
@@ -120,11 +121,25 @@ class AppService with ChangeNotifier {
   }
   int get filter_city => _filter_city;
 
+
+  set filter_employment (int value) {
+    _filter_employment = value;
+    notifyListeners();
+  }
+  int get filter_employment => _filter_employment;
+
+
   set city_hint (List<String> value) {
     _city_hint = value;
     notifyListeners();
   }
   List<String> get city_hint => _city_hint;
+
+  set skills_hint (List<String> value) {
+    _skills_hint = value;
+    notifyListeners();
+  }
+  List<String> get skills_hint => _skills_hint;
 
   set open_text_field_choose_other_city (bool value) {
     _open_text_field_choose_other_city = value;
@@ -152,7 +167,6 @@ class AppService with ChangeNotifier {
   set role(String value) {
     if (Roles.values.contains(role)){
       shared_preferences.setString(profile_key, value);
-      // _role = value;
       _roleState = true;
       notifyListeners();
     }
@@ -161,10 +175,6 @@ class AppService with ChangeNotifier {
   Future<void> onAppStart() async {
     _onboarding = shared_preferences.getBool(init_key) ?? false;
     _loginState = shared_preferences.getBool(access_key) ?? false;
-    // if (!role.isEmpty){
-    //   _roleState = true;
-    // }
-    // if (await relogin()) _loginState = true;
     await Future.delayed(const Duration(microseconds: 2));
     _initialized = true;
     notifyListeners();

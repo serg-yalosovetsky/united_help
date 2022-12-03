@@ -4,7 +4,9 @@ AppBar buildAppBar(Function fun, String title,
     [String? action_text_button, Function? fun_button]) {
   const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
   return AppBar(
+    automaticallyImplyLeading: false,
     title: Row(
+
       children: [
         GestureDetector(
           child: Tooltip(
@@ -36,12 +38,20 @@ AppBar buildAppBar(Function fun, String title,
           ),
         ),
 
-        Icon(Icons.arrow_back_ios, color: Colors.white),
-        const Text(
+        action_text_button==null ? Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white) : Container(),
+        action_text_button==null ? const Text(
           'Назад',
           style: TextStyle(color: Colors.white),
+        ): GestureDetector(
+          child: Text(
+            action_text_button,
+            style: TextStyle(color: Color(0xFF8E8E93)),
+          ),
+          onTap: fun_button?.call(),
+          // onTap: fun_button != null ? fun_button?() : null,
         ),
-
       ],
     ),
     backgroundColor: Colors.white,

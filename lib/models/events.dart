@@ -3,7 +3,6 @@ import '../services/authenticate.dart';
 import '../services/urls.dart';
 
 class Event {
-  final int userId;
   final int id;
   final String name;
   final bool enabled;
@@ -21,7 +20,6 @@ class Event {
   final int required_members;
 
   const Event({
-    required this.userId,
     required this.id,
     required this.name,
     required this.enabled,
@@ -40,8 +38,10 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      userId: json['owner'],
+    print('skills ${json['skills']}');
+    print('cast ${json['skills'].cast<int>()}');
+
+    var e= Event(
       id: json['id'],
       name: json['name'],
       enabled: json['enabled'],
@@ -58,6 +58,8 @@ class Event {
       skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
     );
+    print(e);
+    return e;
   }
 }
 
@@ -77,6 +79,7 @@ class Events {
   factory Events.fromJson(Map<String, dynamic> json) {
     var results = <Event>[];
     for (var event in json['results']) {
+      print('event = $event');
       results.add(Event.fromJson(event));
     }
     return Events(

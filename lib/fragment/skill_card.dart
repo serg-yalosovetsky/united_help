@@ -105,10 +105,144 @@ class buildSkillCardState extends State<buildSkillCard> {
 }
 
 
+
+class buildEmploymentCard extends StatefulWidget {
+  const buildEmploymentCard({
+    Key? key,
+    required this.title,
+    required this.id,
+    this.active,
+    this.fun,
+
+  }) : super(key: key);
+  final String title;
+  final int id;
+  final bool? active;
+  final fun;
+
+  @override
+  State<buildEmploymentCard> createState() => buildEmploymentCardState();
+}
+
+class buildEmploymentCardState extends State<buildEmploymentCard> {
+  late AppService _app_service;
+
+  @override
+  void initState() {
+    _app_service = Provider.of<AppService>(context, listen: false);
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(
+                color: _app_service.filter_employment == widget.id ? active_color : inactive_color,
+              ),
+              color: _app_service.filter_employment == widget.id ? active_color : inactive_color,
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          padding: const EdgeInsets.all(15),
+          child: Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 18,
+              color: _app_service.filter_employment == widget.id ? active_text_color : inactive_text_color,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          if (_app_service.filter_employment != widget.id){
+            _app_service.filter_employment = widget.id;
+          } else {
+            _app_service.filter_employment = -1;
+          }
+        });
+      },
+    );
+  }
+}
+
+
+
+
+class buildDataPicker extends StatefulWidget {
+  const buildDataPicker({
+    Key? key,
+    required this.title,
+    this.active,
+    this.fun,
+
+  }) : super(key: key);
+  final String title;
+  final bool? active;
+  final fun;
+
+  @override
+  State<buildDataPicker> createState() => buildDataPickerState();
+}
+
+class buildDataPickerState extends State<buildDataPicker> {
+  late AppService _app_service;
+  late String dynamic_app_service_link;
+
+  @override
+  void initState() {
+    _app_service = Provider.of<AppService>(context, listen: false);
+    // dynamic_app_service_link = _app_service.time_start;
+    if (widget.title == 'time_start') dynamic_app_service_link = _app_service.time_start;
+    if (widget.title == 'time_end') dynamic_app_service_link = _app_service.time_end;
+    if (widget.title == 'data_start') dynamic_app_service_link = _app_service.data_start;
+    if (widget.title == 'data_end') dynamic_app_service_link = _app_service.data_end;
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border.all(
+
+                color: dynamic_app_service_link == '' ? active_color : inactive_color,
+              ),
+              color: dynamic_app_service_link == '' ? active_color : inactive_color,
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          padding: const EdgeInsets.all(15),
+          child: Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 18,
+              color: dynamic_app_service_link == '' ? active_text_color : inactive_text_color,
+            ),
+          ),
+        ),
+      ),
+      onTap: () {
+        setState(() {
+          if (dynamic_app_service_link != ''){
+            dynamic_app_service_link = '';
+          } else {
+            dynamic_app_service_link = '';
+          }
+        });
+      },
+    );
+  }
+}
+
+
+
+
 Widget build_bold_left_text(String title, {padding}) {
 
   Widget container = Container(
-    margin: const EdgeInsets.fromLTRB(20, 20, 10, 0),
+    margin: const EdgeInsets.fromLTRB(17, 30, 0, 0),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(

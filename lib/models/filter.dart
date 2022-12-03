@@ -110,6 +110,12 @@ enum Employments {
   one_time,
 }
 
+Map<Employments, String>  employments_text = {
+  Employments.full: 'Постійна',
+  Employments.part_time: 'Часткова',
+  Employments.one_time: 'Івент',
+};
+
 
 
 Future<Skills> fetchSkills(String skill_query) async {
@@ -125,7 +131,7 @@ Future<Skills> fetchSkills(String skill_query) async {
     var r = Skills.fromJson(res);
     return r;
   } else {
-    throw Exception('Failed to load Event');
+    throw Exception('Failed to load Skills');
   }
 }
 
@@ -143,6 +149,6 @@ Future<Cities> fetchCities(String city_query) async {
     var r = Cities.fromJson(res);
     return r;
   } else {
-    throw Exception('Failed to load Event');
+    throw Exception('Failed to load Cities');
   }
 }
