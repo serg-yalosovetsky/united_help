@@ -409,7 +409,7 @@ class _FiltersCardState extends State<FiltersCard> {
 
 						Row(
 							children: [
-								build_left_text('Кінець'),
+								build_left_text('Кінець   '),
 
 								build_date_picker(context: context,
 										controller: end_date_controller,
@@ -452,11 +452,15 @@ class _FiltersCardState extends State<FiltersCard> {
 	  return Container(
 			padding:const EdgeInsets.all(15),
 			// height:150,
-			width: 140,
+			width: 150,
 			child: TextField(
 				controller: controller,
-				decoration: const InputDecoration(
+				decoration: InputDecoration(
+					border: OutlineInputBorder(
+						borderRadius : BorderRadius.all(Radius.circular(16.0)),
+					),
 				),
+
 				readOnly: true,
 				onTap: () async {
 					DateTime? pickedDate = await showDatePicker(
@@ -490,9 +494,11 @@ class _FiltersCardState extends State<FiltersCard> {
 				width: 140,
 				child: TextField(
 					controller: controller, //editing controller of this TextField
-					decoration: const InputDecoration(
-						// icon: Icon(Icons.calendar_today), //icon of text field
-						// labelText: "Enter time" //label text of field
+					// decoration: const InputDecoration(
+					decoration: InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
 					),
 					readOnly: true,  // when true user cannot edit text
 					onTap: () async {
