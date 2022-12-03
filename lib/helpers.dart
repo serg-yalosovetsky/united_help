@@ -1,4 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 
 List<List<String>> calculate_cities_widgets({
   required BuildContext context,
@@ -30,4 +33,12 @@ List<List<String>> calculate_cities_widgets({
   // print(cities);
   // print(width);
   return cities;
+}
+
+String time_to_str(TimeOfDay pickedTime){
+  return '${pickedTime.hour}:${pickedTime.minute} ${pickedTime.period.name.toUpperCase()}';
+}
+
+String date_to_str(DateTime pickedDate){
+  return DateFormat('EEE, MMM dd').format(pickedDate);
 }

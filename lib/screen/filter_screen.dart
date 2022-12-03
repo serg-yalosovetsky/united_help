@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:united_help/fragment/filters.dart';
 import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/services/appservice.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
-import '../fragment/data_picker.dart';
+// import '../fragment/data_picker.dart';
 import '../fragment/skill_card.dart';
 import '../fragment/text_field_helper.dart';
 import '../helpers.dart';
@@ -122,56 +121,28 @@ class _FiltersCardState extends State<FiltersCard> {
 	final city_controller = TextEditingController();
 	final skills_controller = TextEditingController();
 
-	TextEditingController dateController = TextEditingController();
-	TextEditingController timeController = TextEditingController();
-	String _selectedDate = '';
-	String _dateCount = '';
-	String _range = '';
-	String _rangeCount = '';
-	/// The method for [DateRangePickerSelectionChanged] callback, which will be
-	/// called whenever a selection changed on the date picker widget.
-	void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-		/// The argument value will return the changed date as [DateTime] when the
-		/// widget [SfDateRangeSelectionMode] set as single.
-		///
-		/// The argument value will return the changed dates as [List<DateTime>]
-		/// when the widget [SfDateRangeSelectionMode] set as multiple.
-		///
-		/// The argument value will return the changed range as [PickerDateRange]
-		/// when the widget [SfDateRangeSelectionMode] set as range.
-		///
-		/// The argument value will return the changed ranges as
-		/// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
-		/// multi range.
-		setState(() {
-			if (args.value is PickerDateRange) {
-				_range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-				// ignore: lines_longer_than_80_chars
-						' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-			} else if (args.value is DateTime) {
-				_selectedDate = args.value.toString();
-			} else if (args.value is List<DateTime>) {
-				_dateCount = args.value.length.toString();
-			} else {
-				_rangeCount = args.value.length.toString();
-			}
-		});
-	}
-
+	TextEditingController start_date_controller = TextEditingController();
+	TextEditingController start_time_controller = TextEditingController();
+	TextEditingController end_date_controller = TextEditingController();
+	TextEditingController end_time_controller = TextEditingController();
 
 	@override
   void dispose() {
 		city_controller.dispose();
 		skills_controller.dispose();
-		dateController.dispose();
-		timeController.dispose();
+		start_date_controller.dispose();
+		start_time_controller.dispose();
+		end_date_controller.dispose();
+		end_time_controller.dispose();
 		super.dispose();
   }
 
 	@override
 	void initState() {
-		dateController.text = ""; //set the initial value of text field
-		timeController.text = ""; //set the initial value of text field
+		start_date_controller.text = "";
+		start_time_controller.text = "";
+		end_date_controller.text = "";
+		end_time_controller.text = "";
 		_app_service = Provider.of<AppService>(context, listen: false);
 		futureSkills = fetchSkills(skills_query);
 		futureCities = fetchCities(cities_query);
@@ -419,146 +390,37 @@ class _FiltersCardState extends State<FiltersCard> {
 							'Дата',
 							padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
 						),
-						
-						// Row(children: [
-						// 	// Text('Початок'),
-						// 	SfDateRangePicker(
-						// 		onSelectionChanged: _onSelectionChanged,
-						// 		selectionMode: DateRangePickerSelectionMode.range,
-						// 		initialSelectedRange: PickerDateRange(
-						// 				DateTime.now().subtract(const Duration(days: 4)),
-						// 				DateTime.now().add(const Duration(days: 3))),
-						// 	),
-						// 	// DataPickerButton(),
-						// 	// buildEmploymentCard(title: 'c')
-						// ],),
-
-						// Stack(
-						// 	children: <Widget>[
-						// 		Positioned(
-						// 			left: 0,
-						// 			right: 0,
-						// 			top: 0,
-						// 			height: 80,
-						// 			child: Column(
-						// 				mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-						// 				mainAxisSize: MainAxisSize.min,
-						// 				crossAxisAlignment: CrossAxisAlignment.start,
-						// 				children: <Widget>[
-						// 					Text('Selected date: $_selectedDate'),
-						// 					Text('Selected date count: $_dateCount'),
-						// 					Text('Selected range: $_range'),
-						// 					Text('Selected ranges count: $_rangeCount')
-						// 				],
-						// 			),
-						// 		),
-						// 		Positioned(
-						// 			left: 0,
-						// 			top: 80,
-						// 			right: 0,
-						// 			bottom: 0,
-						// 			child: SfDateRangePicker(
-						// 				onSelectionChanged: _onSelectionChanged,
-						// 				selectionMode: DateRangePickerSelectionMode.range,
-						// 				initialSelectedRange: PickerDateRange(
-						// 						DateTime.now().subtract(const Duration(days: 4)),
-						// 						DateTime.now().add(const Duration(days: 3))),
-						// 			),
-						// 		)
-						// 	],
-						// ),
-
 
 						Row(
 						  children: [
-								Padding(
-								  padding: const EdgeInsets.fromLTRB(17.0, 0, 0, 0),
-								  child: Text('Початок',
-								  			style: TextStyle(
-								  				fontSize: 17,
-								  				fontWeight: FontWeight.w500
-								  			),
-								  ),
-								),
+								build_left_text('Початок'),
 
-								Container(
-						    		padding:const EdgeInsets.all(15),
-						    		// height:150,
-						    		width: 140,
-						    		child: TextField(
+								build_date_picker(context: context,
+										controller: start_date_controller,
+										app_service_link: _app_service.data_start),
 
-						    			controller: dateController, //editing controller of this TextField
-						    			decoration: const InputDecoration(
-
-						    					// icon: Icon(Icons.calendar_today), //icon of text field
-						    					// labelText: "Enter Date" //label text of field
-						    			),
-						    			readOnly: true,  // when true user cannot edit text
-						    			onTap: () async {
-						    				DateTime? pickedDate = await showDatePicker(
-						    						context: context,
-						    						initialDate: DateTime.now(), //get today's date
-						    						firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-						    						lastDate: DateTime(2101)
-						    				);
-
-						    				if(pickedDate != null ){
-						    					print(pickedDate);  //get the picked date in the format => 2022-07-04 00:00:00.000
-						    					String formattedDate = DateFormat('EEE, MMM dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-						    					print(formattedDate); //formatted date output using intl package =>  2022-07-04
-						    					//You can format date as per your need
-
-						    					setState(() {
-						    						dateController.text = formattedDate; //set foratted date to TextField value.
-						    					});
-						    				}else{
-						    					print("Date is not selected");
-						    				}
-						    			},
-						    		)
-						    ),
-
-								Container(
-										padding:const EdgeInsets.all(15),
-										// height:150,
-										width: 140,
-										child: TextField(
-
-											controller: timeController, //editing controller of this TextField
-											decoration: const InputDecoration(
-
-													// icon: Icon(Icons.calendar_today), //icon of text field
-													// labelText: "Enter time" //label text of field
-											),
-											readOnly: true,  // when true user cannot edit text
-											onTap: () async {
-												TimeOfDay? pickedDate = await showTimePicker(
-														context: context,
-														initialTime: TimeOfDay.now(), //get today's date
-														// firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-														// lastDate: DateTime(2101)
-												);
-
-												if(pickedDate != null ){
-													// ${pickedDate.hour} ${pickedDate.minute}
-													print(pickedDate);  //get the picked date in the format => 2022-07-04 00:00:00.000
-													String formattedTime = '${pickedDate.hour}:${pickedDate.minute} ${pickedDate.period.name.toUpperCase()}'; // format date in required form here we use yyyy-MM-dd that means time is removed
-													print(DateFormat); //formatted date output using intl package =>  2022-07-04
-													//You can format date as per your need
-
-													setState(() {
-														timeController.text = formattedTime; //set foratted date to TextField value.
-													});
-												}else{
-													print("Date is not selected");
-												}
-											},
-										)
-								),
+								build_time_picker(context: context,
+										controller: start_time_controller,
+										app_service_link: _app_service.time_start),
 
 						  ],
 						),
 
+
+						Row(
+							children: [
+								build_left_text('Кінець'),
+
+								build_date_picker(context: context,
+										controller: end_date_controller,
+										app_service_link: _app_service.data_end),
+
+								build_time_picker(context: context,
+																	controller: end_time_controller,
+																	app_service_link: _app_service.time_end),
+
+							],
+						),
 
 
 			  	],
@@ -567,4 +429,91 @@ class _FiltersCardState extends State<FiltersCard> {
 
 		);
 	}
+
+	Widget build_left_text(String text) {
+	  return Padding(
+			padding: const EdgeInsets.fromLTRB(17.0, 0, 0, 0),
+			child: Text(text,
+				style: TextStyle(
+						fontSize: 17,
+						fontWeight: FontWeight.w500
+				),
+			),
+		);
+	}
+
+	Widget build_date_picker({
+		required BuildContext context,
+		required TextEditingController controller,
+		required app_service_link,
+		start_year,
+		end_year,
+	}) {
+	  return Container(
+			padding:const EdgeInsets.all(15),
+			// height:150,
+			width: 140,
+			child: TextField(
+				controller: controller,
+				decoration: const InputDecoration(
+				),
+				readOnly: true,
+				onTap: () async {
+					DateTime? pickedDate = await showDatePicker(
+							context: context,
+							initialDate: DateTime.now(),
+							firstDate: DateTime(start_year ?? 2000),
+							lastDate: DateTime(end_year ?? 2101)
+					);
+
+					if(pickedDate != null ){
+						String formattedDate = date_to_str(pickedDate);
+						setState(() {
+							controller.text = formattedDate;
+							app_service_link = pickedDate;
+						});
+					}else{
+						print("Date is not selected");
+					}
+				},
+			)
+	);
+	}
+
+	Widget build_time_picker({
+				required BuildContext context,
+				required TextEditingController controller,
+				required app_service_link,
+	})  {
+	  return Container(
+				padding:const EdgeInsets.all(15),
+				width: 140,
+				child: TextField(
+					controller: controller, //editing controller of this TextField
+					decoration: const InputDecoration(
+						// icon: Icon(Icons.calendar_today), //icon of text field
+						// labelText: "Enter time" //label text of field
+					),
+					readOnly: true,  // when true user cannot edit text
+					onTap: () async {
+						TimeOfDay? pickedTime = await showTimePicker(
+							context: context,
+							initialTime: TimeOfDay.now(), //get today's date
+						);
+
+						if(pickedTime != null ){
+							String formattedTime = time_to_str(pickedTime);
+							setState(() {
+								controller.text = formattedTime;
+								app_service_link = pickedTime;
+							});
+						}else{
+							print("Time is not selected");
+						}
+					},
+				)
+		);
+	}
+
+
 }

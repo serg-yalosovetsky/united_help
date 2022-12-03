@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:united_help/services/authenticate.dart';
@@ -36,10 +37,10 @@ class AppService with ChangeNotifier {
   List<String> _city_hint = [];
   List<String> _skills_hint = [];
   Employments employment = Employments.full;
-  String time_start = '';
-  String time_end = '';
-  String data_start = '';
-  String data_end = '';
+  TimeOfDay? time_start;
+  TimeOfDay? time_end;
+  DateTime? data_start;
+  DateTime? data_end;
 
 
   String init_key = 'init_key';
