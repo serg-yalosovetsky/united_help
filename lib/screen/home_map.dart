@@ -311,7 +311,19 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               ),
               markers: markers,
             ),
-            build_stack_map_card(),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 16,
+                      height: 0,
+                    ),
+                    build_stack_map_card(),
+                    build_stack_map_card(),
+                  ],
+                )
+            ),
           ],
           alignment: AlignmentDirectional.bottomStart,
         ),
@@ -353,8 +365,8 @@ class build_stack_map_card extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width - 16 - 16,
-      margin: EdgeInsets.fromLTRB(16, 0, 16, 18),
+      width: MediaQuery.of(context).size.width - 16 - 40,
+      margin: EdgeInsets.fromLTRB(0, 0, 11, 18),
         child: Row(
           children: [
             Padding(
@@ -362,13 +374,18 @@ class build_stack_map_card extends StatelessWidget {
               child: Container(
                 height: 91,
                 width: 100,
-                child: Image.asset(
-                    'images/img_4.png',
-                    // width: 100,
-                  fit: BoxFit.fill,
-                    // height: 91,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                      'images/img_4.png',
+                      // width: 100,
+                    fit: BoxFit.fill,
+                      // height: 91,
+                  ),
                 ),
+
               ),
+
             ),
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -424,7 +441,7 @@ class build_stack_map_card extends StatelessWidget {
             ),
           ],
         ),
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
           border: Border.all(
             color: Colors.white,
