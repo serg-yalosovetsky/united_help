@@ -21,6 +21,7 @@ class RegisterEmailConfirmationScreen extends StatelessWidget {
 		AppService app_service = Provider.of<AppService>(context, listen: false);
 
 		return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 				appBar: buildAppBar(() {
 					app_service.is_try_login = true;

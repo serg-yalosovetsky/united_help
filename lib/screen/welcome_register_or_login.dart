@@ -13,6 +13,7 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 		final app_service = Provider.of<AppService>(context);
 
 		return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(

@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _app_service = Provider.of<AppService>(context, listen: false);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
         appBar: build_switch_app_bar(_app_service,
               fun: () {

@@ -200,6 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		);
 
 		return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 				appBar: buildAppBar(() {
 					app_service.is_try_register = false;

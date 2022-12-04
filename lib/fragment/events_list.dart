@@ -6,6 +6,7 @@ import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/authenticate.dart';
 
 import '../services/show_nice_time.dart';
+import 'no_internet.dart';
 import 'skill_card.dart';
 import '../models/events.dart';
 import '../services/urls.dart';
@@ -54,10 +55,14 @@ class _EventListScreenState extends State<EventListScreen> {
 									},
 								);
 							} else if (snapshot.hasError) {
-								return Text('${snapshot.error}');
+								return build_no_internet();
+
+								// return Text('${snapshot.error}');
 							}
 
+							// return build_no_internet();
 							return const CircularProgressIndicator();
+
 						},
 					),
 				);

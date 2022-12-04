@@ -7,6 +7,7 @@ import 'package:united_help/services/appservice.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
 // import '../fragment/data_picker.dart';
+import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
 import '../fragment/text_field_helper.dart';
 import '../helpers.dart';
@@ -352,8 +353,10 @@ class _FiltersCardState extends State<FiltersCard> {
 			  					);
 
 			  				} else if (snapshot.hasError) {
-			  					return Text('${snapshot.error}');
-			  				}
+			  					// return Text('${snapshot.error}');
+									return build_no_internet();
+
+								}
 
 			  				return const CircularProgressIndicator();
 			  				},
@@ -450,9 +453,9 @@ class _FiltersCardState extends State<FiltersCard> {
 		end_year,
 	}) {
 	  return Container(
-			padding:const EdgeInsets.all(15),
+			padding:const EdgeInsets.fromLTRB(14, 4.5, 0, 4.5,),
 			// height:150,
-			width: 150,
+			width: 145,
 			child: TextField(
 				controller: controller,
 				decoration: InputDecoration(
@@ -490,8 +493,8 @@ class _FiltersCardState extends State<FiltersCard> {
 				required app_service_link,
 	})  {
 	  return Container(
-				padding:const EdgeInsets.all(15),
-				width: 140,
+				padding:const EdgeInsets.fromLTRB(14, 4.5, 0, 4.5,),
+				width: 130,
 				child: TextField(
 					controller: controller, //editing controller of this TextField
 					// decoration: const InputDecoration(

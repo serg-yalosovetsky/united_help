@@ -15,6 +15,7 @@ class SendEmailScreen extends StatelessWidget {
 
 		const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
 		return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 				appBar: AppBar(
 					title: Row(

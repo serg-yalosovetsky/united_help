@@ -13,35 +13,6 @@ Map<ListOrMap, String> list_or_map_text = <ListOrMap, String>{
 };
 
 
-//
-// class build_switch_app_bar extends StatefulWidget {
-//   const build_switch_app_bar({Key? key}) : super(key: key);
-//
-//   @override
-//   State<build_switch_app_bar> createState() => _build_switch_app_barState();
-// }
-
-
-// class _build_switch_app_barState extends State<build_switch_app_bar> {
-//   late AppService _app_service;
-//
-//   @override
-//   void initState() {
-//     _app_service = Provider.of<AppService>(context, listen: false);
-//     super.initState();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//       // MaterialApp(
-//       //
-//       // home: Scaffold(
-//       //   appBar:
-//     buildAppBar();
-//
-//   }
-
 AppBar build_switch_app_bar(AppService _app_service,
     {required Function fun, required Function to_filters}) {
   return AppBar(
@@ -50,7 +21,8 @@ AppBar build_switch_app_bar(AppService _app_service,
       title: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(9, 0, 19, 0),
+            padding: const EdgeInsets.fromLTRB(9, 0, 0, 0),
+            // padding: const EdgeInsets.fromLTRB(9, 0, 19, 0),
             child: Icon(Icons.tune, color: Colors.white, size: 18,),
           ),
           CupertinoSlidingSegmentedControl<ListOrMap>(
@@ -94,7 +66,7 @@ AppBar build_switch_app_bar(AppService _app_service,
           ),
           GestureDetector(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(9, 0, 19, 0),
+              padding: const EdgeInsets.fromLTRB(9, 0, 0, 0),
               child: Icon(Icons.tune, color: Color(0xFF1C1C1E), size: 18),
             ),
             onTap: () {

@@ -86,6 +86,7 @@ class _UnitedHelpState extends State<UnitedHelp> {
         builder: (context) {
           final GoRouter goRouter = Provider.of<AppRouter>(context, listen: false).router;
           return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             title: "Router App",
             routeInformationParser: goRouter.routeInformationParser,
             routerDelegate: goRouter.routerDelegate,

@@ -25,6 +25,7 @@ class WelcomeRoleScreen extends StatelessWidget {
 		// 	semanticsLabel: 'Acme Logo'
 		// );
 		return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(

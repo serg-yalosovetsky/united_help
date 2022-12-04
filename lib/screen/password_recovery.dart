@@ -97,6 +97,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 		);
 		
 			return MaterialApp(
+			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 				appBar: buildAppBar(() {
 					app_service.is_try_login = false;
