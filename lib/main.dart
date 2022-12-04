@@ -24,8 +24,10 @@ Future<void> main() async {
 
   await SentryFlutter.init(
         (options) {
-      options.dsn = 'http://7ec014d5153a4ffb9f41355c01378289@sentry.fyuzd.live/8';
-      options.tracesSampleRate = 1.0;
+          options.dsn = 'http://7ec014d5153a4ffb9f41355c01378289@sentry.fyuzd.live/8';
+          // options.dsn = 'https://0b96c4fdf54841df9be550172c90f745@o4504272346480640.ingest.sentry.io/4504272372760576';
+          options.tracesSampleRate = 1.0;
+
     },
     appRunner: () => runApp(UnitedHelp(
       shared_preferences: shared_preferences,

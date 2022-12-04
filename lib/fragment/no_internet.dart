@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget build_no_internet() {
+Widget build_no_internet({String? error}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -13,7 +13,7 @@ Widget build_no_internet() {
         Padding(
           padding: const EdgeInsets.all(9.0),
           child: Text(
-              'Упс..Немає підключення до інтернету',
+              error ?? 'Упс..Немає підключення до інтернету',
               style: TextStyle(
                 fontSize: 22,
                 color: Color(0xFF547FA6),

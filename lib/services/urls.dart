@@ -7,5 +7,8 @@ String all_events_url = '/events';
 String all_skills_url = '/skills';
 String all_cities_url = '/cities';
 String all_comments_url = '/comments';
+String all_profiles_url = '/profiles';
+String userprofile_url = '/userprofile';
+String all_users_url = '/users';
 
 

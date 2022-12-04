@@ -38,9 +38,6 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    print('skills ${json['skills']}');
-    print('cast ${json['skills'].cast<int>()}');
-
     var e= Event(
       id: json['id'],
       name: json['name'],

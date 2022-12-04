@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:united_help/services/appservice.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/card_list.dart';
+import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
+import '../models/profile.dart';
 
 
 class AccountScreen extends StatelessWidget {
@@ -113,7 +117,7 @@ class AccountScreen extends StatelessWidget {
 
 
 
-class card_detail extends StatelessWidget {
+class card_detail extends StatefulWidget {
 	const card_detail({
 		Key? key,
 		required this.title,
@@ -138,6 +142,12 @@ class card_detail extends StatelessWidget {
 	static const TextStyle timerBoldStyle =
 	TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
+  @override
+  State<card_detail> createState() => _card_detailState();
+}
+
+class _card_detailState extends State<card_detail> {
+
 	Widget return_skills_card(List skills, [int skill_in_row = 2]) {
 		List<Widget> columns = [];
 		int i = 0;
@@ -154,175 +164,220 @@ class card_detail extends StatelessWidget {
 		return Column(children: columns);
 	}
 
-
+	late Future<UserProfile> future_user_profile;
+	late AppService _app_service;
+	@override
+  void initState() {
+		_app_service = Provider.of<AppService>(context, listen: false);
+		future_user_profile = fetchUserProfile(_app_service.role);
+    super.initState();
+  }
 	@override
 	Widget build(BuildContext context) {
 
-		return SafeArea(
-				child: SingleChildScrollView(
-					child: Center(
-					  child: Column(
-					  	crossAxisAlignment: CrossAxisAlignment.center,
-					  	mainAxisAlignment: MainAxisAlignment.start,
-					  	children: [
-					  		Padding(
-					  		  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-					  		  child: CircleAvatar(
-					  		  	backgroundImage: AssetImage(
-					  		  		'images/img_3.png'
-					  		  	),
-									radius: 50.0,
-					  		  ),
-					  		),
-								Padding(
-									padding: const EdgeInsets.fromLTRB(73, 15, 73, 0),
-									child: const Text(
-										'Ліза Мельник',
-										style: TextStyle(
-												color: Colors.black,
-												fontSize: 17,
-												fontWeight: FontWeight.w600
-										),
-										textAlign: TextAlign.center,
-									),
-								),
-								Padding(
-									padding: const EdgeInsets.fromLTRB(73, 7, 73, 0),
-									child: const Text(
-										'Волонтерю заради того, щоб у цьому світі було більше добра і щастя!',
-										style: TextStyle(
-												color: Color(0xff748B9F),
-												fontSize: 17,
-												fontWeight: FontWeight.w400
-										),
-										textAlign: TextAlign.center,
-									),
-								),
 
-								Container(
-									margin: const EdgeInsets.fromLTRB(16, 30, 0, 0),
-									child: Align(
-										alignment: Alignment.centerLeft,
-										child: Text(
-											'Контакти',
-											style: timerBoldStyle,
-										),
-									),
-								),
-
-								Container(
-									margin: const EdgeInsets.fromLTRB(16, 13, 0, 0),
-									child: Align(
-										alignment: Alignment.centerLeft,
-										child: Row(
-										  children: [
-												Padding(
-												  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-												  child: Icon(
-												  	Icons.phone_rounded,
-												  	color: Color(0xff002241),
-														size: 26,
-													),
-												),
-										    Text(
-										    	'+380638945400',
-													style: TextStyle(
-															color: Color(0xff002241),
-															fontSize: 18,
-															fontWeight: FontWeight.w400
-													),
-										    	// style: timerBoldStyle,
-										    ),
-										  ],
-										),
-									),
-								),
-
-								Container(
-									margin: const EdgeInsets.fromLTRB(16, 13, 0, 0),
-									child: Align(
-										alignment: Alignment.centerLeft,
-										child: Row(
-											children: [
-												Padding(
-													padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-													child: Icon(
-														Icons.telegram_rounded,
-														color: Color(0xff29b6f6),
-														size: 26,
-													),
-												),
-												Text(
-													'@liza_melnik',
-													style: TextStyle(
-															color: Color(0xff002241),
-															fontSize: 18,
-															fontWeight: FontWeight.w400
-													),
-													// style: timerBoldStyle,
-												),
-											],
-										),
-									),
-								),
-
-
-								Row(
-								  children: [
-								    Expanded(
-								      child: Align(
-												alignment: Alignment.center,
-												child: Container(
-															margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-															child: Text(
-																'Актуальне',
-																style: timerBoldStyle,
-															),
-														),
-								      ),
-								    ),
-
-										Expanded(
-										  child: Align(
-												alignment: Alignment.center,
-												child: Container(
-															margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-															child: Text(
-																'Історія',
-																style: timerBoldStyle,
-															),
-												),
-										  ),
-										),
-								  ],
-								),
-
-								Row(
-									children: [
-										Expanded(
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(15, 13, 0, 0),
-												child: ActiveDivider(),
-											),
-										),
-
-										Expanded(
-											child: Padding(
-												padding: const EdgeInsets.fromLTRB(0, 13, 15, 0),
-												child: InactiveDivider(),
-											),
-										),
-									],
-								),
-								card_list(),
-
-							],
-					  ),
-					),
-				),
-
+		Widget future = FutureBuilder<UserProfile>(
+				future: future_user_profile,
+				builder: (context, snapshot){
+					if (snapshot.hasData){
+						// return build_account_screen(userprofile: snapshot.data!,);
+						return build_account_screen(
+							userprofile: snapshot.data!,
+						);
+					} else if (snapshot.hasError) {
+						return build_no_internet(error: snapshot.error.toString());
+					}
+					return const CircularProgressIndicator();
+				},
 		);
+		return future;
 	}
+}
+
+class build_account_screen extends StatelessWidget {
+  const build_account_screen({
+    Key? key,
+		// required this.userprofile,
+		required this.userprofile,
+  }) : super(key: key);
+
+	// final UserProfile userprofile;
+	final UserProfile userprofile;
+	static const TextStyle timerBoldStyle =
+													TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+  @override
+  Widget build(BuildContext context) {
+		// Profile profile = userprofile[user_profile.profile] as Profile;
+		// User user = userprofile[user_profile.user] as User;
+		var image;
+		if (userprofile.image != null) {
+			image = NetworkImage(userprofile.image!);
+		 } else {
+			image = AssetImage('images/img_22.png');
+		}
+
+    return SafeArea(
+    		child: SingleChildScrollView(
+    			child: Center(
+    			  child: Column(
+    			  	crossAxisAlignment: CrossAxisAlignment.center,
+    			  	mainAxisAlignment: MainAxisAlignment.start,
+    			  	children: [
+    			  		Padding(
+    			  		  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+    			  		  child: CircleAvatar(
+    			  		  	foregroundImage: image,
+    								radius: 50.0,
+    			  		  ),
+    			  		),
+    						Padding(
+    							padding: const EdgeInsets.fromLTRB(73, 15, 73, 0),
+    							child: Text(
+										userprofile.user.username,
+    								style: TextStyle(
+    										color: Colors.black,
+    										fontSize: 17,
+    										fontWeight: FontWeight.w600
+    								),
+    								textAlign: TextAlign.center,
+    							),
+    						),
+								userprofile.description!=null ? Padding(
+    							padding: const EdgeInsets.fromLTRB(73, 7, 73, 0),
+    							child: Text(
+										userprofile.description!,
+    								style: TextStyle(
+    										color: Color(0xff748B9F),
+    										fontSize: 17,
+    										fontWeight: FontWeight.w400
+    								),
+    								textAlign: TextAlign.center,
+    							),
+    						) : Container(),
+
+    						Container(
+    							margin: const EdgeInsets.fromLTRB(16, 30, 0, 0),
+    							child: Align(
+    								alignment: Alignment.centerLeft,
+    								child: Text(
+    									'Контакти',
+    									style: timerBoldStyle,
+    								),
+    							),
+    						),
+
+								userprofile.user.phone!=null ? Container(
+    							margin: const EdgeInsets.fromLTRB(16, 13, 0, 0),
+    							child: Align(
+    								alignment: Alignment.centerLeft,
+    								child: Row(
+    								  children: [
+    										Padding(
+    										  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+    										  child: Icon(
+    										  	Icons.phone_rounded,
+    										  	color: Color(0xff002241),
+    												size: 26,
+    											),
+    										),
+    								    Text(
+													userprofile.user.phone!,
+    											style: TextStyle(
+    													color: Color(0xff002241),
+    													fontSize: 18,
+    													fontWeight: FontWeight.w400
+    											),
+    								    ),
+    								  ],
+    								),
+    							),
+    						) : Container(),
+
+								userprofile.user.nickname!=null ? Container(
+    							margin: const EdgeInsets.fromLTRB(16, 13, 0, 0),
+    							child: Align(
+    								alignment: Alignment.centerLeft,
+    								child: Row(
+    									children: [
+    										Padding(
+    											padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+    											child: Icon(
+    												Icons.telegram_rounded,
+    												color: Color(0xff29b6f6),
+    												size: 26,
+    											),
+    										),
+    										Text(
+													userprofile.user.nickname!,
+    											style: TextStyle(
+    													color: Color(0xff002241),
+    													fontSize: 18,
+    													fontWeight: FontWeight.w400
+    											),
+    											// style: timerBoldStyle,
+    										),
+    									],
+    								),
+    							),
+    						) : Container(),
+
+
+    						Row(
+    						  children: [
+    						    Expanded(
+    						      child: Align(
+    										alignment: Alignment.center,
+    										child: Container(
+    													margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+    													child: Text(
+    														'Актуальне',
+    														style: timerBoldStyle,
+    													),
+    												),
+    						      ),
+    						    ),
+
+    								Expanded(
+    								  child: Align(
+    										alignment: Alignment.center,
+    										child: Container(
+    													margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+    													child: Text(
+    														'Історія',
+    														style: timerBoldStyle,
+    													),
+    										),
+    								  ),
+    								),
+    						  ],
+    						),
+
+    						Row(
+    							children: [
+    								Expanded(
+    									child: Padding(
+    										padding: const EdgeInsets.fromLTRB(15, 13, 0, 0),
+    										child: ActiveDivider(),
+    									),
+    								),
+
+    								Expanded(
+    									child: Padding(
+    										padding: const EdgeInsets.fromLTRB(0, 13, 15, 0),
+    										child: InactiveDivider(),
+    									),
+    								),
+    							],
+    						),
+    						card_list(),
+
+    					],
+    			  ),
+    			),
+    		),
+
+    );
+  }
 }
 
 class InactiveDivider extends StatelessWidget {
