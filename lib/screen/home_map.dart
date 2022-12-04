@@ -237,77 +237,83 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 ),
               );
             }),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () async {
-
-            BitmapDescriptor markerbitmap = await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(),
-              "images/img.png",
-            );
-            // setState(() {
-            //   markers.add(
-            //       Marker( //add start location marker
-            //         markerId: MarkerId('startLocation.toString()'),
-            //         position: LatLng(49.958601, 30.217047), //position of marker
-            //         infoWindow: InfoWindow( //popup info
-            //           title: 'Starting Point ',
-            //           snippet: 'Start Marker',
-            //         ),
-            //         icon: markerbitmap, //Icon for Marker
-            //       )
-            //   );
-            // markers = markers;
-            // });
-
-            print('add marker');
-            var new_marker = await Marker(
-                markerId: MarkerId('third'),
-                position: LatLng(49.988601, 30.217047), //position of marker
-                infoWindow: InfoWindow( //popup info
-                  title: 'My sadle ',
-                  snippet: 'Msditle',
-                ),
-                // icon: await MarkerIcon.downloadResizePictureCircle(
-                //   // assetPath: 'images/img_ellipse11.png',
-                //   //   height: 20,
-                //   //   width: 20,
-                //     'https://cdn-icons-png.flaticon.com/512/6750/6750242.png',
-                //     size: 150,
-                //     addBorder: true,
-                //     borderColor: Colors.white,
-                //     borderSize: 15
-                // ),
-                // icon: await MarkerIcon.pictureAssetWithCenterText(
-                //     assetPath: 'images/img_ellipse11.png',
-                //     text: 'some rfgmpofr text',
-                //     size: Size.square(300),
-                //     fontSize: 30,
-                //     fontColor: Colors.white,
-                // ),
-                // icon: await MarkerIcon.widgetToIcon(globalKey),
-                icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
-            );
-            setState(()  {
-              markers.add(new_marker);
-            });
-            print('add marker');
-
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   child: Icon(Icons.add),
+        //   onPressed: () async {
+        //
+        //     BitmapDescriptor markerbitmap = await BitmapDescriptor.fromAssetImage(
+        //       ImageConfiguration(),
+        //       "images/img.png",
+        //     );
+        //     // setState(() {
+        //     //   markers.add(
+        //     //       Marker( //add start location marker
+        //     //         markerId: MarkerId('startLocation.toString()'),
+        //     //         position: LatLng(49.958601, 30.217047), //position of marker
+        //     //         infoWindow: InfoWindow( //popup info
+        //     //           title: 'Starting Point ',
+        //     //           snippet: 'Start Marker',
+        //     //         ),
+        //     //         icon: markerbitmap, //Icon for Marker
+        //     //       )
+        //     //   );
+        //     // markers = markers;
+        //     // });
+        //
+        //     print('add marker');
+        //     var new_marker = await Marker(
+        //         markerId: MarkerId('third'),
+        //         position: LatLng(49.988601, 30.217047), //position of marker
+        //         infoWindow: InfoWindow( //popup info
+        //           title: 'My sadle ',
+        //           snippet: 'Msditle',
+        //         ),
+        //         // icon: await MarkerIcon.downloadResizePictureCircle(
+        //         //   // assetPath: 'images/img_ellipse11.png',
+        //         //   //   height: 20,
+        //         //   //   width: 20,
+        //         //     'https://cdn-icons-png.flaticon.com/512/6750/6750242.png',
+        //         //     size: 150,
+        //         //     addBorder: true,
+        //         //     borderColor: Colors.white,
+        //         //     borderSize: 15
+        //         // ),
+        //         // icon: await MarkerIcon.pictureAssetWithCenterText(
+        //         //     assetPath: 'images/img_ellipse11.png',
+        //         //     text: 'some rfgmpofr text',
+        //         //     size: Size.square(300),
+        //         //     fontSize: 30,
+        //         //     fontColor: Colors.white,
+        //         // ),
+        //         // icon: await MarkerIcon.widgetToIcon(globalKey),
+        //         icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
+        //     );
+        //     setState(()  {
+        //       markers.add(new_marker);
+        //     });
+        //     print('add marker');
+        //
+        //   },
+        // ),
+        //
         body: Stack(
           children: [
             // MyMarker(globalKey),
             GoogleMap(
               onMapCreated: _onMapCreated,
+              myLocationEnabled: true,
+              compassEnabled: true,
+              tiltGesturesEnabled: true,
+              zoomControlsEnabled: false,
               initialCameraPosition: CameraPosition(
                 target: _center,
                 zoom: 11.0,
               ),
               markers: markers,
             ),
-            Card(),
+            build_stack_map_card(),
           ],
+          alignment: AlignmentDirectional.bottomStart,
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
 
@@ -336,5 +342,96 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       },
     );
  return future;
+  }
+}
+
+class build_stack_map_card extends StatelessWidget {
+  const build_stack_map_card({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width - 16 - 16,
+      margin: EdgeInsets.fromLTRB(16, 0, 16, 18),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 19, 0),
+              child: Container(
+                height: 91,
+                width: 100,
+                child: Image.asset(
+                    'images/img_4.png',
+                    // width: 100,
+                  fit: BoxFit.fill,
+                    // height: 91,
+                ),
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
+                  child: Text('Гуманітарний штаб',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color(0xFF002241),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                        child: Icon(Icons.access_time_outlined),
+                      ),
+                      Text(
+                        'Постійна зайнятість',
+                          style: TextStyle(
+                            fontSize: 17,
+                            color: Color(0xFF7C7C7C),
+                            fontWeight: FontWeight.w400,
+                          ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                      child: Icon(Icons.location_on),
+                    ),
+                    Text('вул. Валова, 27',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Color(0xFF7C7C7C),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+          ],
+        ),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.white,
+          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10))
+      ),
+    );
   }
 }
