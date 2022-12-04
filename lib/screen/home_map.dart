@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/fragment/get_location_permission.dart';
 import 'dart:ui' as ui;
 
 import '../fragment/bottom_navbar.dart';
@@ -159,8 +161,51 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   late AppService _app_service;
 
+  Location location = Location();
+
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
+
+
+  Future<LocationData?> init_location() async {
+    LocationData stub_location_data = LocationData.fromMap({
+      'latitude': 50.450001,
+      'longitude': 30.523333,
+      'accuracy': 0,
+      'altitude': 0,
+      'speed': 0,
+      'speed_accuracy': 0,
+      'heading': 0,
+    });
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    return location.getLocation();
+  }
+
   void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
+    init_location().then(
+        (result) {
+          print("result: $result");
+          setState(() {});
+        }
+      );
+    super.initState();
   }
 
   Set<Marker> markers = get_markers();
@@ -168,30 +213,30 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
+    Widget map_screen = MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: build_switch_app_bar(_app_service,
-                fun: () {
-                  setState(() {
-                    if (_app_service.list_or_map == ListOrMap.list){
-                      _app_service.list_or_map = ListOrMap.map;
-                      context.go(APP_PAGE.home_map.to_path);
-                    } else {
-                      _app_service.list_or_map = ListOrMap.list;
-                      context.go(APP_PAGE.home_list.to_path);
-                    }
-                 });
-               },
-               to_filters: () {
-                 // context.go(APP_PAGE.filters.to_path);
-                 Navigator.push(
-                   context,
-                   MaterialPageRoute(
-                     builder: (context) => FiltersCard(),
-                   ),
-                 );
-               }),
+            fun: () {
+              setState(() {
+                if (_app_service.list_or_map == ListOrMap.list){
+                  _app_service.list_or_map = ListOrMap.map;
+                  context.go(APP_PAGE.home_map.to_path);
+                } else {
+                  _app_service.list_or_map = ListOrMap.list;
+                  context.go(APP_PAGE.home_list.to_path);
+                }
+              });
+            },
+            to_filters: () {
+              // context.go(APP_PAGE.filters.to_path);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FiltersCard(),
+                ),
+              );
+            }),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () async {
@@ -212,39 +257,39 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             //         icon: markerbitmap, //Icon for Marker
             //       )
             //   );
-              // markers = markers;
+            // markers = markers;
             // });
 
             print('add marker');
             var new_marker = await Marker(
-              markerId: MarkerId('third'),
-              position: LatLng(49.988601, 30.217047), //position of marker
-              infoWindow: InfoWindow( //popup info
-                title: 'My sadle ',
-                snippet: 'Msditle',
-              ),
-              // icon: await MarkerIcon.downloadResizePictureCircle(
-              //   // assetPath: 'images/img_ellipse11.png',
-              //   //   height: 20,
-              //   //   width: 20,
-              //     'https://cdn-icons-png.flaticon.com/512/6750/6750242.png',
-              //     size: 150,
-              //     addBorder: true,
-              //     borderColor: Colors.white,
-              //     borderSize: 15
-              // ),
-              // icon: await MarkerIcon.pictureAssetWithCenterText(
-              //     assetPath: 'images/img_ellipse11.png',
-              //     text: 'some rfgmpofr text',
-              //     size: Size.square(300),
-              //     fontSize: 30,
-              //     fontColor: Colors.white,
-              // ),
-              // icon: await MarkerIcon.widgetToIcon(globalKey),
-              icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
+                markerId: MarkerId('third'),
+                position: LatLng(49.988601, 30.217047), //position of marker
+                infoWindow: InfoWindow( //popup info
+                  title: 'My sadle ',
+                  snippet: 'Msditle',
+                ),
+                // icon: await MarkerIcon.downloadResizePictureCircle(
+                //   // assetPath: 'images/img_ellipse11.png',
+                //   //   height: 20,
+                //   //   width: 20,
+                //     'https://cdn-icons-png.flaticon.com/512/6750/6750242.png',
+                //     size: 150,
+                //     addBorder: true,
+                //     borderColor: Colors.white,
+                //     borderSize: 15
+                // ),
+                // icon: await MarkerIcon.pictureAssetWithCenterText(
+                //     assetPath: 'images/img_ellipse11.png',
+                //     text: 'some rfgmpofr text',
+                //     size: Size.square(300),
+                //     fontSize: 30,
+                //     fontColor: Colors.white,
+                // ),
+                // icon: await MarkerIcon.widgetToIcon(globalKey),
+                icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
             );
             setState(()  {
-                markers.add(new_marker);
+              markers.add(new_marker);
             });
             print('add marker');
 
@@ -254,19 +299,42 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           children: [
             // MyMarker(globalKey),
             GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 11.0,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 11.0,
+              ),
+              markers: markers,
             ),
-            markers: markers,
-          ),
-          Card(),
+            Card(),
           ],
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
 
       ),
     );
+
+
+
+    Widget future =  FutureBuilder<LocationData?>(
+      future: init_location(), // a previously-obtained Future<String> or null
+      builder: (BuildContext context, AsyncSnapshot<LocationData?> snapshot) {
+        Widget result;
+        if (snapshot.hasData && snapshot.data != null) {
+          result = Container();
+        } else if (snapshot.hasData && snapshot.data == null) {
+          result = build_get_location_permission();
+
+        } else if (snapshot.hasError) {
+          result = map_screen;
+
+        } else {
+          result = map_screen;
+
+        }
+        return result;
+      },
+    );
+ return future;
   }
 }

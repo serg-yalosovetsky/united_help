@@ -19,6 +19,7 @@ AppBar build_switch_app_bar(AppService _app_service,
       backgroundColor: Colors.white,
       centerTitle: true,
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(9, 0, 0, 0),
