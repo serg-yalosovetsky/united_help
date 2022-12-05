@@ -15,7 +15,12 @@ import '../services/urls.dart';
 
 class EventListScreen extends StatefulWidget {
 	final String event_query;
-	const EventListScreen({super.key, required this.event_query});
+	final bool is_listview;
+	const EventListScreen({
+		super.key,
+		required this.event_query,
+		this.is_listview = true,
+	});
 
 	@override
 	State<EventListScreen> createState() => _EventListScreenState();
@@ -38,11 +43,33 @@ class _EventListScreenState extends State<EventListScreen> {
 						future: futureEvents,
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								return ListView.builder(
-									itemCount: snapshot.data!.count,
-									// prototypeItem: card_builder(snapshot.data!.list.first),
-									itemBuilder: (context, index) {
-										return GestureDetector(
+
+								if (widget.is_listview)
+									return ListView.builder(
+										scrollDirection: Axis.vertical,
+										shrinkWrap: true,
+										itemCount: snapshot.data!.count,
+										// prototypeItem: card_builder(snapshot.data!.list.first),
+										itemBuilder: (context, index) {
+											return GestureDetector(
+													child: card_builder(snapshot.data!.list[index]),
+													onTap: () {
+														Navigator.of(context).push(
+															MaterialPageRoute(
+																builder: (context) => EventScreen(event: snapshot.data!.list[index],),
+															),
+														);
+													},
+
+											);
+										},
+									);
+								else
+									return List<Widget>.generate(
+										snapshot.data!.count,
+										// prototypeItem: card_builder(snapshot.data!.list.first),
+										(context, index) {
+											return GestureDetector(
 												child: card_builder(snapshot.data!.list[index]),
 												onTap: () {
 													Navigator.of(context).push(
@@ -52,16 +79,17 @@ class _EventListScreenState extends State<EventListScreen> {
 													);
 												},
 
-										);
-									},
-								);
+											);
+										},
+									);
+
 							} else if (snapshot.hasError) {
 								return build_no_internet();
 								// return Text('${snapshot.error}');
 							}
 
-							return build_get_location_permission();
-							// return const CircularProgressIndicator();
+							// return build_get_location_permission();
+							return const CircularProgressIndicator();
 
 						},
 					),

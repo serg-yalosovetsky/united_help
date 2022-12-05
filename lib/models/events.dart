@@ -92,14 +92,13 @@ class Events {
 
 Future<Events> fetchEvents(String event_query) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/';
-  url += event_query;
+  String url = '$server_url$all_events_url/$event_query';
 
   final response = await r.get_wrapper(url);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print(response['result']);
+    print(url);
     var r = Events.fromJson(res);
     return r;
   } else {

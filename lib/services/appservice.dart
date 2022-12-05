@@ -41,6 +41,7 @@ class AppService with ChangeNotifier {
   TimeOfDay? time_end;
   DateTime? data_start;
   DateTime? data_end;
+  bool account_actual_events = true;
 
 
   String init_key = 'init_key';
