@@ -85,7 +85,7 @@ class WelcomeRoleScreen extends StatelessWidget {
 								padding: const [72, 44, 72, 0],
 								active: true,
 								fun: () {
-									app_service.role = 'refugee';
+									app_service.role = Roles.refugee;
 									app_service.onboarding = true;
 								},
 							),
@@ -94,7 +94,7 @@ class WelcomeRoleScreen extends StatelessWidget {
 								  padding: const [72, 14, 72, 0],
 								  active: false,
 									fun: () {
-										app_service.role = 'volunteer';
+										app_service.role = Roles.volunteer;
 										app_service.onboarding = true;
 									},
 							  ),
@@ -103,7 +103,7 @@ class WelcomeRoleScreen extends StatelessWidget {
 								  padding: const [72, 14, 72, 5],
 								  active: false,
 									fun: () {
-										app_service.role = 'organizer';
+										app_service.role = Roles.organizer;
 										app_service.onboarding = true;
 									},
 							  ),

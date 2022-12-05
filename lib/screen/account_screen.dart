@@ -178,7 +178,7 @@ class _card_detailState extends State<card_detail> {
 	@override
   void initState() {
 		_app_service = Provider.of<AppService>(context, listen: false);
-		future_user_profile = fetchUserProfile(_app_service.role);
+		future_user_profile = fetchUserProfile(_app_service.role.toString());
     super.initState();
   }
 	@override

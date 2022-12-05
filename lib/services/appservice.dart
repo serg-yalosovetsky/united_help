@@ -16,6 +16,17 @@ enum Roles  {
   organizer,
   refugee,
 }
+// var rolesMap = {
+//   Roles.admin: 'admin',
+//   Roles.volunteer: 'volunteer',
+//   Roles.organizer: 'organizer',
+//   Roles.refugee: 'refugee',
+// };
+Roles isRole(String value){
+    return Roles.values.firstWhere(
+            (element) => element.toString() == value,
+            orElse: () => Roles.volunteer);
+}
 
 class AppService with ChangeNotifier {
   late final SharedPreferences shared_preferences;
@@ -172,10 +183,10 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
-  String get role => shared_preferences.getString(profile_key) ?? '';
-  set role(String value) {
+  Roles get role => isRole(shared_preferences.getString(profile_key) ?? '');
+  set role(Roles value) {
     if (Roles.values.contains(role)){
-      shared_preferences.setString(profile_key, value);
+      shared_preferences.setString(profile_key, value.toString());
       _roleState = true;
       notifyListeners();
     }

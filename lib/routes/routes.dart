@@ -189,11 +189,6 @@ class AppRouter {
         builder: (context, state) => WelcomeRoleScreen(),
       ),
       GoRoute(
-        path: APP_PAGE.account.to_path,
-        name: APP_PAGE.account.to_name,
-        builder: (context, state) => const AccountScreen(),
-      ),
-      GoRoute(
         path: APP_PAGE.register.to_path,
         name: APP_PAGE.register.to_name,
         builder: (context, state) => const RegisterScreen(),

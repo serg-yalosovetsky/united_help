@@ -26,9 +26,9 @@ class build_settings_screen extends StatelessWidget {
 			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
 				appBar: buildAppBar(() {
-					app_service.is_try_login = true;
-					context.go(APP_PAGE.login.to_path);
-				}, 'Реєстрація'),
+					// context.go(APP_PAGE.account.to_path);
+					Navigator.pop(context);
+				}, 'Налаштування'),
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(
 		  	  child: Container(
@@ -40,44 +40,51 @@ class build_settings_screen extends StatelessWidget {
 		  	  		  	crossAxisAlignment: CrossAxisAlignment.center,
 		  	  		  	mainAxisAlignment: MainAxisAlignment.center,
 		  	  		  	children: [
-										build_settings_header(text: 'Головні налаштування',),
+										const build_settings_header(text: 'Головні налаштування',),
 
 										build_settings_link(
 											text: 'Редагувати профіль',
 											on_tap: () {print('tap');},
 										),
-										Padding(
-										  padding: const EdgeInsets.fromLTRB(16, 11, 0, 0),
-										  child: Divider(height: 20, color: Color(0xFFC6C6C8),  thickness: 1,),
-										),
+										const left_padding_divider(),
 										build_settings_link(
 											text: 'Обранні організатори',
 											on_tap: () {print('tap2');},
 											up_padding: 11,
 										),
-										Padding(
-											padding: const EdgeInsets.fromLTRB(16, 11, 0, 0),
-											child: Divider(height: 20, color: Color(0xFFC6C6C8),  thickness: 1,),
-										),
+										const left_padding_divider(),
 
-										build_settings_header(
+										const build_settings_header(
 											text: 'Змінити акаунт',
 											up_padding: 22,
 										),
 										build_settings_link(
 											text: 'Волонтер',
-											on_tap: () {print('tap2');},
+											on_tap: () {app_service.role = Roles.volunteer;},
+											up_padding: 14,
+											icon: Icons.check,
+											active: () => app_service.role == Roles.volunteer,
+										),
+										const left_padding_divider(up_padding: 0,),
+										build_settings_link(
+											text: 'Організатор',
+											on_tap: () {app_service.role = Roles.organizer;},
 											up_padding: 11,
 											icon: Icons.check,
-											active: true,
+											active: () => app_service.role == Roles.organizer,
 										),
-
-
-
-
+										const left_padding_divider(up_padding: 0,),
+										build_settings_link(
+											text: 'Потребую допомогу',
+											on_tap: () {app_service.role = Roles.refugee;},
+											up_padding: 11,
+											icon: Icons.check,
+											active: () => app_service.role == Roles.refugee,
+										),
+										const left_padding_divider(up_padding: 0,),
 
 										Padding(
-											padding: EdgeInsets.fromLTRB(64, 34, 64, 0),
+											padding: const EdgeInsets.fromLTRB(64, 34, 64, 0),
 											child: Text(
 												"Підтримайте UnitedHelp",
 												overflow: TextOverflow.ellipsis,
@@ -92,7 +99,7 @@ class build_settings_screen extends StatelessWidget {
 											),
 										),
 										Padding(
-		  	  		  			padding: EdgeInsets.fromLTRB(64, 29, 64, 0),
+		  	  		  			padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
 		  	  		  			child: KeyboardVisibilityBuilder(
 													builder: (context, isKeyboardVisible) {
 														return Image.asset(
@@ -104,7 +111,7 @@ class build_settings_screen extends StatelessWidget {
 											),
 		  	  		  		),
 										Padding(
-											padding: EdgeInsets.fromLTRB(64, 29, 64, 0),
+											padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
 											child: Text(
 												"UnitedHelp",
 												overflow: TextOverflow.ellipsis,
@@ -120,13 +127,13 @@ class build_settings_screen extends StatelessWidget {
 										),
 										Container(
 											// width: 222.00,
-											margin: EdgeInsets.fromLTRB(25, 9, 25, 0),
-											child: Text(
+											margin: const EdgeInsets.fromLTRB(25, 9, 25, 0),
+											child: const Text(
 												"Цей додаток створенно на волонтерській основі, ваші донати допомагають нам покращувати його",
 												maxLines: null,
 												textAlign: TextAlign.center,
 												style: TextStyle(
-													color: ColorConstant.bluegray200,
+													color: Color(0xFF547FA6),
 													fontSize: 17,
 													fontFamily: 'SF Pro Text',
 													fontWeight: FontWeight.w500,
@@ -136,7 +143,7 @@ class build_settings_screen extends StatelessWidget {
 										),
 
 										welcome_button(
-											text_style: TextStyle(
+											text_style: const TextStyle(
 												fontSize: 18,
 												color: Colors.white,
 												fontWeight: FontWeight.w600,
@@ -155,6 +162,22 @@ class build_settings_screen extends StatelessWidget {
 		  ),
 		);
 	}
+}
+
+class left_padding_divider extends StatelessWidget {
+	final double? up_padding;
+	const left_padding_divider({
+    Key? key,
+		this.up_padding,
+	}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, up_padding ?? 11.0, 0, 0),
+      child: Divider(height: 20, color: Color(0xFFC6C6C8),  thickness: 1,),
+    );
+  }
 }
 
 class build_settings_header extends StatelessWidget {
@@ -186,12 +209,12 @@ class build_settings_link extends StatelessWidget {
 	final Function on_tap;
 	final double? up_padding;
 	final IconData? icon;
-	final bool active;
+	final Function? active;
   const build_settings_link({
     Key? key,
 		this.up_padding,
 		this.icon,
-		this.active = false,
+		this.active,
 		required this.text,
 		required this.on_tap,
   }) : super(key: key);
@@ -199,9 +222,9 @@ class build_settings_link extends StatelessWidget {
   Widget build(BuildContext context) {
 		Color get_color(icon, active) {
 			if (icon == null){
-				return Color(0x3C3C434D);
-			} else if (active) {
-				return Color(0xFF007AFF);
+				return const Color(0x3C3C434D);
+			} else if (active()) {
+				return const Color(0xFF007AFF);
 			} else {
 				return Colors.white;
 			}
@@ -218,7 +241,7 @@ class build_settings_link extends StatelessWidget {
           		alignment: Alignment.centerLeft,
           		child: Text(
 								text,
-          			style: TextStyle(
+          			style: const TextStyle(
           				fontSize: 17,
           				fontWeight: FontWeight.w400,
           			),
@@ -263,13 +286,15 @@ class welcome_button extends StatelessWidget {
 			width: 230,
         child: ElevatedButton(
           style: ButtonStyle(
-    		  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    		  RoundedRectangleBorder(
-    				borderRadius: BorderRadius.circular(22.0),
-    				// side: BorderSide(color: Colors.red)
-    				),
-    		  ),
-    	),
+						backgroundColor:
+							MaterialStateProperty.all<Color>(Color(0xFF0071D8)),
+						shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+						RoundedRectangleBorder(
+							borderRadius: BorderRadius.circular(22.0),
+							// side: BorderSide(color: Colors.red)
+							),
+						),
+					),
           onPressed: fun,
           child: Text(
       	  	text,
