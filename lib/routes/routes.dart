@@ -11,6 +11,7 @@ import 'package:united_help/screen/welcome_role.dart';
 import '../constants.dart';
 import '../screen/account_screen.dart';
 import '../fragment/events_list.dart';
+import '../screen/edit_account.dart';
 import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
 import '../fragment/switch_app_bar.dart';
@@ -38,6 +39,7 @@ enum APP_PAGE {
   filters,
   error,
   account,
+  edit_account,
   settings,
 }
 
@@ -50,6 +52,8 @@ extension AppPageExtension on APP_PAGE {
         return "/map";
       case APP_PAGE.account:
         return "/account";
+      case APP_PAGE.edit_account:
+        return "/edit_account";
       case APP_PAGE.settings:
         return "/settings";
       case APP_PAGE.verification:
@@ -102,6 +106,8 @@ extension AppPageExtension on APP_PAGE {
         return "PASSWORD_CONFIRMATION";
       case APP_PAGE.account:
         return "ACCOUNT";
+      case APP_PAGE.edit_account:
+        return "EDIT_ACCOUNT";
       case APP_PAGE.settings:
         return "SETTINGS";
       case APP_PAGE.splash:
@@ -167,6 +173,11 @@ class AppRouter {
         path: APP_PAGE.account.to_path,
         name: APP_PAGE.account.to_name,
         builder: (context, state) => AccountScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.edit_account.to_path,
+        name: APP_PAGE.edit_account.to_name,
+        builder: (context, state) => EditAccountScreen(),
       ),
       GoRoute(
         path: APP_PAGE.settings.to_path,

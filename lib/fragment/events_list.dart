@@ -49,7 +49,7 @@ class _EventListScreenState extends State<EventListScreen> {
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
 
-									if (snapshot.data!.count > 0){
+									if (snapshot.data!.count <= 0){
 										return build_no_actual_widgets();
 									}
 

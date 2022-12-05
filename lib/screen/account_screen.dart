@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/screen/edit_account.dart';
 import 'package:united_help/screen/settings_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import '../fragment/bottom_navbar.dart';
@@ -178,7 +179,7 @@ class _card_detailState extends State<card_detail> {
 	@override
   void initState() {
 		_app_service = Provider.of<AppService>(context, listen: false);
-		future_user_profile = fetchUserProfile(_app_service.role.toString());
+		future_user_profile = fetchUserProfile(''); //_app_service.role.toString()
     super.initState();
   }
 	@override
@@ -246,9 +247,17 @@ class _build_account_screenState extends State<build_account_screen> {
 								children: [
 										Padding(
 										padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-										child: CircleAvatar(
-											foregroundImage: image,
+										child: GestureDetector(
+										  child: CircleAvatar(
+										  	foregroundImage: image,
 									radius: 50.0,
+										  ),
+											onTap: () {
+												Navigator.of(context).push(
+													MaterialPageRoute(
+														builder: (context) => const EditAccountScreen(),
+													),
+											);},
 										),
 									),
 
