@@ -17,6 +17,7 @@ import '../fragment/switch_app_bar.dart';
 import '../screen/home_map.dart';
 import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
+import '../screen/settings_screen.dart';
 import '../screen/verification_main.dart';
 import '../services/appservice.dart';
 import '../services/login_state.dart';
@@ -37,6 +38,7 @@ enum APP_PAGE {
   filters,
   error,
   account,
+  settings,
 }
 
 extension AppPageExtension on APP_PAGE {
@@ -48,6 +50,8 @@ extension AppPageExtension on APP_PAGE {
         return "/map";
       case APP_PAGE.account:
         return "/account";
+      case APP_PAGE.settings:
+        return "/settings";
       case APP_PAGE.verification:
         return "/verification";
       case APP_PAGE.login:
@@ -98,6 +102,8 @@ extension AppPageExtension on APP_PAGE {
         return "PASSWORD_CONFIRMATION";
       case APP_PAGE.account:
         return "ACCOUNT";
+      case APP_PAGE.settings:
+        return "SETTINGS";
       case APP_PAGE.splash:
         return "SPLASH";
       case APP_PAGE.error:
@@ -156,6 +162,16 @@ class AppRouter {
         path: APP_PAGE.register_login.to_path,
         name: APP_PAGE.register_login.to_name,
         builder: (context, state) => WelcomeRegisterOrLoginScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.account.to_path,
+        name: APP_PAGE.account.to_name,
+        builder: (context, state) => AccountScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.settings.to_path,
+        name: APP_PAGE.settings.to_name,
+        builder: (context, state) => build_settings_screen(),
       ),
       GoRoute(
         path: APP_PAGE.register_confirmation.to_path,

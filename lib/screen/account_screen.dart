@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/screen/settings_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/card_list.dart';
@@ -96,8 +97,15 @@ class AccountScreen extends StatelessWidget {
 						// elevation: 2,
 						onSelected: (value) {
 							if (value == 1) {
-								_showDialog(context);
+								Navigator.of(context).push(
+									MaterialPageRoute(
+										builder: (context) => build_settings_screen(),
+									),
+								);
 							} else if (value == 2) {
+								_showDialog(context);
+							}
+							else if (value == 3) {
 								_showDialog(context);
 							}
 						},
@@ -257,10 +265,10 @@ class _build_account_screenState extends State<build_account_screen> {
 											),
 										),
 
-										widget.userprofile.description!=null ? Padding(
+										Padding(
 											padding: const EdgeInsets.fromLTRB(73, 7, 73, 0),
 											child: Text(
-													widget.userprofile.description!,
+													widget.userprofile.description ?? 'В вас немає біо',
 												style: TextStyle(
 														color: Color(0xff748B9F),
 														fontSize: 17,
@@ -268,7 +276,7 @@ class _build_account_screenState extends State<build_account_screen> {
 												),
 												textAlign: TextAlign.center,
 											),
-										) : Container(),
+										),
 
 										Container(
 											margin: const EdgeInsets.fromLTRB(16, 30, 0, 0),

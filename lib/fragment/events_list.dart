@@ -9,6 +9,7 @@ import 'package:united_help/services/authenticate.dart';
 
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
+import 'no_actual_events.dart';
 import 'no_internet.dart';
 import 'skill_card.dart';
 import '../models/events.dart';
@@ -48,6 +49,10 @@ class _EventListScreenState extends State<EventListScreen> {
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
 
+									if (snapshot.data!.count > 0){
+										return build_no_actual_widgets();
+									}
+
 		  						if (widget.is_listview)
 		  							return ListView.builder(
 		  								scrollDirection: Axis.vertical,
@@ -68,29 +73,29 @@ class _EventListScreenState extends State<EventListScreen> {
 		  								},
 		  							);
 		  						else {
-              var widget_list = List<Widget>.generate(
-                snapshot.data!.count,
-                (index) {
-                  return GestureDetector(
-                    child: card_builder(snapshot.data!.list[index]),
-                    onTap: () {
-		  									setState(() {
-		  										Navigator.of(context).push(
-		  											MaterialPageRoute(
-		  												builder: (context) => EventScreen(
-		  													event: snapshot.data!.list[index],
-		  												),
-		  											),
-		  										);
-		  									});
+										var widget_list = List<Widget>.generate(
+											snapshot.data!.count,
+											(index) {
+												return GestureDetector(
+													child: card_builder(snapshot.data!.list[index]),
+													onTap: () {
+															setState(() {
+																Navigator.of(context).push(
+																	MaterialPageRoute(
+																		builder: (context) => EventScreen(
+																			event: snapshot.data!.list[index],
+																		),
+																	),
+																);
+															});
 
-                    },
-                  );
-                },
-              );
-              return Column(
-                children: widget_list,
-              );
+													},
+												);
+											},
+										);
+										return Column(
+											children: widget_list,
+										);
             }
           } else if (snapshot.hasError) {
 		  						return build_no_internet();
