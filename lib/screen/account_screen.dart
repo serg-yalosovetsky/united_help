@@ -400,9 +400,12 @@ class _build_account_screenState extends State<build_account_screen> {
     					    		),
     					    	],
     					    ),
-									widget.app_service.account_actual_events ?
-											const EventListScreen(event_query: 'subscribed',) :
-											const EventListScreen(event_query: 'attended',),
+									Container(
+									  child: widget.app_service.account_actual_events ?
+									  		EventListScreen(event_query: 'subscribed', is_listview: false,) :
+												// Container()
+									  		EventListScreen(event_query: 'attended', is_listview: false,),
+									),
     					  ],
     					),
 

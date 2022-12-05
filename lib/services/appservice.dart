@@ -41,7 +41,7 @@ class AppService with ChangeNotifier {
   TimeOfDay? time_end;
   DateTime? data_start;
   DateTime? data_end;
-  bool account_actual_events = true;
+  bool _account_actual_events = true;
 
 
   String init_key = 'init_key';
@@ -148,6 +148,13 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
   bool get open_text_field_choose_other_city => _open_text_field_choose_other_city;
+
+  set account_actual_events (bool value) {
+    _account_actual_events = value;
+    print('notifyListeners()');
+    notifyListeners();
+  }
+  bool get account_actual_events => _account_actual_events;
 
 
   set initialized(bool value) {

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:united_help/screen/card_screen.dart';
+import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
 import '../services/show_nice_time.dart';
@@ -16,7 +18,7 @@ import '../services/urls.dart';
 class EventListScreen extends StatefulWidget {
 	final String event_query;
 	final bool is_listview;
-	const EventListScreen({
+	 EventListScreen({
 		super.key,
 		required this.event_query,
 		this.is_listview = true,
@@ -28,72 +30,80 @@ class EventListScreen extends StatefulWidget {
 
 class _EventListScreenState extends State<EventListScreen> {
 	late Future<Events> futureEvents;
-
+	late AppService app_service;
 	@override
 	void initState() {
-		super.initState();
-		futureEvents = fetchEvents(widget.event_query);
+    super.initState();
 	}
 
 	@override
 	Widget build(BuildContext context) {
+		futureEvents = fetchEvents(widget.event_query);
 
-		return Center(
-					child: FutureBuilder<Events>(
-						future: futureEvents,
-						builder: (context, snapshot) {
-							if (snapshot.hasData) {
+		return Consumer<AppService>(
+		  builder: (context, cart, child) {
+				return Center(
+		  			child: FutureBuilder<Events>(
+		  				future: futureEvents,
+		  				builder: (context, snapshot) {
+		  					if (snapshot.hasData) {
 
-								if (widget.is_listview)
-									return ListView.builder(
-										scrollDirection: Axis.vertical,
-										shrinkWrap: true,
-										itemCount: snapshot.data!.count,
-										// prototypeItem: card_builder(snapshot.data!.list.first),
-										itemBuilder: (context, index) {
-											return GestureDetector(
-													child: card_builder(snapshot.data!.list[index]),
-													onTap: () {
-														Navigator.of(context).push(
-															MaterialPageRoute(
-																builder: (context) => EventScreen(event: snapshot.data!.list[index],),
-															),
-														);
-													},
+		  						if (widget.is_listview)
+		  							return ListView.builder(
+		  								scrollDirection: Axis.vertical,
+		  								shrinkWrap: true,
+		  								itemCount: snapshot.data!.count,
+		  								itemBuilder: (context, index) {
+		  									return GestureDetector(
+		  											child: card_builder(snapshot.data!.list[index]),
+		  											onTap: () {
+		  												Navigator.of(context).push(
+		  													MaterialPageRoute(
+		  														builder: (context) => EventScreen(event: snapshot.data!.list[index],),
+		  													),
+		  												);
+		  											},
 
-											);
-										},
-									);
-								else
-									return List<Widget>.generate(
-										snapshot.data!.count,
-										// prototypeItem: card_builder(snapshot.data!.list.first),
-										(context, index) {
-											return GestureDetector(
-												child: card_builder(snapshot.data!.list[index]),
-												onTap: () {
-													Navigator.of(context).push(
-														MaterialPageRoute(
-															builder: (context) => EventScreen(event: snapshot.data!.list[index],),
-														),
-													);
-												},
+		  									);
+		  								},
+		  							);
+		  						else {
+              var widget_list = List<Widget>.generate(
+                snapshot.data!.count,
+                (index) {
+                  return GestureDetector(
+                    child: card_builder(snapshot.data!.list[index]),
+                    onTap: () {
+		  									setState(() {
+		  										Navigator.of(context).push(
+		  											MaterialPageRoute(
+		  												builder: (context) => EventScreen(
+		  													event: snapshot.data!.list[index],
+		  												),
+		  											),
+		  										);
+		  									});
 
-											);
-										},
-									);
+                    },
+                  );
+                },
+              );
+              return Column(
+                children: widget_list,
+              );
+            }
+          } else if (snapshot.hasError) {
+		  						return build_no_internet();
+		  						// return Text('${snapshot.error}');
+		  					}
+		  					// return build_get_location_permission();
+		  					return const CircularProgressIndicator();
 
-							} else if (snapshot.hasError) {
-								return build_no_internet();
-								// return Text('${snapshot.error}');
-							}
-
-							// return build_get_location_permission();
-							return const CircularProgressIndicator();
-
-						},
-					),
-				);
+		  				},
+		  			),
+		  		);
+				},
+		);
 	}
 }
 
