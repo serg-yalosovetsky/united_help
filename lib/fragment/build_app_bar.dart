@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 AppBar buildAppBar(Function fun, String title,
-    [String? action_text_button, Function? fun_button]) {
+    [Widget? action_button_widget,]) {
   const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
   return AppBar(
     automaticallyImplyLeading: false,
@@ -38,20 +38,13 @@ AppBar buildAppBar(Function fun, String title,
           ),
         ),
 
-        action_text_button==null ? Icon(
+        action_button_widget==null ? Icon(
             Icons.arrow_back_ios,
             color: Colors.white) : Container(),
-        action_text_button==null ? const Text(
+        action_button_widget==null ? const Text(
           'Назад',
           style: TextStyle(color: Colors.white),
-        ): GestureDetector(
-          child: Text(
-            action_text_button,
-            style: TextStyle(color: Color(0xFF8E8E93)),
-          ),
-          onTap: fun_button?.call(),
-          // onTap: fun_button != null ? fun_button?() : null,
-        ),
+        ): action_button_widget,
       ],
     ),
     backgroundColor: Colors.white,

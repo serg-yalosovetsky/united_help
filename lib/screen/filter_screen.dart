@@ -326,7 +326,19 @@ class _FiltersCardState extends State<FiltersCard> {
 						Navigator.pop(context);
 					},
 					'Фільтри',
-					'Зберегти'),
+					TextButton(
+						onPressed: () {},
+						child: Text(
+							'Зберегти',
+							style: TextStyle(
+								color: Color(0xFF0071D8),
+								fontSize: 18,
+								fontFamily: 'SF Pro Text',
+								fontWeight: FontWeight.w400,
+							),
+						),
+					)
+			),
 
 			body: SingleChildScrollView(
 			  child: Column(

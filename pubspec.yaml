@@ -49,6 +49,8 @@ dependencies:
   flutter_secure_storage: ">=6.1.0"
   webview_flutter: ^3.0.4
   location: ^4.4.0
+  phone_number: ^1.0.0
+  flutter_form_builder: ^7.7.0
 #  syncfusion_flutter_datepicker: ^20.3.59
 
 

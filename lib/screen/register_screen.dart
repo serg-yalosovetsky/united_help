@@ -59,143 +59,129 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
 		Widget form_name = Form(
 			key: _form_key_name,
-			child: Column(
-				children: <Widget>[
-					Padding(
-						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
-						child: TextFormField(
-							controller: name_controller,
-							autovalidateMode: AutovalidateMode.onUserInteraction,
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Ім’я не може бути пустим';
-								}
-								return null;
-							},
-							onChanged: (text) {
-								setState(() {
-									if (_form_key_name.currentState!.validate())
-										button_states[name_index] = true;
-									else
-										button_states[name_index] = false;
-								});
-							},
-							decoration: InputDecoration(
-								border: OutlineInputBorder(
-									borderRadius : BorderRadius.all(Radius.circular(16.0)),
-								),
-								hintText: 'Прізвище, ім’я',
-								suffixIcon: IconButton(
-									onPressed: name_controller.clear,
-									icon: Icon(
-											Icons.clear,
-									),
-								),
+			child: Padding(
+				padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
+				child: TextFormField(
+					controller: name_controller,
+					autovalidateMode: AutovalidateMode.onUserInteraction,
+					validator: (value) {
+						if (value == null || value.isEmpty) {
+							return 'Ім’я не може бути пустим';
+						}
+						return null;
+					},
+					onChanged: (text) {
+						setState(() {
+							if (_form_key_name.currentState!.validate())
+								button_states[name_index] = true;
+							else
+								button_states[name_index] = false;
+						});
+					},
+					decoration: InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
+						hintText: 'Прізвище, ім’я',
+						suffixIcon: IconButton(
+							onPressed: name_controller.clear,
+							icon: Icon(
+									Icons.clear,
 							),
 						),
 					),
-				],
+				),
 			),
 		);
 		Widget form_email = Form(
 			key: _form_key_email,
-			child: Column(
-				children: <Widget>[
-					Padding(
-						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
-						child: TextFormField(
-							controller: email_controller,
-							autovalidateMode: AutovalidateMode.onUserInteraction,
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Email не може бути пустим';
-								}
-								String validate_msg = email_validator(value);
-								if (validate_msg.isEmpty){
-									return null;
-								}
-								return validate_msg;
-							},
-							onChanged: (text) {
-								setState(() {
-									if (_form_key_email.currentState!.validate())
-											button_states[email_index] = true;
-									else
-											button_states[email_index] = false;
-								});
-							},
-							decoration: InputDecoration(
-								border: OutlineInputBorder(
-									borderRadius : BorderRadius.all(Radius.circular(16.0)),
-								),
-								hintText: 'Email',
-								suffixIcon: IconButton(
-									onPressed: email_controller.clear,
-									icon: Icon(
-										Icons.clear,
-									),
-								),
+			child: Padding(
+				padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
+				child: TextFormField(
+					keyboardType: TextInputType.emailAddress,
+					controller: email_controller,
+					autovalidateMode: AutovalidateMode.onUserInteraction,
+					validator: (value) {
+						if (value == null || value.isEmpty) {
+							return 'Email не може бути пустим';
+						}
+						String validate_msg = email_validator(value);
+						if (validate_msg.isEmpty){
+							return null;
+						}
+						return validate_msg;
+					},
+					onChanged: (text) {
+						setState(() {
+							if (_form_key_email.currentState!.validate())
+									button_states[email_index] = true;
+							else
+									button_states[email_index] = false;
+						});
+					},
+					decoration: InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
+						hintText: 'Email',
+						suffixIcon: IconButton(
+							onPressed: email_controller.clear,
+							icon: Icon(
+								Icons.clear,
 							),
 						),
 					),
-				],
+				),
 			),
 		);
 		Widget form_password = Form(
 			key: _form_key_password,
-			child: Column(
-				children: <Widget>[
-					Padding(
-						padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
-						child: TextFormField(
-							keyboardType: TextInputType.text,
-							controller: password_controller,
-							obscureText: !_password_visible,
-							autovalidateMode: AutovalidateMode.onUserInteraction,
-							validator: (value) {
-								if (value == null || value.isEmpty) {
-									return 'Пароль не може бути пустим';
-								}
-								String validate_msg = password_validator(value);
-								if (validate_msg.isEmpty){
-									return null;
-								}
-								return validate_msg;
-							},
-							onChanged: (text) {
+			child: Padding(
+				padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
+				child: TextFormField(
+					keyboardType: TextInputType.text,
+					controller: password_controller,
+					obscureText: !_password_visible,
+					autovalidateMode: AutovalidateMode.onUserInteraction,
+					validator: (value) {
+						if (value == null || value.isEmpty) {
+							return 'Пароль не може бути пустим';
+						}
+						String validate_msg = password_validator(value);
+						if (validate_msg.isEmpty){
+							return null;
+						}
+						return validate_msg;
+					},
+					onChanged: (text) {
+						setState(() {
+							if (_form_key_password.currentState!.validate())
+									button_states[password_index] = true;
+							else
+									button_states[password_index] = false;
+						});
+					},
+					decoration: InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
+						hintText: 'Пароль',
+						suffixIcon: IconButton(
+							onPressed: () {
 								setState(() {
-									if (_form_key_password.currentState!.validate())
-											button_states[password_index] = true;
-									else
-											button_states[password_index] = false;
+									_password_visible = !_password_visible;
 								});
 							},
-							decoration: InputDecoration(
-								border: OutlineInputBorder(
-									borderRadius : BorderRadius.all(Radius.circular(16.0)),
-								),
-								hintText: 'Пароль',
-								suffixIcon: IconButton(
-									onPressed: () {
-										setState(() {
-											_password_visible = !_password_visible;
-										});
-									},
-									icon: Icon(
-										// Based on passwordVisible state choose the icon
-										_password_visible
-												? Icons.visibility
-												: Icons.visibility_off,
-										// color: Theme.of(context).primaryColorDark,
-									),
-								),
+							icon: Icon(
+								// Based on passwordVisible state choose the icon
+								_password_visible
+										? Icons.visibility
+										: Icons.visibility_off,
+								// color: Theme.of(context).primaryColorDark,
 							),
 						),
 					),
-
-
-
-				],
+				),
 			),
 		);
 
