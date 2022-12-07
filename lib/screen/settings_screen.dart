@@ -3,6 +3,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/screen/edit_account.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
@@ -44,7 +45,12 @@ class build_settings_screen extends StatelessWidget {
 
 										build_settings_link(
 											text: 'Редагувати профіль',
-											on_tap: () {print('tap');},
+											on_tap: () {
+												Navigator.of(context).push(
+												MaterialPageRoute(
+													builder: (context) => const EditAccountScreen(),
+												),
+											);},
 										),
 										const left_padding_divider(),
 										build_settings_link(

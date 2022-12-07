@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import '../services/authenticate.dart';
 import '../services/urls.dart';
 
@@ -7,6 +9,7 @@ class User {
   final bool active;
   final String? phone;
   final String username;
+  final String email;
   final String? nickname;
   final String? telegram_phone;
   final String? viber_phone;
@@ -16,6 +19,7 @@ class User {
   const User({
     required this.id,
     required this.username,
+    required this.email,
     required this.active,
     required this.phone,
     required this.nickname,
@@ -26,9 +30,12 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    var e= User(
+    print('user json');
+    print(json);
+    return User(
       id: json['id'],
       username: json['username'],
+      email: json['email'],
       active: json['active'],
       phone: json['phone'],
       nickname: json['nickname'],
@@ -36,8 +43,25 @@ class User {
       viber_phone: json['viber_phone'],
       reg_date: json['reg_date'],
     );
-    print(e);
-    return e;
+    // print(e);
+    // return e;
+  }
+  String encode () {
+    Map user_map = {
+      'id': this.id,
+      'username': this.username,
+      'email': this.email,
+      'active': this.active,
+      'phone': this.phone,
+      'nickname': this.nickname,
+      'telegram_phone': this.telegram_phone,
+      'viber_phone': this.viber_phone,
+      'reg_date': this.reg_date,
+    };
+    return json.encode(user_map);
+  }
+  factory User.decode(String user_str) {
+    return User.fromJson(json.decode(user_str));
   }
 }
 
@@ -67,7 +91,7 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
-    var e= Profile(
+    return Profile(
       id: json['id'],
       active: json['active'],
       description: json['description'],
@@ -78,56 +102,52 @@ class Profile {
       rating: json['rating'],
       skills: json['skills'].cast<int>(),
     );
-    print(e);
-    return e;
+    // print(e);
+    // return e;
+  }
+  String encode () {
+    Map profile_map = {
+      'id': this.id,
+      'role': this.role,
+      'active': this.active,
+      'rating': this.rating,
+      'image': this.image,
+      'description': this.description,
+      'url': this.url,
+      'organization': this.organization,
+      'skills': this.skills,
+    };
+    return json.encode(profile_map);
+  }
+  factory Profile.decode(String profile_str) {
+    return Profile.fromJson(json.decode(profile_str));
   }
 }
 
 
 
 class UserProfile {
-  final int id;
   final User user;
-  final int role;
-  final double rating;
-  final String? image;
-  final String? description;
-  final String? url;
-  final String? organization;
-  final bool active;
-  final List<int> skills;
+  final Profile profile;
 
   const UserProfile({
-    required this.id,
     required this.user,
-    required this.role,
-    required this.rating,
-    required this.image,
-    required this.description,
-    required this.url,
-    required this.organization,
-    required this.active,
-    required this.skills,
+    required this.profile,
 
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     print(json);
     var e= UserProfile(
-      id: json['id'],
       user: User.fromJson(json['user']),
-      active: json['active'],
-      description: json['description'],
-      image: json['image'],
-      url: json['url'],
-      organization: json['organization'],
-      role: json['role'],
-      rating: json['rating'],
-      skills: json['skills'].cast<int>(),
+      profile: Profile.fromJson(json),
     );
     print(e);
     return e;
   }
+  // String encode (Profile profile) {
+  //   return json.encode(profile);
+  // }
 }
 
 

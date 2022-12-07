@@ -53,6 +53,12 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
 	void initState() {
 		app_service = Provider.of<AppService>(context, listen: false);
+		name_controller.text = app_service.user?.username ?? '';
+		email_controller.text = app_service.user?.email ?? '';
+		bio_controller.text = app_service.current_profile?.description ?? '';
+		phone_controller.text = app_service.user?.phone ?? '';
+		telegram_controller.text = app_service.user?.nickname ?? app_service.user?.telegram_phone ?? '';
+		viber_controller.text = app_service.user?.viber_phone ?? '';
 	}
 
 	@override
@@ -381,10 +387,33 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 		  	  		  			padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
 		  	  		  			child: KeyboardVisibilityBuilder(
 													builder: (context, isKeyboardVisible) {
-														return Image.asset(
-															'images/img.png',
-															height:	isKeyboardVisible ? 78.0 : 184.0,
-														);
+														var image;
+														print("app_service.current_profile");
+														print(app_service.current_profile);
+														print(app_service.user.toString());
+														print(app_service.role);
+														print(app_service.volunteer);
+														if (app_service.current_profile != null &&
+																app_service.current_profile?.image != null &&
+																app_service.current_profile?.image != ''
+														) {
+															print(app_service.current_profile);
+															image = Image.network(
+																app_service.current_profile?.image ?? '',
+																height:	isKeyboardVisible ? 78.0 : 184.0,
+															);
+														} else {
+															image = Image.asset(
+																	'images/img_22.png',
+																	height:	isKeyboardVisible ? 78.0 : 184.0,
+															);
+														}
+
+														return image;
+														// 	Image.asset(
+														// 	'images/img.png',
+														// 	height:	isKeyboardVisible ? 78.0 : 184.0,
+														// );
 													}
 											),
 		  	  		  		),

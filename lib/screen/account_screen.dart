@@ -35,11 +35,6 @@ class AccountScreen extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
-		const String title = 'Гуманітарний штаб м.Тернопіль сортування продуктових наборів';
-		const String image = 'images/Best-TED-Talks-From-The-Curator-Himself-.jpg';
-		const String location = 'Вул. Валова, 27';
-		const String time = 'Постійна зайнятість';
-		const String description = 'Запрошуємо волонтерів до гуманітарного штабу Тернополя. Ми потребуємо допомогу в розвантаженні фур, сортуванні гуманітарної допомоги, пакуванні на фронт й видачі допомоги потребуючим людям.';
 		const List skills = [
 			"Microsoft Office", "Комунікативність",
 			"Пунктуальність", "Організованість"
@@ -115,9 +110,7 @@ class AccountScreen extends StatelessWidget {
 				],
 			),
 			body: const SafeArea(
-				child: card_detail(
-					title: title, image: image, location: location, time: time,
-					description: description, skills: skills,),
+				child: account_screen(),
 			),
 			bottomNavigationBar: buildBottomNavigationBar(),
 
@@ -127,22 +120,11 @@ class AccountScreen extends StatelessWidget {
 
 
 
-class card_detail extends StatefulWidget {
-	const card_detail({
+class account_screen extends StatefulWidget {
+	const account_screen({
 		Key? key,
-		required this.title,
-		required this.image,
-		required this.time,
-		required this.location,
-		required this.description,
-		required this.skills,
 	}) : super(key: key);
-	final String title;
-	final String image;
-	final String time;
-	final String location;
-	final String description;
-	final List skills;
+
 
 	static const TextStyle optionStyle =
 	TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -153,10 +135,10 @@ class card_detail extends StatefulWidget {
 	TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
   @override
-  State<card_detail> createState() => _card_detailState();
+  State<account_screen> createState() => _account_screenState();
 }
 
-class _card_detailState extends State<card_detail> {
+class _account_screenState extends State<account_screen> {
 
 	Widget return_skills_card(List skills, [int skill_in_row = 2]) {
 		List<Widget> columns = [];
@@ -184,24 +166,34 @@ class _card_detailState extends State<card_detail> {
   }
 	@override
 	Widget build(BuildContext context) {
+		User? user = _app_service.user;
+		Profile? profile = _app_service.current_profile;
+
+		if (user == null || profile == null) {
+		  return FutureBuilder<UserProfile>(
+					future: future_user_profile,
+					builder: (context, snapshot){
+						if (snapshot.hasData){
+							// return build_account_screen(userprofile: snapshot.data!,);
+							_app_service.user = snapshot.data!.user;
+							return build_account_screen(
+								userprofile: snapshot.data!,
+								app_service: _app_service,
+							);
+						} else if (snapshot.hasError) {
+							return build_no_internet(error: snapshot.error.toString());
+						}
+						return const CircularProgressIndicator();
+					},
+			);
+		} else {
+			return build_account_screen(
+				userprofile: UserProfile(user: user, profile: profile),
+				app_service: _app_service,
+			);
+		}
 
 
-		Widget future = FutureBuilder<UserProfile>(
-				future: future_user_profile,
-				builder: (context, snapshot){
-					if (snapshot.hasData){
-						// return build_account_screen(userprofile: snapshot.data!,);
-						return build_account_screen(
-							userprofile: snapshot.data!,
-							app_service: _app_service,
-						);
-					} else if (snapshot.hasError) {
-						return build_no_internet(error: snapshot.error.toString());
-					}
-					return const CircularProgressIndicator();
-				},
-		);
-		return future;
 	}
 }
 
@@ -229,8 +221,8 @@ class _build_account_screenState extends State<build_account_screen> {
 		// Profile profile = userprofile[user_profile.profile] as Profile;
 		// User user = userprofile[user_profile.user] as User;
 		var image;
-		if (widget.userprofile.image != null) {
-			image = NetworkImage(widget.userprofile.image!);
+		if (widget.userprofile.profile.image != null) {
+			image = NetworkImage(widget.userprofile.profile.image!);
 		 } else {
 			image = AssetImage('images/img_22.png');
 		}
@@ -277,7 +269,7 @@ class _build_account_screenState extends State<build_account_screen> {
 										Padding(
 											padding: const EdgeInsets.fromLTRB(73, 7, 73, 0),
 											child: Text(
-													widget.userprofile.description ?? 'В вас немає біо',
+													widget.userprofile.profile.description ?? 'В вас немає біо',
 												style: TextStyle(
 														color: Color(0xff748B9F),
 														fontSize: 17,

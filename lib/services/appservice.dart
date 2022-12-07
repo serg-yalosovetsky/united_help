@@ -9,6 +9,7 @@ import 'package:united_help/services/authenticate.dart';
 
 import '../fragment/switch_app_bar.dart';
 import '../models/filter.dart';
+import '../models/profile.dart';
 
 enum Roles  {
   admin,
@@ -56,11 +57,15 @@ class AppService with ChangeNotifier {
 
 
   String init_key = 'init_key';
+  String user_key = 'user_key';
   String access_key = 'access_token';
   String refresh_key = 'refresh_token';
   String password_key = 'password';
   String username_key = 'username';
   String profile_key = 'profile';
+  String volunteer_key = 'volunteer';
+  String organizer_key = 'organizer';
+  String refugee_key = 'refugee';
 
   AppService(this.secure_storage, this.shared_preferences);
 
@@ -162,7 +167,6 @@ class AppService with ChangeNotifier {
 
   set account_actual_events (bool value) {
     _account_actual_events = value;
-    print('notifyListeners()');
     notifyListeners();
   }
   bool get account_actual_events => _account_actual_events;
@@ -192,6 +196,69 @@ class AppService with ChangeNotifier {
     }
   }
 
+  User? get user {
+    var user_str = shared_preferences.getString(user_key);
+    return user_str!=null ? User.decode(user_str) : null;
+  }
+  set user(User? user) {
+    if (user != null) {
+      shared_preferences.setString(user_key, user.encode());
+      notifyListeners();
+    }
+  }
+
+  Profile? get volunteer {
+    var profile_str = shared_preferences.getString(volunteer_key);
+    return profile_str!=null ? Profile.decode(profile_str) : null;
+  }
+  set volunteer(Profile? volunteer) {
+    if (volunteer != null) {
+      shared_preferences.setString(volunteer_key, volunteer.encode());
+      notifyListeners();
+    }
+  }
+  Profile? get organizer {
+    var profile_str = shared_preferences.getString(organizer_key);
+    return profile_str!=null ? Profile.decode(profile_str) : null;
+  }
+  set organizer(Profile? organizer) {
+    if (organizer != null) {
+      shared_preferences.setString(organizer_key, organizer.encode());
+      notifyListeners();
+    }
+  }
+  Profile? get refugee {
+    var profile_str = shared_preferences.getString(organizer_key);
+    return profile_str!=null ? Profile.decode(profile_str) : null;
+  }
+  set refugee(Profile? refugee) {
+    if (refugee != null) {
+      shared_preferences.setString(refugee_key, refugee.encode());
+      notifyListeners();
+    }
+  }
+
+  Profile? get current_profile {
+    Roles role = this.role;
+    if (role == Roles.volunteer)
+      return this.volunteer;
+    if (role == Roles.organizer)
+      return this.organizer;
+    if (role == Roles.refugee)
+      return this.refugee;
+  }
+  set current_profile(Profile? profile) {
+    if (profile != null) {
+      Roles role = this.role;
+      if (role == Roles.volunteer)
+        this.volunteer = profile;
+      if (role == Roles.organizer)
+        this.organizer = profile;
+      if (role == Roles.refugee)
+        this.refugee = profile;
+    }
+  }
+
   Future<void> onAppStart() async {
     _onboarding = shared_preferences.getBool(init_key) ?? false;
     _loginState = shared_preferences.getBool(access_key) ?? false;
@@ -199,6 +266,5 @@ class AppService with ChangeNotifier {
     _initialized = true;
     notifyListeners();
     print('initialized');
-
   }
 }
