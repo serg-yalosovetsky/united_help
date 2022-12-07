@@ -393,6 +393,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 														print(app_service.user.toString());
 														print(app_service.role);
 														print(app_service.volunteer);
+														print(app_service.organizer);
+														print(app_service.refugee);
 														if (app_service.current_profile != null &&
 																app_service.current_profile?.image != null &&
 																app_service.current_profile?.image != ''
