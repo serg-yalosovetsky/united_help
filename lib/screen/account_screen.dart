@@ -19,7 +19,7 @@ class AccountScreen extends StatelessWidget {
 			builder: (BuildContext context) {
 				return AlertDialog(
 					title: Text("Alert!!"),
-					content: Text("You are awesome!"),
+					content: Text("NotImplementedError"),
 					actions: [
 						MaterialButton(
 							child: Text("OK"),
@@ -39,6 +39,8 @@ class AccountScreen extends StatelessWidget {
 			"Microsoft Office", "Комунікативність",
 			"Пунктуальність", "Організованість"
 		];
+		 AppService app_service = Provider.of<AppService>(context, listen: false);
+
 		return Scaffold(
 			appBar: AppBar(
 				title: Row(
@@ -102,7 +104,7 @@ class AccountScreen extends StatelessWidget {
 								_showDialog(context);
 							}
 							else if (value == 3) {
-								_showDialog(context);
+								app_service.logout();
 							}
 						},
 					),

@@ -116,15 +116,18 @@ class AppService with ChangeNotifier {
     return false;
   }
 
-  set_password(String str) async {
+  set_password(String? str) async {
     await secure_storage.write(key: password_key, value: str);
     notifyListeners();
   }
-  set_username(String str) async {
+  set_username(String? str) async {
     await secure_storage.write(key: username_key, value: str);
     notifyListeners();
   }
   set_access_token(String? str) async {
+    await secure_storage.write(key: access_key, value: str);
+  }
+  set_refresh_token(String? str) async {
     await secure_storage.write(key: access_key, value: str);
   }
 
@@ -288,4 +291,17 @@ class AppService with ChangeNotifier {
     notifyListeners();
     print('initialized');
   }
+
+  logout() {
+    set_access_token(null);
+    set_refresh_token(null);
+    set_password(null);
+    set_username(null);
+    password = '';
+    email = '';
+    _initialized = false;
+    loginState = false;
+    _roleState = false;
+  }
+
 }

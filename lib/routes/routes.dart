@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:united_help/screen/filter_screen.dart';
 import 'package:united_help/screen/home_list.dart';
 import 'package:united_help/screen/login_screen.dart';
+import 'package:united_help/screen/new_event_screen.dart';
 import 'package:united_help/screen/password_recovery.dart';
 import 'package:united_help/screen/splash_screen.dart';
 import 'package:united_help/screen/welcome_register_or_login.dart';
@@ -36,6 +37,7 @@ enum APP_PAGE {
   password_recovery,
   home_list,
   home_map,
+  new_events,
   filters,
   error,
   account,
@@ -48,6 +50,8 @@ extension AppPageExtension on APP_PAGE {
     switch (this) {
       case APP_PAGE.home_list:
         return "/";
+      case APP_PAGE.new_events:
+        return "/new_events";
       case APP_PAGE.home_map:
         return "/map";
       case APP_PAGE.account:
@@ -88,6 +92,8 @@ extension AppPageExtension on APP_PAGE {
         return "HOME_LIST";
       case APP_PAGE.home_map:
         return "HOME_MAP";
+      case APP_PAGE.new_events:
+        return "NEW_EVENTS";
       case APP_PAGE.register_login:
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
@@ -143,6 +149,11 @@ class AppRouter {
         path: APP_PAGE.home_map.to_path,
         name: APP_PAGE.home_map.to_name,
         builder: (context, state) => const GoogleMapScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.new_events.to_path,
+        name: APP_PAGE.new_events.to_name,
+        builder: (context, state) => const NewEventScreen(),
       ),
       GoRoute(
         path: APP_PAGE.filters.to_path,
