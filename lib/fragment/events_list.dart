@@ -34,12 +34,15 @@ class _EventListScreenState extends State<EventListScreen> {
 	late AppService app_service;
 	@override
 	void initState() {
-    super.initState();
+		app_service = Provider.of<AppService>(context, listen: false);
+
+		super.initState();
 	}
 
 	@override
 	Widget build(BuildContext context) {
-		futureEvents = fetchEvents(widget.event_query);
+		print('futureEvents');
+		futureEvents = fetchEvents(widget.event_query, app_service);
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {

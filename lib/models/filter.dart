@@ -1,4 +1,6 @@
 
+import 'package:united_help/services/appservice.dart';
+
 import '../services/authenticate.dart';
 import '../services/urls.dart';
 
@@ -118,12 +120,12 @@ Map<Employments, String>  employments_text = {
 
 
 
-Future<Skills> fetchSkills(String skill_query) async {
+Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_skills_url/';
   url += skill_query;
 
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -131,17 +133,18 @@ Future<Skills> fetchSkills(String skill_query) async {
     var r = Skills.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load Skills');
   }
 }
 
 
-Future<Cities> fetchCities(String city_query) async {
+Future<Cities> fetchCities(String city_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_cities_url/';
   url += city_query;
 
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -149,6 +152,7 @@ Future<Cities> fetchCities(String city_query) async {
     var r = Cities.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load Cities');
   }
 }

@@ -1,9 +1,18 @@
+
+
+// import 'dart:html';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:phone_number/phone_number.dart';
 import 'package:provider/provider.dart';
+import 'package:dio/dio.dart' as dio;
+import 'dart:convert';
+import 'package:http_parser/http_parser.dart';
 import 'package:united_help/screen/settings_screen.dart';
 import 'package:united_help/services/validators.dart';
 import 'package:united_help/services/urls.dart';
@@ -11,6 +20,7 @@ import 'package:united_help/services/urls.dart';
 import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../fragment/build_app_bar.dart';
+import '../models/profile.dart';
 import '../routes/routes.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
@@ -388,18 +398,27 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 		  	  		  			child: KeyboardVisibilityBuilder(
 													builder: (context, isKeyboardVisible) {
 														var image;
-														print("app_service.current_profile");
-														print(app_service.current_profile);
-														print(app_service.user.toString());
-														print(app_service.role);
-														print(app_service.volunteer);
-														print(app_service.organizer);
-														print(app_service.refugee);
 														if (app_service.current_profile != null &&
 																app_service.current_profile?.image != null &&
 																app_service.current_profile?.image != ''
 														) {
-															print(app_service.current_profile);
+															if (app_service.user_image_expire){
+																image = FutureBuilder(
+																		future: fetchProfileImage(app_service),
+																		builder: (context, snapshot) {
+																			String? image_url = app_service.current_profile?.image ?? '';
+																			if (snapshot.hasData){
+																				image_url = snapshot.data as String?;
+																			}
+																			app_service.user_image_expire = false;
+																			return Image.network(
+																				image_url ?? app_service.current_profile?.image ?? '',
+																				height:	isKeyboardVisible ? 78.0 : 184.0,
+																			);
+																		},
+																);
+															}
+
 															image = Image.network(
 																app_service.current_profile?.image ?? '',
 																height:	isKeyboardVisible ? 78.0 : 184.0,
@@ -412,24 +431,50 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 														}
 
 														return image;
-														// 	Image.asset(
-														// 	'images/img.png',
-														// 	height:	isKeyboardVisible ? 78.0 : 184.0,
-														// );
 													}
 											),
 		  	  		  		),
-										Padding(
-											padding: const EdgeInsets.fromLTRB(73, 15, 73, 0),
-											child: Text(
-												'Змінити фото акаунта',
-												style: TextStyle(
-														color: Color(0xFF0071D8),
-														fontSize: 18,
-														fontWeight: FontWeight.w500
-												),
-												textAlign: TextAlign.center,
-											),
+										GestureDetector(
+										  child: Padding(
+										  	padding: const EdgeInsets.fromLTRB(73, 15, 73, 0),
+										  	child: Text(
+										  		'Змінити фото акаунта',
+										  		style: TextStyle(
+										  				color: Color(0xFF0071D8),
+										  				fontSize: 18,
+										  				fontWeight: FontWeight.w500
+										  		),
+										  		textAlign: TextAlign.center,
+										  	),
+										  ),
+											onTap: () async {
+													print('ontap');
+													// final ImagePicker _picker = ImagePicker();
+													// Pick an image
+													final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+													if (image!= null) {
+														image?.saveTo('images/user_volunteer_avatar.png');
+
+
+														app_service.user_image_expire = true;
+
+														String url = '$server_url$all_profiles_url/${app_service.current_profile?.id}/';
+														Requests().image_send(
+																	url, image,
+																	await app_service.get_access_token(),
+																	'user_id${app_service.user?.id}_profile_id${app_service.current_profile?.id}_user_avatar',
+																);
+														String image_url = await fetchProfileImage(app_service);
+														print(image_url);
+														app_service.current_profile = null;
+														print('app_service.current_profile?.image');
+														print(app_service.current_profile?.image);
+														print('app_service.current_profile');
+														print(app_service.current_profile);
+
+
+													}
+											},
 										),
 										const build_settings_header(
 											text: 'Ім’я',

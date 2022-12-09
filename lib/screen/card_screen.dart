@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import '../fragment/card_detail.dart';
+import '../services/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
 import '../services/urls.dart';
 
 
 
-Future<Event> fetchEvent(int event_id) async {
+Future<Event> fetchEvent(int event_id, AppService app_service) async {
 	var r = Requests();
 	String url = '$server_url$all_events_url/$event_id';
-
-	final response = await r.get(url);
+	final response = await r.get(url, await app_service.get_access_token());
 
 	if (response['status_code'] == 200) {
 		return Event.fromJson(response['result']);
 	} else {
+		app_service.set_access_token(null);
 		throw Exception('Failed to load Event');
 	}
 }

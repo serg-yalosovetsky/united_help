@@ -1,4 +1,6 @@
 
+import 'package:united_help/services/appservice.dart';
+
 import '../services/authenticate.dart';
 import '../services/urls.dart';
 
@@ -90,18 +92,16 @@ class Events {
 
 
 
-Future<Events> fetchEvents(String event_query) async {
+Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_events_url/$event_query';
-
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print(url);
-    var r = Events.fromJson(res);
-    return r;
+    return Events.fromJson(res);
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load Event');
   }
 }

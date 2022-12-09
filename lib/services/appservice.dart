@@ -47,6 +47,7 @@ class AppService with ChangeNotifier {
   int _filter_employment = -1;
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
+  bool _user_image_expire = false;
   List<String> _skills_hint = [];
   Employments employment = Employments.full;
   TimeOfDay? time_start;
@@ -123,9 +124,22 @@ class AppService with ChangeNotifier {
     await secure_storage.write(key: username_key, value: str);
     notifyListeners();
   }
+  set_access_token(String? str) async {
+    await secure_storage.write(key: access_key, value: str);
+  }
 
-  get_access_token() async {
-    return await secure_storage.read(key: access_key);
+  Future<String?> get_access_token() async {
+    String? access_token = await secure_storage.read(key: access_key);
+    if (access_token == null){
+      // TODO вместо логина пароля нужно передавать рефреш ключ, при ошибке
+      // TODO сбросить параметр инит, чтобы юзера выкинуло на главный экран
+      var result = await Requests().authenticate('serg', 'sergey104781');
+        if (result['success']){
+          access_token = result['access_token'];
+          secure_storage.write(key: access_key, value: access_token);
+        }
+    }
+    return access_token;
   }
 
   set loginState(bool state) {
@@ -152,6 +166,12 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
   List<String> get city_hint => _city_hint;
+
+  set user_image_expire (bool value) {
+    _user_image_expire = value;
+    notifyListeners();
+  }
+  bool get user_image_expire => _user_image_expire;
 
   set skills_hint (List<String> value) {
     _skills_hint = value;
@@ -212,30 +232,33 @@ class AppService with ChangeNotifier {
     return profile_str!=null ? Profile.decode(profile_str) : null;
   }
   set volunteer(Profile? volunteer) {
-    if (volunteer != null) {
-      shared_preferences.setString(volunteer_key, volunteer.encode());
-      notifyListeners();
-    }
+    if (volunteer == null)
+       shared_preferences.remove(volunteer_key);
+    else
+       shared_preferences.setString(volunteer_key, volunteer.encode());
+    notifyListeners();
   }
   Profile? get organizer {
     var profile_str = shared_preferences.getString(organizer_key);
     return profile_str!=null ? Profile.decode(profile_str) : null;
   }
   set organizer(Profile? organizer) {
-    if (organizer != null) {
-      shared_preferences.setString(organizer_key, organizer.encode());
+      if (organizer == null)
+          shared_preferences.remove(organizer_key);
+      else
+          shared_preferences.setString(organizer_key, organizer.encode());
       notifyListeners();
-    }
   }
   Profile? get refugee {
     var profile_str = shared_preferences.getString(organizer_key);
     return profile_str!=null ? Profile.decode(profile_str) : null;
   }
   set refugee(Profile? refugee) {
-    if (refugee != null) {
+    if (refugee == null)
+      shared_preferences.remove(refugee_key);
+    else
       shared_preferences.setString(refugee_key, refugee.encode());
       notifyListeners();
-    }
   }
 
   Profile? get current_profile {
@@ -248,7 +271,6 @@ class AppService with ChangeNotifier {
       return this.refugee;
   }
   set current_profile(Profile? profile) {
-    if (profile != null) {
       Roles role = this.role;
       if (role == Roles.volunteer)
         this.volunteer = profile;
@@ -256,7 +278,6 @@ class AppService with ChangeNotifier {
         this.organizer = profile;
       if (role == Roles.refugee)
         this.refugee = profile;
-    }
   }
 
   Future<void> onAppStart() async {

@@ -145,8 +145,8 @@ class _FiltersCardState extends State<FiltersCard> {
 		end_date_controller.text = "";
 		end_time_controller.text = "";
 		_app_service = Provider.of<AppService>(context, listen: false);
-		futureSkills = fetchSkills(skills_query);
-		futureCities = fetchCities(cities_query);
+		futureSkills = fetchSkills(skills_query, _app_service);
+		futureCities = fetchCities(cities_query, _app_service);
 		super.initState();
 	}
 

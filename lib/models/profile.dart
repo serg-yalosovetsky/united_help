@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import '../services/appservice.dart';
 import '../services/authenticate.dart';
 import '../services/urls.dart';
 
@@ -70,14 +71,14 @@ class Profile {
   final int id;
   final int role;
   final double rating;
-  final String? image;
+  String? image;
   final String? description;
   final String? url;
   final String? organization;
   final bool active;
   final List<int> skills;
 
-  const Profile({
+  Profile({
     required this.id,
     required this.role,
     required this.rating,
@@ -209,10 +210,10 @@ class Profiles {
 }
 
 
-Future<Profiles> fetchProfiles(String profile_query) async {
+Future<Profiles> fetchProfiles(String profile_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_profiles_url/$profile_query';
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -220,15 +221,16 @@ Future<Profiles> fetchProfiles(String profile_query) async {
     var r = Profiles.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load Profile');
   }
 }
 
 
-Future<Profile> fetchProfile(String profile_query) async {
+Future<Profile> fetchProfile(String profile_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_profiles_url/$profile_query';
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -236,15 +238,31 @@ Future<Profile> fetchProfile(String profile_query) async {
     var r = Profile.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load Profile');
   }
 }
 
+Future<String> fetchProfileImage(AppService app_service) async {
+  var r = Requests();
+  String url = '$server_url$all_profiles_url/me/image/';
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
-Future<Users> fetchUsers(String user_query) async {
+  if (response['status_code'] == 200) {
+    var res  = response['result'];
+    print(response['result']);
+    return res['image'];
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to load image');
+  }
+}
+
+
+Future<Users> fetchUsers(String user_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_users_url/$user_query';
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -252,33 +270,35 @@ Future<Users> fetchUsers(String user_query) async {
     var r = Users.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load User');
   }
 }
 
-Future<User> fetchUser(String user_query) async {
+Future<User> fetchUser(String user_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_users_url/$user_query';
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
     var r = User.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load User');
   }
 }
 
 
-Future<UserProfile> fetchUserProfile(String profile_query) async {
+Future<UserProfile> fetchUserProfile(String profile_query, AppService app_service) async {
   var r = Requests();
 
   String url = '$server_url$userprofile_url/$profile_query';
   if (profile_query.isEmpty)
     url += '1';
   print('url $url');
-  final response = await r.get_wrapper(url);
+  final response = await r.get_wrapper(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -286,6 +306,7 @@ Future<UserProfile> fetchUserProfile(String profile_query) async {
     var r = UserProfile.fromJson(res);
     return r;
   } else {
+    app_service.set_access_token(null);
     throw Exception('Failed to load UserProfile');
   }
 }

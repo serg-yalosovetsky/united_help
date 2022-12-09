@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:united_help/services/urls.dart';
 
 import 'appservice.dart';
@@ -111,6 +111,7 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
+    print(headers);
     if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
       url += '/';
     }
@@ -141,12 +142,12 @@ class Requests {
 
 
   FutureMap get_wrapper(String url, [String? access_token]) async {
-    if (access_token == null){
-      var result = await authenticate('serg', 'sergey104781');
-      if (result['success']){
-        access_token = result['access_token'];
-      }
-    }
+    // if (access_token == null){
+    //   var result = await authenticate('serg', 'sergey104781');
+    //   if (result['success']){
+    //     access_token = result['access_token'];
+    //   }
+    // }
     return get(url, access_token);
   }
 
@@ -162,7 +163,7 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    if (!url.endsWith('/')){
+    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
       url += '/';
     }
     await http.post(
@@ -182,14 +183,33 @@ class Requests {
     return {'result': result, 'status_code': status_code, };
   }
 
+
+  FutureMap image_send(String url, XFile image,
+                  [String? access_token, String? image_name, String? method]) async {
+    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+      url += '/';
+    }
+
+    method ??= 'patch';
+    var request =  http.MultipartRequest(
+        method.toUpperCase(), Uri.parse(url)
+    );
+    request.headers['Authorization'] = 'Bearer ${access_token}';
+    request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        image.path,
+        filename: image_name,
+    )
+    );
+    var response = await request.send();
+    final res = await http.Response.fromStream(response);
+
+    return {'result': res.body, 'status_code': response.statusCode, };
+  }
+
+
   FutureMap wrapper_post(String url, Map body, [String? access_token]) async {
-    // print('url $url');
-    // print('body $body');
-    // var auth_resp = await authenticate(url, access_token);
-    //
-    // if (!auth_resp['success']) {
-    //   return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
-    // }
+
     return post(url, body, access_token);
   }
 

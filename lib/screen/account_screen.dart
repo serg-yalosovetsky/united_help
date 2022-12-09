@@ -161,7 +161,7 @@ class _account_screenState extends State<account_screen> {
 	@override
   void initState() {
 		_app_service = Provider.of<AppService>(context, listen: false);
-		future_user_profile = fetchUserProfile(''); //_app_service.role.toString()
+		future_user_profile = fetchUserProfile('', _app_service); //_app_service.role.toString()
     super.initState();
   }
 	@override
@@ -176,6 +176,7 @@ class _account_screenState extends State<account_screen> {
 						if (snapshot.hasData){
 							// return build_account_screen(userprofile: snapshot.data!,);
 							_app_service.user = snapshot.data!.user;
+							_app_service.current_profile = snapshot.data!.profile;
 							return build_account_screen(
 								userprofile: snapshot.data!,
 								app_service: _app_service,
@@ -222,6 +223,22 @@ class _build_account_screenState extends State<build_account_screen> {
 		// User user = userprofile[user_profile.user] as User;
 		var image;
 		if (widget.userprofile.profile.image != null) {
+			if (widget.app_service.user_image_expire){
+				image = FutureBuilder(
+					future: fetchProfileImage(widget.app_service),
+					builder: (context, snapshot) {
+						String? image_url = widget.app_service.current_profile?.image ?? '';
+						if (snapshot.hasData){
+							image_url = snapshot.data as String?;
+						}
+						widget.app_service..current_profile?.image = image_url;
+						widget.app_service.user_image_expire = false;
+						return Image.network(
+							image_url ?? widget.app_service.current_profile?.image ?? '',
+						);
+					},
+				);
+			}
 			image = NetworkImage(widget.userprofile.profile.image!);
 		 } else {
 			image = AssetImage('images/img_22.png');
