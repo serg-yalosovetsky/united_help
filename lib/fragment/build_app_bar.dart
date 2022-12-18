@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-AppBar buildAppBar(Function fun, String title,
+AppBar buildAppBar(Function? fun, String title,
     [Widget? action_button_widget,]) {
   const TextStyle back_style = TextStyle(color: Colors.blue, fontSize: 17);
   return AppBar(
@@ -13,18 +13,21 @@ AppBar buildAppBar(Function fun, String title,
             message: 'Назад',
             child: Row(
               children: [
-                Icon(Icons.arrow_back_ios),
+                Icon(
+                    Icons.arrow_back_ios,
+                    color: (fun!=null) ? Colors.blue : Colors.white,
+                ),
                 Text(
                   'Назад',
-                  style: back_style,
+                  style: TextStyle(
+                      color: (fun!=null) ? Colors.blue : Colors.white,
+                      fontSize: 17,
+                  ),
                 ),
               ],
             ),
           ),
-          onTap: () {
-            // app_service.onboarding = false;
-            fun();
-          },
+          onTap: (fun!=null) ? () {fun();} : null,
         ),
 
         Expanded(

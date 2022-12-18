@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/filters.dart';
 import 'package:united_help/fragment/switch_app_bar.dart';
+import 'package:united_help/fragment/welcome_button.dart';
 import 'package:united_help/services/appservice.dart';
+import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
 // import '../fragment/data_picker.dart';
@@ -17,6 +19,8 @@ import '../routes/routes.dart';
 import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
 
+var form_padding = const EdgeInsets.fromLTRB(16, 13, 16, 0);
+var header_padding = const EdgeInsets.fromLTRB(0, 0, 8, 0);
 
 class NewEventScreen extends StatefulWidget {
 	const NewEventScreen({super.key});
@@ -115,9 +119,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	List<bool> button_states = [false, false, false, false, false];
 	final int name_index = 0;
 	final int bio_index = 1;
-	final int skills_index = 2;
-	final int location_index = 3;
-	final int recuired_people_index = 4;
+	final int location_index = 2;
+	final int city_index = 3;
+	final int skills_index = 4;
+	final int recuired_people_index = 5;
 
 	late Future<Skills> futureSkills;
 	late Future<Cities> futureCities;
@@ -125,11 +130,17 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	final String cities_query = '';
 	late AppService _app_service;
 	final _form_key_name = GlobalKey<FormState>();
+	final _form_key_bio = GlobalKey<FormState>();
+	final _form_key_location = GlobalKey<FormState>();
 	final _form_key_city = GlobalKey<FormState>();
 	final _form_key_skills = GlobalKey<FormState>();
+	final _form_key_members = GlobalKey<FormState>();
 	final name_controller = TextEditingController();
+	final bio_controller = TextEditingController();
+	final location_controller = TextEditingController();
 	final city_controller = TextEditingController();
 	final skills_controller = TextEditingController();
+	final members_controller = TextEditingController();
 
 	TextEditingController start_date_controller = TextEditingController();
 	TextEditingController start_time_controller = TextEditingController();
@@ -139,6 +150,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	@override
   void dispose() {
 		city_controller.dispose();
+		location_controller.dispose();
+		name_controller.dispose();
+		bio_controller.dispose();
+		members_controller.dispose();
 		skills_controller.dispose();
 		start_date_controller.dispose();
 		start_time_controller.dispose();
@@ -165,7 +180,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 		Widget form_city = Form(
 			key: _form_key_city,
 			child: Padding(
-						padding: const EdgeInsets.fromLTRB(17, 28, 17, 0),
+						padding: form_padding,
 						child: TextFormField(
 							// decoration: InputDecoration(
 							// 	labelText: 'UserName',
@@ -247,7 +262,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 		Widget form_skills = Form(
 			key: _form_key_skills,
 			child: Padding(
-				padding: const EdgeInsets.fromLTRB(17, 11, 17, 0),
+				padding: form_padding,
 				child: TextFormField(
 					// decoration: InputDecoration(
 					// 	labelText: 'UserName',
@@ -322,7 +337,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 		Widget form_name = Form(
 			key: _form_key_name,
 			child: Padding(
-				padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
+				padding: form_padding,
 				child: TextFormField(
 					controller: name_controller,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -344,7 +359,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 						border: OutlineInputBorder(
 							borderRadius : BorderRadius.all(Radius.circular(16.0)),
 						),
-						hintText: 'Прізвище, ім’я',
+						hintText: 'Напишіть назву',
 						suffixIcon: IconButton(
 							onPressed: name_controller.clear,
 							icon: Icon(
@@ -356,17 +371,128 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			),
 		);
 
+		Widget form_bio = Form(
+			key: _form_key_bio,
+			child: Padding(
+				padding: form_padding,
+				child: TextFormField(
+					minLines: 5,
+					maxLines: 8,
+					maxLength: 375,
+					controller: bio_controller,
+					autovalidateMode: AutovalidateMode.onUserInteraction,
+					validator: (value) {
+						if (value == null || value.isEmpty) {
+							return 'Ім’я не може бути пустим';
+						}
+						return null;
+					},
+					onChanged: (text) {
+						setState(() {
+							if (_form_key_bio.currentState!.validate())
+								button_states[bio_index] = true;
+							else
+								button_states[bio_index] = false;
+						});
+					},
+					decoration: const InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
+						hintText: 'Напишіть про задачі волонтерів й загальний напрям роботи...',
+					),
+				),
+			),
+		);
+
+		Widget form_location = Form(
+			key: _form_key_location,
+			child: Padding(
+				padding: form_padding,
+				child: TextFormField(
+					controller: location_controller,
+					autovalidateMode: AutovalidateMode.onUserInteraction,
+					validator: (value) {
+						if (value == null || value.isEmpty) {
+							return 'Ім’я не може бути пустим';
+						}
+						return null;
+					},
+					onChanged: (text) {
+						setState(() {
+							if (_form_key_location.currentState!.validate())
+								button_states[name_index] = true;
+							else
+								button_states[name_index] = false;
+						});
+					},
+					decoration: InputDecoration(
+						border: OutlineInputBorder(
+							borderRadius : BorderRadius.all(Radius.circular(16.0)),
+						),
+						hintText: 'Напишіть назву',
+						suffixIcon: IconButton(
+							onPressed: location_controller.clear,
+							icon: Icon(
+								Icons.clear,
+							),
+						),
+					),
+				),
+			),
+		);
+
+		Widget form_members = Form(
+			key: _form_key_members,
+			child: Padding(
+				padding: form_padding,
+				child: Align(
+					alignment: Alignment.bottomLeft,
+				  child: SizedBox(
+				  	width: 119,
+				    child: TextFormField(
+				    	controller: members_controller,
+				    	autovalidateMode: AutovalidateMode.onUserInteraction,
+				    	validator: (value) {
+				    		if (value == null || value.isEmpty) {
+				    			return 'Кількість місць не може бути пустим';
+				    		}
+				    		return null;
+				    	},
+				    	onChanged: (text) {
+				    		setState(() {
+				    			if (_form_key_members.currentState!.validate())
+				    				button_states[recuired_people_index] = true;
+				    			else
+				    				button_states[recuired_people_index] = false;
+				    		});
+				    	},
+				    	decoration: InputDecoration(
+				    		border: const OutlineInputBorder(
+				    			borderRadius : BorderRadius.all(Radius.circular(16.0)),
+				    		),
+				    		hintText: 'к-ть',
+				    		suffixIcon: IconButton(
+				    			onPressed: members_controller.clear,
+				    			icon: Icon(
+				    				Icons.clear,
+				    			),
+				    		),
+				    	),
+				    ),
+				  ),
+				),
+			),
+		);
 
 		return Scaffold(
 			appBar: buildAppBar(
-					() {
-						Navigator.pop(context);
-					},
-					'Фільтри',
+					null,
+					'Новий івент',
 					TextButton(
 						onPressed: () {},
 						child: Text(
-							'Зберегти',
+							'Готово',
 							style: TextStyle(
 								color: Color(0xFF0071D8),
 								fontSize: 18,
@@ -382,7 +508,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			    children: [
 						Container(
 							child: Padding(
-							  padding: const EdgeInsets.fromLTRB(16, 17, 16, 0),
+							  padding: form_padding,
 							  child: ClipRRect(
 							  	borderRadius: BorderRadius.circular(20.0),
 							  	child: ConstrainedBox(
@@ -400,9 +526,38 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							  ),
 							),
 						),
-			  		build_bold_left_text(
-			  			'Локація',
-			  			padding: const EdgeInsets.fromLTRB(0, 0, 8, 20),
+						build_bold_left_text(
+							'Назва',
+							padding: header_padding,
+						),
+						form_name,
+						build_bold_left_text(
+							'Опис',
+							padding: header_padding,
+						),
+						form_bio,
+
+
+						build_bold_left_text(
+							'Вміння',
+							padding: header_padding,
+						),
+
+						form_skills,
+						_app_service.skills_hint.isNotEmpty
+								? build_helpers_text(_app_service.skills_hint, (String helper) {
+							setState(() {
+								skills_controller.text = helper;
+								_app_service.skills_hint = [];
+							});
+						})
+								: Container(),
+
+
+
+						build_bold_left_text(
+			  			'City',
+			  			padding: header_padding,
 			  		),
 			      FutureBuilder<Cities>(
 			  			future: futureCities,
@@ -430,9 +585,16 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			  				return const CircularProgressIndicator();
 			  				},
 			  			),
-			  		build_bold_left_text(
+
+						build_bold_left_text(
+							'Локація',
+							padding: header_padding,
+						),
+						form_location,
+
+						build_bold_left_text(
 			  			'Зайнятість',
-			  			padding: const EdgeInsets.fromLTRB(0, 0, 8, 20),
+			  			padding: header_padding,
 			  		),
 
 			  		build_employments_rows(
@@ -443,20 +605,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			  			},
 			  		),
 
-			  		build_bold_left_text(
-			  			'Вміння',
-			  			padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-			  		),
-
-			  		form_skills,
-			  		_app_service.skills_hint.isNotEmpty
-			  				? build_helpers_text(_app_service.skills_hint, (String helper) {
-			  						setState(() {
-			  							skills_controller.text = helper;
-			  							_app_service.skills_hint = [];
-			  						});
-			  					})
-			  		 	: Container(),
 
 						build_bold_left_text(
 							'Дата',
@@ -494,10 +642,16 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							],
 						),
 
-
+						build_bold_left_text(
+							'Кількість місць',
+							padding: header_padding,
+						),
+						form_members,
+						Padding(padding: header_padding,)
 			  	],
 			  ),
 			),
+			bottomNavigationBar: const buildBottomNavigationBar(),
 
 		);
 	}
