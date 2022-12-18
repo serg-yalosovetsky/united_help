@@ -44,7 +44,16 @@ class AppService with ChangeNotifier {
   bool is_register_confirm = false;
   bool is_verificated = false;
   int _filter_city = -1;
+  int _new_event_city = -1;
   int _filter_employment = -1;
+  int _new_event_employment = -1;
+  Map<String, int> _card_state = {
+    'new_event_employment': -1,
+    'filters_employment': -1,
+    'new_event_cities': -1,
+    'filters_cities': -1,
+
+  };
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
   bool _user_image_expire = false;
@@ -156,6 +165,11 @@ class AppService with ChangeNotifier {
   }
   int get filter_city => _filter_city;
 
+  set new_event_city (int value) {
+    _new_event_city = value;
+    notifyListeners();
+  }
+  int get new_event_city => _new_event_city;
 
   set filter_employment (int value) {
     _filter_employment = value;
@@ -163,6 +177,17 @@ class AppService with ChangeNotifier {
   }
   int get filter_employment => _filter_employment;
 
+  set new_event_employment (int value) {
+    _new_event_employment = value;
+    notifyListeners();
+  }
+  int get new_event_employment => _new_event_employment;
+
+  set new_event_cards (int value) {
+    _new_event_employment = value;
+    notifyListeners();
+  }
+  int get new_event_cards => _new_event_employment;
 
   set city_hint (List<String> value) {
     _city_hint = value;
