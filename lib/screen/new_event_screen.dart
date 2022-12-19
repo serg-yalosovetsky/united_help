@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/filters.dart';
 import 'package:united_help/fragment/switch_app_bar.dart';
@@ -18,6 +19,7 @@ import '../models/filter.dart';
 import '../routes/routes.dart';
 import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 var form_padding = const EdgeInsets.fromLTRB(16, 13, 16, 0);
 var header_padding = const EdgeInsets.fromLTRB(0, 0, 8, 0);
@@ -179,6 +181,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
 		futureCities = fetchCities(cities_query, _app_service);
 		super.initState();
 	}
+	bool user_picked_image = false;
+	XFile? image = null;
 
 	@override
 	Widget build(BuildContext context) {
@@ -519,25 +523,45 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			body: SingleChildScrollView(
 			  child: Column(
 			    children: [
-						Container(
-							child: Padding(
-							  padding: form_padding,
-							  child: ClipRRect(
-							  	borderRadius: BorderRadius.circular(20.0),
-							  	child: ConstrainedBox(
-							  		constraints: const BoxConstraints(
-							  			minWidth: 70,
-							  			minHeight: 80,
-							  			maxWidth: double.infinity,
-							  			maxHeight: 450,
-							  		),
-							  		child: Image.asset(
-							  				'images/img_25.png',
-							  				fit: BoxFit.fitWidth
-							  		),
-							  	),
-							  ),
-							),
+						GestureDetector(
+							onTap: () async {
+									image = await ImagePicker().pickImage(source: ImageSource.gallery);
+									if (image!= null) {
+										image?.saveTo('images/user_new_event.png');
+										setState(() {
+											user_picked_image = true;
+										});
+									}
+
+									// PickedFile? pickedFile = await ImagePicker().getImage(
+									// 	source: ImageSource.gallery,
+									// 	maxWidth: 1800,
+									// 	maxHeight: 1800,
+									// );
+									// if (image != null) {
+									// 	File imageFile = File(image.path);
+									// }
+							},
+						  child: Padding(
+						    padding: form_padding,
+						    child: ClipRRect(
+						    	borderRadius: BorderRadius.circular(20.0),
+						    	child: ConstrainedBox(
+						    		constraints: const BoxConstraints(
+						    			minWidth: 70,
+						    			minHeight: 80,
+						    			maxWidth: double.infinity,
+						    			maxHeight: 450,
+						    		),
+						    		child: (user_picked_image && (image != null)) ?
+										Image.file(File(image?.path ?? '')) :
+										Image.asset(
+												'images/img_25.png',
+						    				fit: BoxFit.fitWidth
+						    		),
+						    	),
+						    ),
+						  ),
 						),
 						build_bold_left_text(
 							'Назва',

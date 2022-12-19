@@ -448,9 +448,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 										  	),
 										  ),
 											onTap: () async {
-													print('ontap');
-													// final ImagePicker _picker = ImagePicker();
-													// Pick an image
 													final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
 													if (image!= null) {
 														image?.saveTo('images/user_volunteer_avatar.png');
