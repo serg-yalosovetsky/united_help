@@ -63,7 +63,7 @@ class _filtersState extends State<filters> {
           if (fun != null) {
 
             Widget button = GestureDetector(
-                child: buildSkillCard(title: skills[index], id: 0,
+                child: buildCityCard(title: skills[index], id: 0,
                     active: active?[index] ?? false),
                 onTap: () {
                   print('click');
@@ -79,7 +79,7 @@ class _filtersState extends State<filters> {
             rows.add(button);
           }
           else
-              rows.add(buildSkillCard(title: skills[index], id: 0,
+              rows.add(buildCityCard(title: skills[index], id: 0,
                                       active: active?[index] ?? false));
         }
       }

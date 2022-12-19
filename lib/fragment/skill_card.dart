@@ -23,8 +23,8 @@ const title_to_open_text_field = 'Інше';
 //       return padding;
 // }
 
-class buildSkillCard extends StatefulWidget {
-  const buildSkillCard({
+class buildCityCard extends StatefulWidget {
+  const buildCityCard({
     Key? key,
     required this.title,
     required this.id,
@@ -38,21 +38,15 @@ class buildSkillCard extends StatefulWidget {
   final fun;
 
   @override
-  State<buildSkillCard> createState() => buildSkillCardState();
+  State<buildCityCard> createState() => buildCityCardState();
 }
 
-class buildSkillCardState extends State<buildSkillCard> {
-  // bool is_active = false;
+class buildCityCardState extends State<buildCityCard> {
   late AppService _app_service;
 
   @override
   void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
-    // if (_app_service.filter_city == widget.id){
-    //      is_active = true;
-    // } else {
-    //   is_active = false;
-    // }
     super.initState();
   }
   @override
@@ -80,6 +74,8 @@ class buildSkillCardState extends State<buildSkillCard> {
       ),
       onTap: () {
         setState(() {
+          print('citycard');
+
           if (_app_service.filter_city != widget.id){
             // is_active = true;
             _app_service.filter_city = widget.id;
@@ -105,6 +101,197 @@ class buildSkillCardState extends State<buildSkillCard> {
 }
 
 
+class buildSkillCard extends StatefulWidget {
+  const buildSkillCard({
+    Key? key,
+    required this.title,
+    required this.id,
+    this.active,
+    this.fun,
+
+  }) : super(key: key);
+  final String title;
+  final int id;
+  final bool? active;
+  final fun;
+
+  @override
+  State<buildSkillCard> createState() => buildSkillCardState();
+}
+
+class buildSkillCardState extends State<buildSkillCard> {
+  late AppService _app_service;
+
+  @override
+  void initState() {
+    _app_service = Provider.of<AppService>(context, listen: false);
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: inactive_color,
+            ),
+            color: inactive_color,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: [
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontSize: 18,
+                color: inactive_text_color,
+              ),
+            ),
+            GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6.0, 0, 0, 0),
+                child: const Icon(
+                  Icons.cancel_outlined,
+                  size: 15,
+                ),
+              ),
+              onTap: () {
+                if (widget.fun==null) {
+                  setState(() {
+                    var index = _app_service.skills.indexOf(widget.title);
+                    print(index);
+                    if (index >= 0)
+                      _app_service.skills.removeAt(index);
+
+                  });
+                } else widget.fun();
+
+                  print('skillcard ${widget.title}');
+                  print(_app_service.skills);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+Widget buildSkillCard3({
+    required String title,
+    required int id,
+    required AppService app_service,
+    fun,
+  } ){
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
+    child: Container(
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: inactive_color,
+          ),
+          color: inactive_color,
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              color: inactive_text_color,
+            ),
+          ),
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6.0, 0, 0, 0),
+              child: const Icon(
+                Icons.cancel_outlined,
+                size: 15,
+              ),
+            ),
+            onTap: () {
+              var index = app_service.skills.indexOf(title);
+              print(index);
+              if (index >= 0)
+                app_service.skills.removeAt(index);
+              // fun();
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+class buildSkillCard2 extends StatelessWidget {
+  const buildSkillCard2({
+    Key? key,
+    required this.title,
+    required this.id,
+    required this.app_service,
+    this.fun,
+
+  }) : super(key: key);
+  final String title;
+  final int id;
+  final AppService app_service;
+  final fun;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: inactive_color,
+            ),
+            color: inactive_color,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                color: inactive_text_color,
+              ),
+            ),
+            GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6.0, 0, 0, 0),
+                child: const Icon(
+                  Icons.cancel_outlined,
+                  size: 15,
+                ),
+              ),
+              onTap: () {
+                  print('skillcard ${title}');
+                  var index = app_service.skills.indexOf(title);
+                  print(index);
+                  if (index >= 0)
+                    app_service.skills.removeAt(index);
+                  print(app_service.skills);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+}
 
 class buildEmploymentCard extends StatefulWidget {
   const buildEmploymentCard({
@@ -156,6 +343,8 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
       ),
       onTap: () {
         setState(() {
+          print('employmentcard');
+
           if (_app_service.filter_employment != widget.id){
             _app_service.filter_employment = widget.id;
           } else {

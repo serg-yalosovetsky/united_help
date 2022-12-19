@@ -49,7 +49,7 @@ Widget build_skills_columns({
 	for (var row in cities_card_blueprint){
 		var rc = <Widget>[];
 		for (var city in row){
-			rc.add(buildSkillCard(title: city, id:index));
+			rc.add(buildCityCard(title: city, id:index));
 			index++;
 		}
 		var r = Row(

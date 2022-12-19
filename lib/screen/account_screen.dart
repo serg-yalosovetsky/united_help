@@ -147,8 +147,8 @@ class _account_screenState extends State<account_screen> {
 		int i = 0;
 		while (i <= skills.length/2.ceil()) {
 			List<Widget> rows = [];
-			if (i < skills.length) rows.add(buildSkillCard(title: skills[i], id: 0));
-			if (i + 1 < skills.length) rows.add(buildSkillCard(title: skills[i+1], id: 0));
+			if (i < skills.length) rows.add(buildCityCard(title: skills[i], id: 0));
+			if (i + 1 < skills.length) rows.add(buildCityCard(title: skills[i+1], id: 0));
 			Widget row_widget = Row(
 				children: rows,
 			);

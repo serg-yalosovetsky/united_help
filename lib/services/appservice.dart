@@ -58,6 +58,7 @@ class AppService with ChangeNotifier {
   List<String> _city_hint = [];
   bool _user_image_expire = false;
   List<String> _skills_hint = [];
+  List<String> _skills = [];
   Employments employment = Employments.full;
   TimeOfDay? time_start;
   TimeOfDay? time_end;
@@ -206,6 +207,12 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
   List<String> get skills_hint => _skills_hint;
+
+  set skills (List<String> value) {
+    _skills = value;
+    notifyListeners();
+  }
+  List<String> get skills => _skills;
 
   set open_text_field_choose_other_city (bool value) {
     _open_text_field_choose_other_city = value;

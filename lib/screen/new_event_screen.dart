@@ -41,14 +41,51 @@ Widget build_skills_columns({
 			required BuildContext context,
 			required AppService app_service,
 			required Function fun,
-			Widget? form_city}
-			) {
+			}) {
+	List<String> skills_list = [];
+	data.forEach((element) {skills_list.add(element); });
+	var skills_card_blueprint = calculate_cities_widgets(
+		context: context,
+		cities_list: skills_list,
+		max_columns: 2,
+	);
+	var cr = <Widget>[];
+	int index = 0;
+	for (var row in skills_card_blueprint){
+		var rc = <Widget>[];
+		for (var city in row){
+			rc.add(buildSkillCard(title: city, id:index, fun: fun,));
+			index++;
+		}
+		var r = Row(
+			children: rc,
+		);
+		cr.add(r);
+	}
+
+	var c = Column(
+		children: [
+			...cr,
+		],
+	);
+
+
+	return c;
+
+}
+Widget build_cities_columns({
+	required data,
+	required BuildContext context,
+	required AppService app_service,
+	required Function fun,
+	Widget? form_city}
+		) {
 	List<String> cities_list = [];
 	Map<int, String> cities_alias = {};
 	data.forEach((element) {cities_list.add(element.city); });
 	data.forEach((element) {cities_alias[element.alias]; });
 	if (form_city != null)
-			cities_list.add('Інше');
+		cities_list.add('Інше');
 	var cities_card_blueprint = calculate_cities_widgets(
 		context: context,
 		cities_list: cities_list,
@@ -59,7 +96,7 @@ Widget build_skills_columns({
 	for (var row in cities_card_blueprint){
 		var rc = <Widget>[];
 		for (var city in row){
-			rc.add(buildSkillCard(title: city, id:index));
+			rc.add(buildCityCard(title: city, id:index));
 			index++;
 		}
 		var r = Row(
@@ -83,7 +120,6 @@ Widget build_skills_columns({
 	return c;
 
 }
-
 
 Widget build_employments_rows({
 	required data,
@@ -123,13 +159,12 @@ Widget build_employments_rows({
 
 class _NewEventScreenState extends State<NewEventScreen> {
 
-	List<bool> button_states = [false, false, false, false, false];
-	final int name_index = 0;
-	final int bio_index = 1;
-	final int location_index = 2;
-	final int city_index = 3;
-	final int skills_index = 4;
-	final int recuired_people_index = 5;
+	final int image_index = 0;
+	final int name_index = 1;
+	final int bio_index = 2;
+	final int location_index = 3;
+	final int recuired_people_index = 4;
+	List<bool> button_states = List<bool>.generate(5, (index) => false);
 
 	late Future<Skills> futureSkills;
 	late Roles event_for;
@@ -181,9 +216,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
 		futureCities = fetchCities(cities_query, _app_service);
 		super.initState();
 	}
-	bool user_picked_image = false;
 	XFile? image = null;
 
+
+	bool is_ready_to_submit() {
+		return button_states.every((element) => element==true) &&
+				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1) &&
+				(_app_service.data_start!=null) && (_app_service.data_end!=null);
+	}
 	@override
 	Widget build(BuildContext context) {
 		if (widget.event_for == Roles.refugee.toString()) {
@@ -197,10 +237,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
 			child: Padding(
 						padding: form_padding,
 						child: TextFormField(
-							// decoration: InputDecoration(
-							// 	labelText: 'UserName',
-							// 	hintText: "YashodPerera",
-							// ),
 							controller: city_controller,
 							autovalidateMode: AutovalidateMode.onUserInteraction,
 							validator: (value) {
@@ -211,19 +247,17 @@ class _NewEventScreenState extends State<NewEventScreen> {
 									Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
 									bool is_finded = false;
 									for (var city in alias.keys){
-			print(city);
-			print(alias[city]);
-			for (var alia in alias[city]!.split(' ')){
-				if (alia.toLowerCase().startsWith(value.toLowerCase())){
-					print('contain!! $city');
-					is_finded = true;
-					// _app_service.city_hint = [city];
-				}
-			}
+											for (var alia in alias[city]!.split(' ')){
+												if (alia.toLowerCase().startsWith(value.toLowerCase())){
+													print('contain!! $city');
+													is_finded = true;
+													// _app_service.city_hint = [city];
+												}
+											}
 									}
 									if (!is_finded){
-			_app_service.city_hint = [];
-			return 'Локацію не знайдено :(';
+										_app_service.city_hint = [];
+										return 'Локацію не знайдено :(';
 									}
 								}
 
@@ -232,13 +266,13 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							onChanged: (text) {
 								setState(() {
 									if (text.isEmpty){
-			// _form_key_city.currentState!.validate();
-									}else {
+											// _form_key_city.currentState!.validate();
+									} else {
                     print(text);
-			Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
+										Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
 
-			bool is_finded = false;
-			List<String> cities_hint = [];
+										bool is_finded = false;
+										List<String> cities_hint = [];
                     for (var city in alias.keys) {
                       print(city);
                       print(alias[city]);
@@ -246,15 +280,15 @@ class _NewEventScreenState extends State<NewEventScreen> {
                         if (alia.toLowerCase().startsWith(text.toLowerCase())) {
                           print('contain!! $city');
                           is_finded = true;
-						cities_hint.add(city);
+													cities_hint.add(city);
                         }
                       }
                     }
-			_app_service.city_hint = cities_hint;
+										_app_service.city_hint = cities_hint;
 
-			if (!is_finded) {
-                      _app_service.city_hint = [];
-                    }
+										if (!is_finded) {
+													_app_service.city_hint = [];
+										}
                   }
                 });
 							},
@@ -294,7 +328,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							bool is_finded = false;
 							for (var skill in skills){
 									if (skill.toLowerCase().startsWith(value.toLowerCase())){
-										print('contain!! $skill');
 										is_finded = true;
 										// _app_service.city_hint = [city];
 								}
@@ -438,9 +471,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
 					onChanged: (text) {
 						setState(() {
 							if (_form_key_location.currentState!.validate())
-								button_states[name_index] = true;
+								button_states[location_index] = true;
 							else
-								button_states[name_index] = false;
+								button_states[location_index] = false;
 						});
 					},
 					decoration: InputDecoration(
@@ -468,7 +501,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
 				  child: SizedBox(
 				  	width: 119,
 				    child: TextFormField(
-				    	controller: members_controller,
+							keyboardType: TextInputType.number,
+							controller: members_controller,
 				    	autovalidateMode: AutovalidateMode.onUserInteraction,
 				    	validator: (value) {
 				    		if (value == null || value.isEmpty) {
@@ -507,11 +541,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
 					() {Navigator.pop(context);},
 					'Новий івент',
 					TextButton(
-						onPressed: () {},
+						onPressed: is_ready_to_submit() ? () {print('tap');} : null,
 						child: Text(
 							'Готово',
 							style: TextStyle(
-								color: Color(0xFF0071D8),
+								// color: Color(0xFF0071D8),
 								fontSize: 18,
 								fontFamily: 'SF Pro Text',
 								fontWeight: FontWeight.w400,
@@ -527,20 +561,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							onTap: () async {
 									image = await ImagePicker().pickImage(source: ImageSource.gallery);
 									if (image!= null) {
-										image?.saveTo('images/user_new_event.png');
+										// image?.saveTo('images/user_new_event.png');
 										setState(() {
-											user_picked_image = true;
+											button_states[image_index] = true;
 										});
 									}
 
-									// PickedFile? pickedFile = await ImagePicker().getImage(
-									// 	source: ImageSource.gallery,
-									// 	maxWidth: 1800,
-									// 	maxHeight: 1800,
-									// );
-									// if (image != null) {
-									// 	File imageFile = File(image.path);
-									// }
 							},
 						  child: Padding(
 						    padding: form_padding,
@@ -553,12 +579,15 @@ class _NewEventScreenState extends State<NewEventScreen> {
 						    			maxWidth: double.infinity,
 						    			maxHeight: 450,
 						    		),
-						    		child: (user_picked_image && (image != null)) ?
-										Image.file(File(image?.path ?? '')) :
-										Image.asset(
-												'images/img_25.png',
-						    				fit: BoxFit.fitWidth
-						    		),
+						    		child: (button_states[image_index] && (image != null) && (image?.path != null)) ?
+															Image.file(
+																	File(image?.path ?? ''),
+																	fit: BoxFit.fitWidth,
+															) :
+															Image.asset(
+																	'images/img_25.png',
+																	fit: BoxFit.fitWidth,
+															),
 						    	),
 						    ),
 						  ),
@@ -584,23 +613,53 @@ class _NewEventScreenState extends State<NewEventScreen> {
 						_app_service.skills_hint.isNotEmpty
 								? build_helpers_text(_app_service.skills_hint, (String helper) {
 							setState(() {
-								skills_controller.text = helper;
+								skills_controller.text = '';
 								_app_service.skills_hint = [];
+								_app_service.skills.add(helper);
+								print('skillcard hint ${helper}');
+
 							});
 						})
 								: Container(),
 
+						_app_service.skills.isNotEmpty
+								? build_skills_columns(
+										data: _app_service.skills,
+										context: context,
+										app_service: _app_service,
+										fun: (String helper) {
+											print('skillcard early ${helper}');
+											setState(() {
+												var index = _app_service.skills.indexOf(helper);
+												if (index >= 0)
+													_app_service.skills.removeAt(index);
+											});
+										},
+						)
+								: Container(),
 
+						// _app_service.skills.isNotEmpty
+						// 		? Wrap(
+						// 				children: List.generate(
+						// 						_app_service.skills.length,
+						// 						(index) => buildSkillCard2(
+						// 								title: _app_service.skills.elementAt(index),
+						// 								app_service: _app_service,
+						// 								id:index,
+						// 						),
+						// 				),
+						//
+						// ) : Container(),
 
 						build_bold_left_text(
-			  			'City',
+			  			'Місто',
 			  			padding: header_padding,
 			  		),
 			      FutureBuilder<Cities>(
 			  			future: futureCities,
 			  			builder: (context, snapshot) {
 			  				if (snapshot.hasData) {
-			  					return build_skills_columns(
+			  					return build_cities_columns(
 			  						data: snapshot.data!.list,
 			  						context: context,
 			  						app_service: _app_service,
@@ -654,11 +713,15 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
 								build_date_picker(context: context,
 										controller: start_date_controller,
-										app_service_link: _app_service.data_start),
+										app_service: _app_service,
+										is_start: true,
+								),
 
 								build_time_picker(context: context,
 										controller: start_time_controller,
-										app_service_link: _app_service.time_start),
+										app_service: _app_service,
+										is_start: true,
+								),
 
 						  ],
 						),
@@ -670,11 +733,15 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
 								build_date_picker(context: context,
 										controller: end_date_controller,
-										app_service_link: _app_service.data_end),
+										app_service: _app_service,
+										is_start: false,
+								),
 
 								build_time_picker(context: context,
 																	controller: end_time_controller,
-																	app_service_link: _app_service.time_end),
+																	app_service: _app_service,
+																	is_start: false,
+								),
 
 							],
 						),
@@ -708,7 +775,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	Widget build_date_picker({
 		required BuildContext context,
 		required TextEditingController controller,
-		required app_service_link,
+		required AppService app_service,
+		required bool is_start,
 		start_year,
 		end_year,
 	}) {
@@ -737,7 +805,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
 						String formattedDate = date_to_str(pickedDate);
 						setState(() {
 							controller.text = formattedDate;
-							app_service_link = pickedDate;
+							if (is_start)
+									app_service.data_start = pickedDate;
+							else
+									app_service.data_end = pickedDate;
+
 						});
 					}else{
 						print("Date is not selected");
@@ -750,7 +822,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	Widget build_time_picker({
 				required BuildContext context,
 				required TextEditingController controller,
-				required app_service_link,
+				required AppService app_service,
+				required bool is_start,
+
 	})  {
 	  return Container(
 				padding:const EdgeInsets.fromLTRB(14, 4.5, 0, 4.5,),
@@ -774,7 +848,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							String formattedTime = time_to_str(pickedTime);
 							setState(() {
 								controller.text = formattedTime;
-								app_service_link = pickedTime;
+								if (is_start)
+									app_service.time_start = pickedTime;
+								else
+									app_service.time_end = pickedTime;
 							});
 						}else{
 							print("Time is not selected");
