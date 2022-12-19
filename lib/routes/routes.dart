@@ -17,6 +17,7 @@ import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
 import '../fragment/switch_app_bar.dart';
 import '../screen/home_map.dart';
+import '../screen/new_event_choose_help_or_job.dart';
 import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
 import '../screen/settings_screen.dart';
@@ -38,6 +39,7 @@ enum APP_PAGE {
   home_list,
   home_map,
   new_events,
+  new_events_choose_help_or_job,
   filters,
   error,
   account,
@@ -52,6 +54,8 @@ extension AppPageExtension on APP_PAGE {
         return "/";
       case APP_PAGE.new_events:
         return "/new_events";
+      case APP_PAGE.new_events_choose_help_or_job:
+        return "/new_events_choose_help_or_job";
       case APP_PAGE.home_map:
         return "/map";
       case APP_PAGE.account:
@@ -94,6 +98,8 @@ extension AppPageExtension on APP_PAGE {
         return "HOME_MAP";
       case APP_PAGE.new_events:
         return "NEW_EVENTS";
+      case APP_PAGE.new_events_choose_help_or_job:
+        return "NEW_EVENTS_CHOOSE_HELP_OR_JOB";
       case APP_PAGE.register_login:
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
@@ -138,7 +144,9 @@ class AppRouter {
 
   late final GoRouter _go_router = GoRouter(
     refreshListenable: app_service,
-    initialLocation: app_service.role==Roles.organizer ? APP_PAGE.new_events.to_path : APP_PAGE.home_list.to_path,
+    initialLocation: app_service.role==Roles.organizer ?
+                        APP_PAGE.new_events_choose_help_or_job.to_path :
+                        APP_PAGE.home_list.to_path,
     routes: <GoRoute>[
       GoRoute(
         path: APP_PAGE.home_list.to_path,
@@ -151,9 +159,14 @@ class AppRouter {
         builder: (context, state) => const GoogleMapScreen(),
       ),
       GoRoute(
-        path: APP_PAGE.new_events.to_path,
+        path: '${APP_PAGE.new_events.to_path}/:event_for',
         name: APP_PAGE.new_events.to_name,
-        builder: (context, state) => const NewEventScreen(),
+        builder: (context, state) => NewEventScreen(event_for: state.params['event_for'] ?? ''),
+      ),
+      GoRoute(
+        path: APP_PAGE.new_events_choose_help_or_job.to_path,
+        name: APP_PAGE.new_events_choose_help_or_job.to_name,
+        builder: (context, state) => NewEventChooseHelpOrJobScreen(),
       ),
       GoRoute(
         path: APP_PAGE.filters.to_path,

@@ -23,7 +23,11 @@ var form_padding = const EdgeInsets.fromLTRB(16, 13, 16, 0);
 var header_padding = const EdgeInsets.fromLTRB(0, 0, 8, 0);
 
 class NewEventScreen extends StatefulWidget {
-	const NewEventScreen({super.key});
+	final String event_for;
+	const NewEventScreen({
+		super.key,
+		required this.event_for,
+	});
 
   @override
   State<NewEventScreen> createState() => _NewEventScreenState();
@@ -116,6 +120,7 @@ Widget build_employments_rows({
 }
 
 class _NewEventScreenState extends State<NewEventScreen> {
+
 	List<bool> button_states = [false, false, false, false, false];
 	final int name_index = 0;
 	final int bio_index = 1;
@@ -125,6 +130,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 	final int recuired_people_index = 5;
 
 	late Future<Skills> futureSkills;
+	late Roles event_for;
 	late Future<Cities> futureCities;
 	final String skills_query = '';
 	final String cities_query = '';
@@ -176,6 +182,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		if (widget.event_for == Roles.refugee.toString()) {
+				event_for = Roles.refugee;
+		} else {
+			event_for = Roles.volunteer;
+		}
 
 		Widget form_city = Form(
 			key: _form_key_city,
@@ -395,11 +406,13 @@ class _NewEventScreenState extends State<NewEventScreen> {
 								button_states[bio_index] = false;
 						});
 					},
-					decoration: const InputDecoration(
+					decoration: InputDecoration(
 						border: OutlineInputBorder(
 							borderRadius : BorderRadius.all(Radius.circular(16.0)),
 						),
-						hintText: 'Напишіть про задачі волонтерів й загальний напрям роботи...',
+						hintText: (event_for == Roles.volunteer ) ?
+												'Напишіть про задачі волонтерів й загальний напрям роботи...' :
+												'Напишіть про допомогу, яку можете надати...' ,
 					),
 				),
 			),
@@ -487,7 +500,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
 		return Scaffold(
 			appBar: buildAppBar(
-					null,
+					() {Navigator.pop(context);},
 					'Новий івент',
 					TextButton(
 						onPressed: () {},

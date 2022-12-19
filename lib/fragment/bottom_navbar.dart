@@ -41,23 +41,6 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 	late AppService app_service;
 
 
-	void _onItemTapped(int index) {
-		setState(() {
-			selected_index = index;
-			if (index==0) {
-				if(app_service.role == Roles.organizer)
-						context.go(APP_PAGE.new_events.to_path);
-				else
-						context.go('/');
-			}
-			if (index==3) {
-					context.go('/account');
-			}
-			if (index==2) {
-				context.go('/example');
-			}
-		});
-	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -106,7 +89,7 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 					selected_index = index;
 					if (index==0) {
 						if(app_service.role == Roles.organizer)
-							context.go(APP_PAGE.new_events.to_path);
+							context.go(APP_PAGE.new_events_choose_help_or_job.to_path);
 						else
 							context.go('/');
 					}
