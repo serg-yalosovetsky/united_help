@@ -86,8 +86,8 @@ Widget build_cities_columns({
 	print('\n\n');
 	List<String> cities_list = [];
 	Map<int, String> cities_alias = {};
-	data.forEach((element) {cities_list.add(element.city); });
-	data.forEach((element) {cities_alias[element.alias]; });
+	data.sublist(0, 5).forEach((element) {cities_list.add(element.city); });
+	data.sublist(0, 5).forEach((element) {cities_alias[element.alias]; });
 	if (form_city != null)
 		cities_list.add('Інше');
 	var cities_card_blueprint = calculate_cities_widgets(
@@ -215,10 +215,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	@override
 	void initState() {
-		start_date_controller.text = "";
-		start_time_controller.text = "";
-		end_date_controller.text = "";
-		end_time_controller.text = "";
+		start_date_controller.text = date_to_str(DateTime.now());
+		start_time_controller.text = time_to_str(TimeOfDay.now());
+		end_date_controller.text = date_to_str(DateTime.now());
+		end_time_controller.text = time_to_str(TimeOfDay.now());
 		_app_service = Provider.of<AppService>(context, listen: false);
 		futureSkills = fetchSkills(skills_query, _app_service);
 		futureCities = fetchCities(cities_query, _app_service);
@@ -324,44 +324,12 @@ class NewEventScreenState extends State<NewEventScreen> {
 					padding: form_padding,
 					child: TextFormField(
 						controller: skills_controller,
-						autovalidateMode: AutovalidateMode.onUserInteraction,
-						validator: (value) {
-							if (value == null || value.isEmpty) {
-								return 'Будь ласка, введіть вміння';
-							}
-							else {
-								// List<String
-								bool is_finded = false;
-								for (var skill in skills.list) {
-									if (skill.name.toLowerCase().startsWith(value.toLowerCase())) {
-										is_finded = true;
-										// _app_service.city_hint = [city];
-									}
-								}
-								if (!is_finded) {
-									_app_service.skills_hint = [];
-									return 'Локацію не знайдено :(';
-								}
-							}
-
-							return null;
-						},
 						onChanged: (text) {
 							setState(() {
 								if (text.isEmpty) {
-									// _form_key_city.currentState!.validate();
 								} else {
-									print(text);
-									// List<String> skills = [
-									// 	'reading',
-									// 	'writing допомога',
-									// 	'restling',
-									// 	'remembering'
-									// ];
-
 									bool is_finded = false;
 									List<String> skills_hint = [];
-
 									for (var skill in skills.list) {
 										print(skill);
 										if (skill.name.toLowerCase().startsWith(text.toLowerCase())) {
@@ -742,13 +710,15 @@ class NewEventScreenState extends State<NewEventScreen> {
 								children: [
 									build_left_text('Початок'),
 
-									build_date_picker(context: context,
+									build_date_picker(
+										context: context,
 										controller: start_date_controller,
 										app_service: _app_service,
 										is_start: true,
 									),
 
-									build_time_picker(context: context,
+									build_time_picker(
+										context: context,
 										controller: start_time_controller,
 										app_service: _app_service,
 										is_start: true,
