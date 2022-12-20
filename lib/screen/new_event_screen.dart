@@ -56,7 +56,7 @@ Widget build_skills_columns({
 	for (var row in skills_card_blueprint){
 		var rc = <Widget>[];
 		for (var city in row){
-			rc.add(buildSkillCard(title: city, id:index, fun: fun,));
+			rc.add(buildSkillCard2(title: city, id:index, app_service: app_service, fun: fun,));
 			index++;
 		}
 		var r = Row(
@@ -81,6 +81,9 @@ Widget build_cities_columns({
 	required Function fun,
 	Widget? form_city}
 		) {
+	print('\n\n');
+	print('width= $width');
+	print('\n\n');
 	List<String> cities_list = [];
 	Map<int, String> cities_alias = {};
 	data.forEach((element) {cities_list.add(element.city); });
@@ -647,14 +650,14 @@ class NewEventScreenState extends State<NewEventScreen> {
 														? build_skills_columns(
 													data: _app_service.skills,
 													// context: context,
-													width: MediaQuery.of(context).size.width.floor(),
+													width: MediaQuery.of(context).size.width.floor() - 70,
 													app_service: _app_service,
 													fun: (String helper) {
 														print('skillcard early ${helper}');
 														setState(() {
-															var index = _app_service.skills.indexOf(helper);
-															if (index >= 0) {
-																_app_service.skills.removeAt(index);
+															// var index = _app_service.skills.indexOf(helper);
+															if (_app_service.skills.indexOf(helper) >= 0) {
+																_app_service.skills.removeAt(_app_service.skills.indexOf(helper));
 															}
 															print('_app_service.skills ${_app_service.skills}');
 														});
@@ -662,19 +665,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 												)
 														: Container(),
 
-												build_cities_columns(
-													data: snapshot.data!.list,
-													width: MediaQuery.of(context).size.width.floor(),
-													// context: context,
-													app_service: _app_service,
-													fun: (String helper) {
-														setState(() {
-															city_controller.text = helper;
-															_app_service.city_hint = [];
-														});
-													},
-													form_city: form_city,
-												),
 											],
 										);
 
@@ -690,19 +680,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 
 
-							// _app_service.skills.isNotEmpty
-							// 		? Wrap(
-							// 				children: List.generate(
-							// 						_app_service.skills.length,
-							// 						(index) => buildSkillCard2(
-							// 								title: _app_service.skills.elementAt(index),
-							// 								app_service: _app_service,
-							// 								id:index,
-							// 						),
-							// 				),
-							//
-							// ) : Container(),
-
 							build_bold_left_text(
 								'Місто',
 								padding: header_padding,
@@ -713,7 +690,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 									if (snapshot.hasData) {
 										return build_cities_columns(
 											data: snapshot.data!.list,
-											width: MediaQuery.of(context).size.width.floor(),
+											width: MediaQuery.of(context).size.width.floor() - 50,
 											// context: context,
 											app_service: _app_service,
 											fun: (String helper) {
@@ -749,7 +726,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 							build_employments_rows(
 								data: employments_text.values,
 								// context: context,
-								width: MediaQuery.of(context).size.width.floor(),
+								width: MediaQuery.of(context).size.width.floor() - 20,
 								app_service: _app_service,
 								fun: (String helper) {
 								},

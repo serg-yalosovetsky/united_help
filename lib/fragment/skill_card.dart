@@ -160,15 +160,15 @@ class buildSkillCardState extends State<buildSkillCard> {
               ),
               onTap: () {
                 // if (widget.fun==null) {
-                  setState(() {
-                    var index = _app_service.skills.indexOf(widget.title);
-                    print(index);
-                    if (index >= 0)
-                      _app_service.skills.removeAt(index);
-
-                  });
+                //   setState(() {
+                //     var index = _app_service.skills.indexOf(widget.title);
+                //     print(index);
+                //     if (index >= 0)
+                //       _app_service.skills.removeAt(index);
+                //
+                //   });
                 // } else widget.fun();
-                // widget.fun();
+                widget.fun();
                   // print('skillcard ${widget.title}');
                   // print(_app_service.skills);
               },
@@ -217,10 +217,10 @@ Widget buildSkillCard3({
             ),
             onTap: () {
 
-              var index = app_service.skills.indexOf(title);
-              print(index);
-              if (index >= 0)
-                app_service.skills.removeAt(index);
+              // var index = app_service.skills.indexOf(title);
+              // print(index);
+              // if (index >= 0)
+              //   app_service.skills.removeAt(index);
               fun();
             },
           ),
@@ -277,12 +277,13 @@ class buildSkillCard2 extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                  print('skillcard ${title}');
-                  var index = app_service.skills.indexOf(title);
-                  print(index);
-                  if (index >= 0)
-                    app_service.skills.removeAt(index);
-                  print(app_service.skills);
+                  // print('skillcard ${title}');
+                  // var index = app_service.skills.indexOf(title);
+                  // print(index);
+                  // if (index >= 0)
+                  //   app_service.skills.removeAt(index);
+                  // print(app_service.skills);
+                  fun(title);
               },
             ),
           ],

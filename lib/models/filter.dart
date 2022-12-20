@@ -7,19 +7,19 @@ import '../services/urls.dart';
 class Skill {
   final int id;
   final String name;
-  final int parent;
-  final String image;
+  final List<int> parents;
+  final String? image;
 
   const Skill({
-    required this.parent,
+    required this.parents,
     required this.id,
     required this.name,
-    required this.image,
+    this.image,
   });
 
   factory Skill.fromJson(Map<String, dynamic> json) {
     return Skill(
-      parent: json['parent'],
+      parents: json['parents'].cast<int>(),
       id: json['id'],
       name: json['name'],
       image: json['image'],
@@ -43,8 +43,9 @@ class Skills {
 
   factory Skills.fromJson(Map<String, dynamic> json) {
     var results = <Skill>[];
-    for (var event in json['results']) {
-      results.add(Skill.fromJson(event));
+    for (var skill in json['results']) {
+      print('skill= $skill');
+      results.add(Skill.fromJson(skill));
     }
     return Skills(
       count: json['count'],
@@ -130,7 +131,9 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
   if (response['status_code'] == 200) {
     var res  = response['result'];
     print(response['result']);
+    print('SUCCESS FINISH');
     var r = Skills.fromJson(res);
+    print('SUCCESS FINISH2');
     return r;
   } else {
     app_service.set_access_token(null);
