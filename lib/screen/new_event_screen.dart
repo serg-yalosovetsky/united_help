@@ -32,20 +32,22 @@ class NewEventScreen extends StatefulWidget {
 	});
 
   @override
-  State<NewEventScreen> createState() => _NewEventScreenState();
+  State<NewEventScreen> createState() => NewEventScreenState();
 }
 
 
 Widget build_skills_columns({
 			required data,
-			required BuildContext context,
+			// required BuildContext context,
+			required int width,
 			required AppService app_service,
 			required Function fun,
 			}) {
 	List<String> skills_list = [];
 	data.forEach((element) {skills_list.add(element); });
 	var skills_card_blueprint = calculate_cities_widgets(
-		context: context,
+		// context: context,
+		width: width,
 		cities_list: skills_list,
 		max_columns: 2,
 	);
@@ -63,19 +65,18 @@ Widget build_skills_columns({
 		cr.add(r);
 	}
 
-	var c = Column(
+	return Column(
 		children: [
 			...cr,
 		],
 	);
 
-
-	return c;
-
 }
+
 Widget build_cities_columns({
 	required data,
-	required BuildContext context,
+	// required BuildContext context,
+	required int width,
 	required AppService app_service,
 	required Function fun,
 	Widget? form_city}
@@ -87,7 +88,8 @@ Widget build_cities_columns({
 	if (form_city != null)
 		cities_list.add('Інше');
 	var cities_card_blueprint = calculate_cities_widgets(
-		context: context,
+		// context: context,
+		width: width,
 		cities_list: cities_list,
 		max_columns: 2,
 	);
@@ -123,7 +125,8 @@ Widget build_cities_columns({
 
 Widget build_employments_rows({
 	required data,
-	required BuildContext context,
+	// required BuildContext context,
+	required int width,
 	required AppService app_service,
 	required Function fun,
 	}
@@ -131,7 +134,8 @@ Widget build_employments_rows({
 	List<String> cities_list = [];
 	data.forEach((element) {cities_list.add(element); });
 	var cities_card_blueprint = calculate_cities_widgets(
-		context: context,
+		// context: context,
+		width: width,
 		cities_list: cities_list,
 		max_columns: 1,
 	);
@@ -157,7 +161,8 @@ Widget build_employments_rows({
 
 }
 
-class _NewEventScreenState extends State<NewEventScreen> {
+
+class NewEventScreenState extends State<NewEventScreen> {
 
 	final int image_index = 0;
 	final int name_index = 1;
@@ -224,6 +229,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1) &&
 				(_app_service.data_start!=null) && (_app_service.data_end!=null);
 	}
+
 	@override
 	Widget build(BuildContext context) {
 		if (widget.event_for == Roles.refugee.toString()) {
@@ -308,79 +314,82 @@ class _NewEventScreenState extends State<NewEventScreen> {
 					),
 		);
 
-		Widget form_skills = Form(
-			key: _form_key_skills,
-			child: Padding(
-				padding: form_padding,
-				child: TextFormField(
-					// decoration: InputDecoration(
-					// 	labelText: 'UserName',
-					// 	hintText: "YashodPerera",
-					// ),
-					controller: skills_controller,
-					autovalidateMode: AutovalidateMode.onUserInteraction,
-					validator: (value) {
-						if (value == null || value.isEmpty) {
-							return 'Будь ласка, введіть вміння';
-						}
-						else{
-							List<String> skills = ['reading', 'writing допомога', 'restling', 'remembering'];
-							bool is_finded = false;
-							for (var skill in skills){
-									if (skill.toLowerCase().startsWith(value.toLowerCase())){
+		Widget form_skills (Skills skills) {
+			return Form(
+				key: _form_key_skills,
+				child: Padding(
+					padding: form_padding,
+					child: TextFormField(
+						controller: skills_controller,
+						autovalidateMode: AutovalidateMode.onUserInteraction,
+						validator: (value) {
+							if (value == null || value.isEmpty) {
+								return 'Будь ласка, введіть вміння';
+							}
+							else {
+								// List<String
+								bool is_finded = false;
+								for (var skill in skills.list) {
+									if (skill.name.toLowerCase().startsWith(value.toLowerCase())) {
 										is_finded = true;
 										// _app_service.city_hint = [city];
-								}
-							}
-							if (!is_finded){
-								_app_service.skills_hint = [];
-								return 'Локацію не знайдено :(';
-							}
-						}
-
-						return null;
-					},
-					onChanged: (text) {
-						setState(() {
-							if (text.isEmpty){
-								// _form_key_city.currentState!.validate();
-							}else {
-								print(text);
-								List<String> skills = ['reading', 'writing допомога', 'restling', 'remembering'];
-
-								bool is_finded = false;
-								List<String> skills_hint = [];
-
-								for (var skill in skills) {
-										print(skill);
-										if (skill.toLowerCase().startsWith(text.toLowerCase())) {
-											print('contain!! $skill');
-											is_finded = true;
-											skills_hint.add(skill);
 									}
 								}
-								_app_service.skills_hint = skills_hint;
 								if (!is_finded) {
 									_app_service.skills_hint = [];
+									return 'Локацію не знайдено :(';
 								}
 							}
-						});
-					},
-					decoration: InputDecoration(
-						border: OutlineInputBorder(
-							borderRadius : BorderRadius.all(Radius.circular(16.0)),
-						),
-						hintText: 'Погрузка',
-						suffixIcon: IconButton(
-							onPressed: skills_controller.clear,
-							icon: Icon(
-								Icons.clear,
+
+							return null;
+						},
+						onChanged: (text) {
+							setState(() {
+								if (text.isEmpty) {
+									// _form_key_city.currentState!.validate();
+								} else {
+									print(text);
+									// List<String> skills = [
+									// 	'reading',
+									// 	'writing допомога',
+									// 	'restling',
+									// 	'remembering'
+									// ];
+
+									bool is_finded = false;
+									List<String> skills_hint = [];
+
+									for (var skill in skills.list) {
+										print(skill);
+										if (skill.name.toLowerCase().startsWith(text.toLowerCase())) {
+											print('contain!! $skill');
+											is_finded = true;
+											skills_hint.add(skill.name);
+										}
+									}
+									_app_service.skills_hint = skills_hint;
+									if (!is_finded) {
+										_app_service.skills_hint = [];
+									}
+								}
+							});
+						},
+						decoration: InputDecoration(
+							border: OutlineInputBorder(
+								borderRadius: BorderRadius.all(Radius.circular(16.0)),
+							),
+							hintText: 'Погрузка',
+							suffixIcon: IconButton(
+								onPressed: skills_controller.clear,
+								icon: Icon(
+									Icons.clear,
+								),
 							),
 						),
 					),
 				),
-			),
-		);
+			);
+		}
 
 		Widget form_name = Form(
 			key: _form_key_name,
@@ -448,8 +457,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
 							borderRadius : BorderRadius.all(Radius.circular(16.0)),
 						),
 						hintText: (event_for == Roles.volunteer ) ?
-												'Напишіть про задачі волонтерів й загальний напрям роботи...' :
-												'Напишіть про допомогу, яку можете надати...' ,
+						'Напишіть про задачі волонтерів й загальний напрям роботи...' :
+						'Напишіть про допомогу, яку можете надати...' ,
 					),
 				),
 			),
@@ -498,67 +507,67 @@ class _NewEventScreenState extends State<NewEventScreen> {
 				padding: form_padding,
 				child: Align(
 					alignment: Alignment.bottomLeft,
-				  child: SizedBox(
-				  	width: 119,
-				    child: TextFormField(
+					child: SizedBox(
+						width: 119,
+						child: TextFormField(
 							keyboardType: TextInputType.number,
 							controller: members_controller,
-				    	autovalidateMode: AutovalidateMode.onUserInteraction,
-				    	validator: (value) {
-				    		if (value == null || value.isEmpty) {
-				    			return 'Кількість місць не може бути пустим';
-				    		}
-				    		return null;
-				    	},
-				    	onChanged: (text) {
-				    		setState(() {
-				    			if (_form_key_members.currentState!.validate())
-				    				button_states[recuired_people_index] = true;
-				    			else
-				    				button_states[recuired_people_index] = false;
-				    		});
-				    	},
-				    	decoration: InputDecoration(
-				    		border: const OutlineInputBorder(
-				    			borderRadius : BorderRadius.all(Radius.circular(16.0)),
-				    		),
-				    		hintText: 'к-ть',
-				    		suffixIcon: IconButton(
-				    			onPressed: members_controller.clear,
-				    			icon: Icon(
-				    				Icons.clear,
-				    			),
-				    		),
-				    	),
-				    ),
-				  ),
+							autovalidateMode: AutovalidateMode.onUserInteraction,
+							validator: (value) {
+								if (value == null || value.isEmpty) {
+									return 'Кількість місць не може бути пустим';
+								}
+								return null;
+							},
+							onChanged: (text) {
+								setState(() {
+									if (_form_key_members.currentState!.validate())
+										button_states[recuired_people_index] = true;
+									else
+										button_states[recuired_people_index] = false;
+								});
+							},
+							decoration: InputDecoration(
+								border: const OutlineInputBorder(
+									borderRadius : BorderRadius.all(Radius.circular(16.0)),
+								),
+								hintText: 'к-ть',
+								suffixIcon: IconButton(
+									onPressed: members_controller.clear,
+									icon: Icon(
+										Icons.clear,
+									),
+								),
+							),
+						),
+					),
 				),
 			),
 		);
 
 		return Scaffold(
-			appBar: buildAppBar(
-					() {Navigator.pop(context);},
-					'Новий івент',
-					TextButton(
-						onPressed: is_ready_to_submit() ? () {print('tap');} : null,
-						child: Text(
-							'Готово',
-							style: TextStyle(
-								// color: Color(0xFF0071D8),
-								fontSize: 18,
-								fontFamily: 'SF Pro Text',
-								fontWeight: FontWeight.w400,
+				appBar: buildAppBar(
+								() {Navigator.pop(context);},
+						'Новий івент',
+						TextButton(
+							onPressed: is_ready_to_submit() ? () {print('tap');} : null,
+							child: Text(
+								'Готово',
+								style: TextStyle(
+									// color: Color(0xFF0071D8),
+									fontSize: 18,
+									fontFamily: 'SF Pro Text',
+									fontWeight: FontWeight.w400,
+								),
 							),
-						),
-					)
-			),
+						)
+				),
 
-			body: SingleChildScrollView(
-			  child: Column(
-			    children: [
-						GestureDetector(
-							onTap: () async {
+				body: SingleChildScrollView(
+					child: Column(
+						children: [
+							GestureDetector(
+								onTap: () async {
 									image = await ImagePicker().pickImage(source: ImageSource.gallery);
 									if (image!= null) {
 										// image?.saveTo('images/user_new_event.png');
@@ -567,197 +576,243 @@ class _NewEventScreenState extends State<NewEventScreen> {
 										});
 									}
 
-							},
-						  child: Padding(
-						    padding: form_padding,
-						    child: ClipRRect(
-						    	borderRadius: BorderRadius.circular(20.0),
-						    	child: ConstrainedBox(
-						    		constraints: const BoxConstraints(
-						    			minWidth: 70,
-						    			minHeight: 80,
-						    			maxWidth: double.infinity,
-						    			maxHeight: 450,
-						    		),
-						    		child: (button_states[image_index] && (image != null) && (image?.path != null)) ?
-															Image.file(
-																	File(image?.path ?? ''),
-																	fit: BoxFit.fitWidth,
-															) :
-															Image.asset(
-																	'images/img_25.png',
-																	fit: BoxFit.fitWidth,
-															),
-						    	),
-						    ),
-						  ),
-						),
-						build_bold_left_text(
-							'Назва',
-							padding: header_padding,
-						),
-						form_name,
-						build_bold_left_text(
-							'Опис',
-							padding: header_padding,
-						),
-						form_bio,
+								},
+								child: Padding(
+									padding: form_padding,
+									child: ClipRRect(
+										borderRadius: BorderRadius.circular(20.0),
+										child: ConstrainedBox(
+											constraints: const BoxConstraints(
+												minWidth: 70,
+												minHeight: 80,
+												maxWidth: double.infinity,
+												maxHeight: 450,
+											),
+											child: (button_states[image_index] && (image != null) && (image?.path != null)) ?
+											Image.file(
+												File(image?.path ?? ''),
+												fit: BoxFit.fitWidth,
+											) :
+											Image.asset(
+												'images/img_25.png',
+												fit: BoxFit.fitWidth,
+											),
+										),
+									),
+								),
+							),
+							build_bold_left_text(
+								'Назва',
+								padding: header_padding,
+							),
+							form_name,
+							build_bold_left_text(
+								'Опис',
+								padding: header_padding,
+							),
+							form_bio,
 
 
-						build_bold_left_text(
-							'Вміння',
-							padding: header_padding,
-						),
+							build_bold_left_text(
+								'Вміння',
+								padding: header_padding,
+							),
 
-						form_skills,
-						_app_service.skills_hint.isNotEmpty
-								? build_helpers_text(_app_service.skills_hint, (String helper) {
-							setState(() {
-								skills_controller.text = '';
-								_app_service.skills_hint = [];
-								_app_service.skills.add(helper);
-								print('skillcard hint ${helper}');
+							FutureBuilder<Skills>(
+								future: futureSkills,
+								builder: (context, snapshot) {
+									if (snapshot.hasData) {
+										print('snapshot.data');
+										print(snapshot.data);
+										return Column(
+											children: [
 
-							});
-						})
-								: Container(),
+												form_skills(snapshot.data!),
 
-						_app_service.skills.isNotEmpty
-								? build_skills_columns(
-										data: _app_service.skills,
-										context: context,
-										app_service: _app_service,
-										fun: (String helper) {
-											print('skillcard early ${helper}');
-											setState(() {
-												var index = _app_service.skills.indexOf(helper);
-												if (index >= 0)
-													_app_service.skills.removeAt(index);
-											});
-										},
-						)
-								: Container(),
+												_app_service.skills_hint.isNotEmpty
+														? build_helpers_text(_app_service.skills_hint, (String helper) {
+													print('hint early ${helper}');
 
-						// _app_service.skills.isNotEmpty
-						// 		? Wrap(
-						// 				children: List.generate(
-						// 						_app_service.skills.length,
-						// 						(index) => buildSkillCard2(
-						// 								title: _app_service.skills.elementAt(index),
-						// 								app_service: _app_service,
-						// 								id:index,
-						// 						),
-						// 				),
-						//
-						// ) : Container(),
+													setState(() {
+														skills_controller.text = '';
+														_app_service.skills_hint = [];
+														_app_service.skills.add(helper);
+														print('skillcard hint ${helper}');
 
-						build_bold_left_text(
-			  			'Місто',
-			  			padding: header_padding,
-			  		),
-			      FutureBuilder<Cities>(
-			  			future: futureCities,
-			  			builder: (context, snapshot) {
-			  				if (snapshot.hasData) {
-			  					return build_cities_columns(
-			  						data: snapshot.data!.list,
-			  						context: context,
-			  						app_service: _app_service,
-			  						fun: (String helper) {
-			  							setState(() {
-			  								city_controller.text = helper;
-			  								_app_service.city_hint = [];
-			  							});
-			  						},
-			  						form_city: form_city,
-			  					);
+													});
+												})
+														: Container(),
 
-			  				} else if (snapshot.hasError) {
-			  					// return Text('${snapshot.error}');
-									return build_no_internet();
+												_app_service.skills.isNotEmpty
+														? build_skills_columns(
+													data: _app_service.skills,
+													// context: context,
+													width: MediaQuery.of(context).size.width.floor(),
+													app_service: _app_service,
+													fun: (String helper) {
+														print('skillcard early ${helper}');
+														setState(() {
+															var index = _app_service.skills.indexOf(helper);
+															if (index >= 0) {
+																_app_service.skills.removeAt(index);
+															}
+															print('_app_service.skills ${_app_service.skills}');
+														});
+													},
+												)
+														: Container(),
 
-								}
+												build_cities_columns(
+													data: snapshot.data!.list,
+													width: MediaQuery.of(context).size.width.floor(),
+													// context: context,
+													app_service: _app_service,
+													fun: (String helper) {
+														setState(() {
+															city_controller.text = helper;
+															_app_service.city_hint = [];
+														});
+													},
+													form_city: form_city,
+												),
+											],
+										);
 
-			  				return const CircularProgressIndicator();
-			  				},
-			  			),
+									} else if (snapshot.hasError) {
+										// return Text('${snapshot.error}');
+										return build_no_internet();
 
-						build_bold_left_text(
-							'Локація',
-							padding: header_padding,
-						),
-						form_location,
+									}
 
-						build_bold_left_text(
-			  			'Зайнятість',
-			  			padding: header_padding,
-			  		),
-
-			  		build_employments_rows(
-			  			data: employments_text.values,
-			  			context: context,
-			  			app_service: _app_service,
-			  			fun: (String helper) {
-			  			},
-			  		),
+									return const CircularProgressIndicator();
+								},
+							),
 
 
-						build_bold_left_text(
-							'Дата',
-							padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-						),
 
-						Row(
-						  children: [
-								build_left_text('Початок'),
+							// _app_service.skills.isNotEmpty
+							// 		? Wrap(
+							// 				children: List.generate(
+							// 						_app_service.skills.length,
+							// 						(index) => buildSkillCard2(
+							// 								title: _app_service.skills.elementAt(index),
+							// 								app_service: _app_service,
+							// 								id:index,
+							// 						),
+							// 				),
+							//
+							// ) : Container(),
 
-								build_date_picker(context: context,
+							build_bold_left_text(
+								'Місто',
+								padding: header_padding,
+							),
+							FutureBuilder<Cities>(
+								future: futureCities,
+								builder: (context, snapshot) {
+									if (snapshot.hasData) {
+										return build_cities_columns(
+											data: snapshot.data!.list,
+											width: MediaQuery.of(context).size.width.floor(),
+											// context: context,
+											app_service: _app_service,
+											fun: (String helper) {
+												setState(() {
+													city_controller.text = helper;
+													_app_service.city_hint = [];
+												});
+											},
+											form_city: form_city,
+										);
+
+									} else if (snapshot.hasError) {
+										// return Text('${snapshot.error}');
+										return build_no_internet();
+
+									}
+
+									return const CircularProgressIndicator();
+								},
+							),
+
+							build_bold_left_text(
+								'Локація',
+								padding: header_padding,
+							),
+							form_location,
+
+							build_bold_left_text(
+								'Зайнятість',
+								padding: header_padding,
+							),
+
+							build_employments_rows(
+								data: employments_text.values,
+								// context: context,
+								width: MediaQuery.of(context).size.width.floor(),
+								app_service: _app_service,
+								fun: (String helper) {
+								},
+							),
+
+
+							build_bold_left_text(
+								'Дата',
+								padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+							),
+
+							Row(
+								children: [
+									build_left_text('Початок'),
+
+									build_date_picker(context: context,
 										controller: start_date_controller,
 										app_service: _app_service,
 										is_start: true,
-								),
+									),
 
-								build_time_picker(context: context,
+									build_time_picker(context: context,
 										controller: start_time_controller,
 										app_service: _app_service,
 										is_start: true,
-								),
+									),
 
-						  ],
-						),
+								],
+							),
 
 
-						Row(
-							children: [
-								build_left_text('Кінець   '),
+							Row(
+								children: [
+									build_left_text('Кінець   '),
 
-								build_date_picker(context: context,
+									build_date_picker(context: context,
 										controller: end_date_controller,
 										app_service: _app_service,
 										is_start: false,
-								),
+									),
 
-								build_time_picker(context: context,
-																	controller: end_time_controller,
-																	app_service: _app_service,
-																	is_start: false,
-								),
+									build_time_picker(context: context,
+										controller: end_time_controller,
+										app_service: _app_service,
+										is_start: false,
+									),
 
-							],
-						),
+								],
+							),
 
-						build_bold_left_text(
-							'Кількість місць',
-							padding: header_padding,
-						),
-						form_members,
-						Padding(padding: header_padding,)
-			  	],
-			  ),
-			),
-			bottomNavigationBar: const buildBottomNavigationBar(),
+							build_bold_left_text(
+								'Кількість місць',
+								padding: header_padding,
+							),
+							form_members,
+							Padding(padding: header_padding,)
+						],
+					),
+				),
+				bottomNavigationBar: const buildBottomNavigationBar(),
 
-		);
+			);
+
 	}
 
 	Widget build_left_text(String text) {

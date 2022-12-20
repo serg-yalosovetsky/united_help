@@ -6,7 +6,7 @@ import '../services/urls.dart';
 
 class Skill {
   final int id;
-  final int name;
+  final String name;
   final int parent;
   final String image;
 

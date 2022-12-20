@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../screen/new_event_screen.dart';
 import '../services/appservice.dart';
 const TextStyle timerStyle = TextStyle(
   fontSize: 18,
@@ -158,7 +159,7 @@ class buildSkillCardState extends State<buildSkillCard> {
                 ),
               ),
               onTap: () {
-                if (widget.fun==null) {
+                // if (widget.fun==null) {
                   setState(() {
                     var index = _app_service.skills.indexOf(widget.title);
                     print(index);
@@ -166,10 +167,10 @@ class buildSkillCardState extends State<buildSkillCard> {
                       _app_service.skills.removeAt(index);
 
                   });
-                } else widget.fun();
-
-                  print('skillcard ${widget.title}');
-                  print(_app_service.skills);
+                // } else widget.fun();
+                // widget.fun();
+                  // print('skillcard ${widget.title}');
+                  // print(_app_service.skills);
               },
             ),
           ],
@@ -215,11 +216,12 @@ Widget buildSkillCard3({
               ),
             ),
             onTap: () {
+
               var index = app_service.skills.indexOf(title);
               print(index);
               if (index >= 0)
                 app_service.skills.removeAt(index);
-              // fun();
+              fun();
             },
           ),
         ],

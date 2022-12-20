@@ -28,7 +28,8 @@ class FiltersCard extends StatefulWidget {
 
 Widget build_skills_columns({
 			required data,
-			required BuildContext context,
+			// required BuildContext context,
+			required int width,
 			required AppService app_service,
 			required Function fun,
 			Widget? form_city}
@@ -40,7 +41,8 @@ Widget build_skills_columns({
 	if (form_city != null)
 			cities_list.add('Інше');
 	var cities_card_blueprint = calculate_cities_widgets(
-		context: context,
+		// context: context,
+		width: width,
 		cities_list: cities_list,
 		max_columns: 2,
 	);
@@ -77,7 +79,8 @@ Widget build_skills_columns({
 
 Widget build_employments_rows({
 	required data,
-	required BuildContext context,
+	// required BuildContext context,
+	required int width,
 	required AppService app_service,
 	required Function fun,
 	}
@@ -85,7 +88,8 @@ Widget build_employments_rows({
 	List<String> cities_list = [];
 	data.forEach((element) {cities_list.add(element); });
 	var cities_card_blueprint = calculate_cities_widgets(
-		context: context,
+		// context: context,
+		width: width,
 		cities_list: cities_list,
 		max_columns: 1,
 	);
@@ -353,7 +357,8 @@ class _FiltersCardState extends State<FiltersCard> {
 			  				if (snapshot.hasData) {
 			  					return build_skills_columns(
 			  						data: snapshot.data!.list,
-			  						context: context,
+										width: MediaQuery.of(context).size.width.floor(),
+										// context: context,
 			  						app_service: _app_service,
 			  						fun: (String helper) {
 			  							setState(() {
@@ -380,7 +385,8 @@ class _FiltersCardState extends State<FiltersCard> {
 
 			  		build_employments_rows(
 			  			data: employments_text.values,
-			  			context: context,
+							width: MediaQuery.of(context).size.width.floor(),
+			  			// context: context,
 			  			app_service: _app_service,
 			  			fun: (String helper) {
 			  			},

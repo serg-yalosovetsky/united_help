@@ -4,14 +4,15 @@ import 'package:intl/intl.dart';
 
 
 List<List<String>> calculate_cities_widgets({
-  required BuildContext context,
+  // required BuildContext context,
+  required int width,
   required List<String> cities_list,
   required int max_columns,
 
 }) {
 
   int widget_width = 0;
-  int width = MediaQuery.of(context).size.width.floor();
+  // int width = MediaQuery.of(context).size.width.floor();
   List<List<String>> cities = new List.generate(max_columns, (i) => []);
 
   int columns = 0;
