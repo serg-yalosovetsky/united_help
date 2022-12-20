@@ -126,7 +126,6 @@ class Profile {
 }
 
 
-
 class UserProfile {
   final User user;
   final Profile profile;
@@ -138,17 +137,11 @@ class UserProfile {
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
-    print(json);
-    var e= UserProfile(
+    return UserProfile(
       user: User.fromJson(json['user']),
       profile: Profile.fromJson(json),
     );
-    print(e);
-    return e;
   }
-  // String encode (Profile profile) {
-  //   return json.encode(profile);
-  // }
 }
 
 
@@ -168,7 +161,6 @@ class Users {
   factory Users.fromJson(Map<String, dynamic> json) {
     var results = <User>[];
     for (var event in json['results']) {
-      print('event = $event');
       results.add(User.fromJson(event));
     }
     return Users(
@@ -197,7 +189,6 @@ class Profiles {
   factory Profiles.fromJson(Map<String, dynamic> json) {
     var results = <Profile>[];
     for (var event in json['results']) {
-      print('event = $event');
       results.add(Profile.fromJson(event));
     }
     return Profiles(
@@ -213,7 +204,7 @@ class Profiles {
 Future<Profiles> fetchProfiles(String profile_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_profiles_url/$profile_query';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -230,7 +221,7 @@ Future<Profiles> fetchProfiles(String profile_query, AppService app_service) asy
 Future<Profile> fetchProfile(String profile_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_profiles_url/$profile_query';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -246,7 +237,7 @@ Future<Profile> fetchProfile(String profile_query, AppService app_service) async
 Future<String> fetchProfileImage(AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_profiles_url/me/image/';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -262,7 +253,7 @@ Future<String> fetchProfileImage(AppService app_service) async {
 Future<Users> fetchUsers(String user_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_users_url/$user_query';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -278,7 +269,7 @@ Future<Users> fetchUsers(String user_query, AppService app_service) async {
 Future<User> fetchUser(String user_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_users_url/$user_query';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -298,7 +289,7 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
   if (profile_query.isEmpty)
     url += '1';
   print('url $url');
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];

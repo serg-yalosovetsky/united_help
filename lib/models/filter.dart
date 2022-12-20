@@ -126,7 +126,7 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
   String url = '$server_url$all_skills_url/';
   url += skill_query;
 
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
@@ -147,7 +147,7 @@ Future<Cities> fetchCities(String city_query, AppService app_service) async {
   String url = '$server_url$all_cities_url/';
   url += city_query;
 
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];

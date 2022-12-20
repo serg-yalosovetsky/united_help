@@ -101,7 +101,7 @@ class Requests {
   }
 
 
-  FutureMap clear_get(String url, [String? access_token]) async {
+  FutureMap get(String url, [String? access_token]) async {
     var result;
     int status_code = 0;
     Map<String, String> headers = {
@@ -132,23 +132,32 @@ class Requests {
     return {'result': result, 'status_code': status_code, };
   }
 
-  FutureMap get(String url, [String? access_token]) async {
-    // var auth_resp = await authenticate(url, access_token);
-    // if (!auth_resp['success']) {
-    //    return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
-    // }
-    return clear_get(url, access_token);
+  // FutureMap get(String url, [String? access_token]) async {
+  //   // var auth_resp = await authenticate(url, access_token);
+  //   // if (!auth_resp['success']) {
+  //   //    return {'result': auth_resp['error'], 'status_code': auth_resp['status_code'], };
+  //   // }
+  //   return clear_get(url, access_token);
+  // }
+
+
+  FutureMap get_wrapper(String url, AppService app_service) async {
+    var r = await get(url, await app_service.get_access_token());
+    if (r['status_code'] == 403){
+      await app_service.relogin();
+      return get(url, await app_service.get_access_token());
+    }
+    return r;
   }
 
 
-  FutureMap get_wrapper(String url, [String? access_token]) async {
-    // if (access_token == null){
-    //   var result = await authenticate('serg', 'sergey104781');
-    //   if (result['success']){
-    //     access_token = result['access_token'];
-    //   }
-    // }
-    return get(url, access_token);
+  FutureMap post_wrapper(String url, Map body, AppService app_service) async {
+    var r = await post(url, body, await app_service.get_access_token());
+    if (r['status_code'] == 403){
+      await app_service.relogin();
+      return post(url, body, await app_service.get_access_token());
+    }
+    return r;
   }
 
 
@@ -206,13 +215,6 @@ class Requests {
 
     return {'result': res.body, 'status_code': response.statusCode, };
   }
-
-
-  FutureMap wrapper_post(String url, Map body, [String? access_token]) async {
-
-    return post(url, body, access_token);
-  }
-
 
 }
 

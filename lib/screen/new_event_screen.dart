@@ -219,6 +219,11 @@ class NewEventScreenState extends State<NewEventScreen> {
 		start_time_controller.text = time_to_str(TimeOfDay.now());
 		end_date_controller.text = date_to_str(DateTime.now());
 		end_time_controller.text = time_to_str(TimeOfDay.now());
+		_app_service.data_start = DateTime.now();
+		_app_service.data_end = DateTime.now();
+		_app_service.time_start = TimeOfDay.now();
+		_app_service.time_end = TimeOfDay.now();
+
 		_app_service = Provider.of<AppService>(context, listen: false);
 		futureSkills = fetchSkills(skills_query, _app_service);
 		futureCities = fetchCities(cities_query, _app_service);
@@ -226,11 +231,9 @@ class NewEventScreenState extends State<NewEventScreen> {
 	}
 	XFile? image = null;
 
-
 	bool is_ready_to_submit() {
 		return button_states.every((element) => element==true) &&
-				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1) &&
-				(_app_service.data_start!=null) && (_app_service.data_end!=null);
+				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
 	}
 
 	@override

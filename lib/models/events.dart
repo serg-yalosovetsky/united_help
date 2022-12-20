@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:united_help/services/appservice.dart';
 
 import '../services/authenticate.dart';
@@ -40,7 +42,7 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    var e= Event(
+    return Event(
       id: json['id'],
       name: json['name'],
       enabled: json['enabled'],
@@ -57,9 +59,25 @@ class Event {
       skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
     );
-    print(e);
-    return e;
   }
+
+  Map to_dict () {
+    Map event_map = {
+      'name': this.name,
+      'description': this.description,
+      'start_time': this.start_time,
+      'end_time': this.end_time,
+      'image': this.image,
+      'city': this.city,
+      'location': this.location,
+      'employment': this.employment,
+      'to': this.to,
+      'skills': this.skills,
+      'required_members': this.required_members,
+    };
+    return event_map;
+  }
+
 }
 
 class Events {
@@ -95,11 +113,29 @@ class Events {
 Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_events_url/$event_query';
-  final response = await r.get_wrapper(url, await app_service.get_access_token());
+  final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
     return Events.fromJson(res);
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to load Event');
+  }
+}
+
+
+Future<Event> postEvents(Map<String, dynamic> body, AppService app_service) async {
+  var r = Requests();
+  String url = '$server_url$all_events_url';
+  Map<String, dynamic> body = {
+    'name': app_service
+  };
+  final response = await r.post_wrapper(url, body, app_service);
+
+  if (response['status_code'] == 200) {
+    var res  = response['result'];
+    return Event.fromJson(res);
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to load Event');
