@@ -236,6 +236,39 @@ class NewEventScreenState extends State<NewEventScreen> {
 				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
 	}
 
+	bool submit() {
+		Event event = Event(
+				id: 0,
+				name: name_controller.text,
+				enabled: true,
+				description: bio_controller.text,
+				reg_date: '',
+				start_time: DateTime(
+					_app_service.data_start?.year ?? 0,
+					_app_service.data_start?.month ?? 0,
+					_app_service.data_start?.day ?? 0,
+					_app_service.time_start?.hour ?? 0,
+					_app_service.time_start?.minute ?? 0,
+				).toString(),
+				end_time: DateTime(
+					_app_service.data_end?.year ?? 0,
+					_app_service.data_end?.month ?? 0,
+					_app_service.data_end?.day ?? 0,
+					_app_service.time_end?.hour ?? 0,
+					_app_service.time_end?.minute ?? 0,
+				).toString(),
+				image: image,
+				city: city,
+				location: location,
+				employment: employment,
+				owner: owner,
+				to: to,
+				skills: skills,
+				required_members: required_members);
+		return button_states.every((element) => element==true) &&
+				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		if (widget.event_for == Roles.refugee.toString()) {
