@@ -111,7 +111,6 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    print(headers);
     if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
       url += '/';
     }
@@ -125,9 +124,11 @@ class Requests {
       print("Response body: ${response.body}");
     }).catchError((error){
       result = error;
-      print("Type: get");
+      print("Method: GET");
 
       print("Error: $error");
+      print("Url: $url");
+      print("Headers: $headers");
     });
     return {'result': result, 'status_code': status_code, };
   }

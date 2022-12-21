@@ -65,7 +65,7 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 		  								itemCount: snapshot.data!.count,
 		  								itemBuilder: (context, index) {
 		  									return GestureDetector(
-		  											child: card_builder(snapshot.data!.list[index]),
+		  											child: card_builder(snapshot.data!.list[index], app_service),
 		  											onTap: () {
 		  												Navigator.of(context).push(
 		  													MaterialPageRoute(
@@ -82,7 +82,7 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 											snapshot.data!.count,
 											(index) {
 												return GestureDetector(
-													child: card_builder(snapshot.data!.list[index]),
+													child: card_builder(snapshot.data!.list[index], app_service),
 													onTap: () {
 															setState(() {
 																Navigator.of(context).push(
@@ -118,7 +118,7 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 }
 
 
-Widget card_builder(Event event) {
+Widget card_builder(Event event, AppService app_service) {
 	String employment_string = '';
 	if (event.employment == 0)
 		employment_string = 'Постійна зайнятість';
@@ -127,6 +127,58 @@ Widget card_builder(Event event) {
 	else if (event.employment == 2)
 		employment_string = show_nice_time(event.start_time);
 
+	Widget volunteer_rating = Column(
+		children: [
+			RatingBar.builder(
+				initialRating: 0,
+				minRating: 0,
+				direction: Axis.horizontal,
+				allowHalfRating: true,
+				itemCount: 5,
+				itemPadding: const EdgeInsets.symmetric(horizontal: 3.0),
+				itemBuilder: (context, _) => Icon(
+					Icons.star,
+					color: Colors.amber,
+				),
+				onRatingUpdate: (rating) {
+					print(rating);
+				},
+			),
+
+			welcome_button_fun(
+				text: 'Залиште відгук',
+				padding: [0, 14, 0, 16],
+				fun: () {},
+			),
+		],
+	);
+
+	Widget organizer_rating = Column(
+		children: [
+			RatingBar.builder(
+				initialRating: 0,
+				minRating: 0,
+				direction: Axis.horizontal,
+				allowHalfRating: true,
+				itemCount: 5,
+				itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+				itemBuilder: (context, _) => Icon(
+					Icons.star,
+					color: Colors.amber,
+					size: 14,
+				),
+				onRatingUpdate: (rating) {
+					print(rating);
+				},
+			),
+
+			welcome_button_fun(
+				text: 'Залиште відгук',
+				padding: [0, 14, 0, 16],
+				fun: () {},
+			),
+		],
+	);
 
 	var card = Container(
 		margin: const EdgeInsets.all(10),
@@ -168,27 +220,7 @@ Widget card_builder(Event event) {
 												child: Text(event.name, style: optionStyle,),
 											),
 
-
-										RatingBar.builder(
-											initialRating: 0,
-											minRating: 0,
-											direction: Axis.horizontal,
-											allowHalfRating: true,
-											itemCount: 5,
-											itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-											itemBuilder: (context, _) => Icon(
-												Icons.star,
-												color: Colors.amber,
-											),
-											onRatingUpdate: (rating) {
-												print(rating);
-											},
-										);
-											welcome_button_fun(
-													text: 'Залиште відгук',
-													padding: [0, 14, 0, 0],
-													fun: () {},
-											),
+											app_service.role==Roles.organizer ? organizer_rating : volunteer_rating,
 
 										],
 									),

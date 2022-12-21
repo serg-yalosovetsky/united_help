@@ -115,7 +115,8 @@ class Events {
 
 Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/$event_query';
+  String url = '$server_url$all_events_url/$event_query/';
+  print('url= $url');
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
