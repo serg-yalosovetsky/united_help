@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
@@ -29,51 +30,23 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-	// late Future<Event> future_event;
 
-	// @override
-	// void initState() {
-	// 	super.initState();
-	// 	// future_event = fetchEvent(widget.event);
-	// }
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
-		// const String title = 'Гуманітарний штаб м.Тернопіль сортування продуктових наборів';
-		// const String image = 'images/Best-TED-Talks-From-The-Curator-Himself-.jpg';
-		// const String location = 'Вул. Валова, 27';
-		// const String time = 'Постійна зайнятість';
-		// const String description = 'Запрошуємо волонтерів до гуманітарного штабу Тернополя. Ми потребуємо допомогу в розвантаженні фур, сортуванні гуманітарної допомоги, пакуванні на фронт й видачі допомоги потребуючим людям.';
-		// const List skills = [
-		// 	"Microsoft Office", "Комунікативність",
-		// 	"Пунктуальність", "Організованість"
-		// ];
-		// print( widget.event);
+
 		return Scaffold(
-			appBar: AppBar(
-				title: const Text(
-					'Назад',
-					style: back_style,
-				),
-				backgroundColor: Colors.white,
-				foregroundColor: Colors.blue,
+			appBar: buildAppBar(
+			() {
+				Navigator.pop(context);
+			},
+				'Редагувати',
 			),
+			backgroundColor: Colors.white,
+			// foregroundColor: Colors.blue,
+
 			body: SafeArea(
 					child: card_detail(event: widget.event),
-				// 	child: FutureBuilder<Event>(
-				// 	future: future_event,
-				// 	builder: (context, snapshot) {
-				// 		if (snapshot.hasData) {
-				// 			// return Text(snapshot.data!.count.toString());
-				// 			return card_detail(event: snapshot.data!);
-				// 			// card_builder(snapshot.data!.list[index]);
-				// 		} else if (snapshot.hasError) {
-				// 			return Text('${snapshot.error}');
-				// 		}
-				//
-				// 		return const CircularProgressIndicator();
-				// 	}
-				// ),
 
 			),
 

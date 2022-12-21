@@ -176,7 +176,6 @@ class _account_screenState extends State<account_screen> {
 					future: future_user_profile,
 					builder: (context, snapshot){
 						if (snapshot.hasData){
-							// return build_account_screen(userprofile: snapshot.data!,);
 							_app_service.user = snapshot.data!.user;
 							_app_service.current_profile = snapshot.data!.profile;
 							return build_account_screen(

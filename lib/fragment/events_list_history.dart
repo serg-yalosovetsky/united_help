@@ -9,6 +9,7 @@ import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../screen/finished_event_screen.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -68,7 +69,9 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 		  											onTap: () {
 		  												Navigator.of(context).push(
 		  													MaterialPageRoute(
-		  														builder: (context) => EventScreen(event: snapshot.data!.list[index],),
+		  														builder: (context) => FinishedEventScreen(
+																		event: snapshot.data!.list[index],
+																	),
 		  													),
 		  												);
 		  											},
@@ -86,7 +89,7 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 															setState(() {
 																Navigator.of(context).push(
 																	MaterialPageRoute(
-																		builder: (context) => EventScreen(
+																		builder: (context) => FinishedEventScreen(
 																			event: snapshot.data!.list[index],
 																		),
 																	),

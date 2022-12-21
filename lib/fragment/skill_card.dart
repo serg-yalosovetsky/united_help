@@ -363,7 +363,7 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
 Widget build_bold_left_text(String title, {padding}) {
 
   Widget container = Container(
-    margin: const EdgeInsets.fromLTRB(17, 30, 0, 0),
+    margin: const EdgeInsets.fromLTRB(8, 8, 0, 0),
     child: Align(
       alignment: Alignment.centerLeft,
       child: Text(
