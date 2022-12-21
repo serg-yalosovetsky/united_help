@@ -268,7 +268,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 						_app_service.skills.length,
 						(index) => skill_map[_app_service.skills[index]],
 				) ,
-				required_members: int.parse(members_controller.text)
+				required_members: int.parse(members_controller.text),
+				subscribed_members: 0,
 		);
 		var res = await postEvents(event.to_dict(), _app_service);
 		context.go(APP_PAGE.my_events.to_path);

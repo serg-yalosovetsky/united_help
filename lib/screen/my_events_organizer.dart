@@ -6,6 +6,7 @@ import 'package:united_help/screen/filter_screen.dart';
 
 import '../fragment/bottom_navbar.dart';
 import '../fragment/events_list.dart';
+import '../fragment/events_list_organizer.dart';
 import '../fragment/switch_app_bar.dart';
 import '../services/appservice.dart';
 
@@ -52,9 +53,12 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
               },
         ),
         body: SafeArea(
-          child: EventListScreen(event_query: '',),
+          child: EventListOrganizerScreen(event_query: 'created',),
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () { context.go(APP_PAGE.new_events_choose_help_or_job.to_path); },
+          child: Icon(Icons.add),),
       ),
     );
   }

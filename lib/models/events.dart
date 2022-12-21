@@ -23,6 +23,7 @@ class Event {
   final int to;
   final List<int> skills;
   final int required_members;
+  final int subscribed_members;
 
   const Event({
     required this.id,
@@ -40,6 +41,7 @@ class Event {
     required this.to,
     required this.skills,
     required this.required_members,
+    required this.subscribed_members,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class Event {
       to: json['to'],
       skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
+      subscribed_members: json['subscribed_members'] ?? 0,
     );
   }
 

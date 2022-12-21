@@ -10,7 +10,11 @@ import '../fragment/switch_app_bar.dart';
 import '../services/appservice.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String event_query;
+  const HomeScreen({
+    super.key,
+    this.event_query = '',
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -52,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
         ),
         body: SafeArea(
-          child: EventListScreen(event_query: '',),
+          child: EventListScreen(event_query: widget.event_query,),
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
       ),

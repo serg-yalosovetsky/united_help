@@ -171,7 +171,7 @@ class AppRouter {
       ),
       GoRoute(
         path: APP_PAGE.my_events.to_path,
-        name: APP_PAGE.new_events.to_name,
+        name: APP_PAGE.my_events.to_name,
         builder: (context, state) => MyEventsScreen(),
       ),
       GoRoute(

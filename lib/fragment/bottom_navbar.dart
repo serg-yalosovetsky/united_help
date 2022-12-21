@@ -93,12 +93,16 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 						else
 							context.go('/');
 					}
-					if (index==3) {
-						context.go('/account');
+					if (index==1) {
+						context.go(APP_PAGE.my_events.to_path);
 					}
 					if (index==2) {
-						context.go('/example');
+						// context.go('/example');
 					}
+					if (index==3) {
+						context.go(APP_PAGE.account.to_path);
+					}
+
 				});
 			},
 		);
