@@ -236,7 +236,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
 	}
 
-	Future<bool> submit() async {
+	submit() async {
 		print(11);
 		Event event = Event(
 				id: 0,
@@ -271,7 +271,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 				required_members: int.parse(members_controller.text)
 		);
 		var res = await postEvents(event.to_dict(), _app_service);
-		return res['success'] as bool;
+		context.go(APP_PAGE.my_events.to_path);
+		// return res['success'] as bool;
 	}
 
 	@override
@@ -564,9 +565,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						TextButton(
 							onPressed: is_ready_to_submit() ?
 									() async {
-										print(1);
 										await submit();
-										print(2);
 									}
 									: null,
 							child: Text(
@@ -802,7 +801,25 @@ class NewEventScreenState extends State<NewEventScreen> {
 								padding: header_padding,
 							),
 							form_members,
-							Padding(padding: header_padding,)
+							
+							welcome_button_fun(
+								text: 'Опублікувати',
+								padding: [0, 19, 0, 46],
+								fun: is_ready_to_submit() ?
+									() async {
+										submit();
+								} : null,
+							),
+
+							// social_button(
+							// 	text: 'Відмінити івент',
+							// 	padding: [0, 19, 0, 46],
+							// 	fun: is_ready_to_submit() ?
+							// 			() async {
+							// 		submit();
+							// 	} : null, icon: null,
+							// ),
+							
 						],
 					),
 				),

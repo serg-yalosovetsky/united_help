@@ -17,6 +17,7 @@ import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
 import '../fragment/switch_app_bar.dart';
 import '../screen/home_map.dart';
+import '../screen/my_events_organizer.dart';
 import '../screen/new_event_choose_help_or_job.dart';
 import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
@@ -40,6 +41,7 @@ enum APP_PAGE {
   home_map,
   new_events,
   new_events_choose_help_or_job,
+  my_events,
   filters,
   error,
   account,
@@ -56,6 +58,8 @@ extension AppPageExtension on APP_PAGE {
         return "/new_events";
       case APP_PAGE.new_events_choose_help_or_job:
         return "/new_events_choose_help_or_job";
+      case APP_PAGE.my_events:
+        return "/my_events";
       case APP_PAGE.home_map:
         return "/map";
       case APP_PAGE.account:
@@ -98,6 +102,8 @@ extension AppPageExtension on APP_PAGE {
         return "HOME_MAP";
       case APP_PAGE.new_events:
         return "NEW_EVENTS";
+      case APP_PAGE.my_events:
+        return "MY_EVENTS";
       case APP_PAGE.new_events_choose_help_or_job:
         return "NEW_EVENTS_CHOOSE_HELP_OR_JOB";
       case APP_PAGE.register_login:
@@ -162,6 +168,11 @@ class AppRouter {
         path: '${APP_PAGE.new_events.to_path}/:event_for',
         name: APP_PAGE.new_events.to_name,
         builder: (context, state) => NewEventScreen(event_for: state.params['event_for'] ?? ''),
+      ),
+      GoRoute(
+        path: APP_PAGE.my_events.to_path,
+        name: APP_PAGE.new_events.to_name,
+        builder: (context, state) => MyEventsScreen(),
       ),
       GoRoute(
         path: APP_PAGE.new_events_choose_help_or_job.to_path,

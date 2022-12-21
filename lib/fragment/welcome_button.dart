@@ -57,18 +57,65 @@ class welcome_button extends StatelessWidget {
 	}
 }
 
+
+
+class welcome_button_fun extends StatelessWidget {
+	const welcome_button_fun({
+		Key? key,
+		required this.text,
+		required this.padding,
+		this.fun,
+	}) : super(key: key);
+
+	final String text;
+	final VoidCallback? fun;
+	final List<double> padding;
+	static const text_style = TextStyle(
+		fontSize: 18,
+		fontFamily: 'SF Pro Text',
+		fontWeight: FontWeight.w600,
+	);
+	@override
+	Widget build(BuildContext context) {
+		return Padding(
+			padding: EdgeInsets.fromLTRB(padding[0], padding[1], padding[2], padding[3]),
+			child: SizedBox(
+				height: 44,
+				width: 230,
+				child: ElevatedButton(
+					style: ButtonStyle(
+						shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+							RoundedRectangleBorder(
+								borderRadius: BorderRadius.circular(22.0),
+								// side: BorderSide(color: Colors.red)
+							),
+						),
+					),
+					onPressed: fun,
+					child: Text(
+						text,
+						style: text_style,
+					),
+				),
+			),
+		);
+	}
+}
+
+
 class social_button extends StatelessWidget {
 	const social_button({
 		Key? key,
 		required this.text,
 		required this.padding,
-		required this.icon,
+		this.icon,
+		this.fun,
 	}) : super(key: key);
 
 	final String text;
 	final List<double> padding;
-	final Widget icon;
-
+	final Widget? icon;
+	final Function? fun;
 
 	@override
 	Widget build(BuildContext context) {
@@ -79,6 +126,13 @@ class social_button extends StatelessWidget {
 			fontSize: 18,
 			fontFamily: 'SF Pro Text',
 			fontWeight: FontWeight.w600,
+		);
+		Widget _text = Padding(
+			padding: const EdgeInsets.all(6.0),
+			child: Text(
+				text,
+				style: text_style,
+			),
 		);
 		return Padding(
 			padding: EdgeInsets.fromLTRB(padding[0], padding[1], padding[2], padding[3]),
@@ -93,18 +147,13 @@ class social_button extends StatelessWidget {
 						),
 					),
 					onPressed: () {},
-					child: Row(
-					  children: [
-						icon,
-					    Padding(
-					      padding: const EdgeInsets.all(6.0),
-					      child: Text(
-					      	text,
-					      	style: text_style,
-					      ),
-					    ),
-					  ],
-					),
+					child:
+								icon!=null ? Row(
+									children: [
+										icon?? Container(),
+										_text,
+									],
+								) : _text,
 				),
 			),
 		);
