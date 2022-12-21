@@ -53,7 +53,6 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 		  				future: futureEvents,
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
-
 									if (snapshot.data!.count <= 0){
 										return build_no_actual_widgets();
 									}
@@ -119,14 +118,6 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 
 
 Widget card_builder(Event event, AppService app_service) {
-	String employment_string = '';
-	if (event.employment == 0)
-		employment_string = 'Постійна зайнятість';
-	else if (event.employment == 1)
-		employment_string = show_nice_time(event.start_time, event.end_time);
-	else if (event.employment == 2)
-		employment_string = show_nice_time(event.start_time);
-
 	Widget volunteer_rating = Column(
 		children: [
 			RatingBar.builder(
@@ -152,32 +143,39 @@ Widget card_builder(Event event, AppService app_service) {
 			),
 		],
 	);
+	Widget organizer_rating = Align(
+	  alignment: Alignment.topLeft,
+		child: Padding(
+		  padding: const EdgeInsets.only(left: 18),
+		  child: Column(
+	  	crossAxisAlignment: CrossAxisAlignment.start,
+	  	children: [
+	  		Padding(padding: EdgeInsets.only(top: 9)),
+	  		RatingBar.builder(
+	  			initialRating: event.rating,
+	  			minRating: 0,
+	  			direction: Axis.horizontal,
+	  			allowHalfRating: true,
+	  			itemCount: 5,
+	  			itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+	  			itemBuilder: (context, _) => Icon(
+	  				Icons.star,
+	  				color: Colors.amber,
+	  			),
+	  			itemSize: 14,
+					ignoreGestures: true,
+					onRatingUpdate: (rating) {
+	  				print(rating);
+	  			},
+	  		),
 
-	Widget organizer_rating = Column(
-		children: [
-			RatingBar.builder(
-				initialRating: 0,
-				minRating: 0,
-				direction: Axis.horizontal,
-				allowHalfRating: true,
-				itemCount: 5,
-				itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-				itemBuilder: (context, _) => Icon(
-					Icons.star,
-					color: Colors.amber,
-					size: 14,
-				),
-				onRatingUpdate: (rating) {
-					print(rating);
-				},
-			),
-
-			welcome_button_fun(
-				text: 'Залиште відгук',
-				padding: [0, 14, 0, 16],
-				fun: () {},
-			),
-		],
+	  		Padding(
+	  		  padding: const EdgeInsets.fromLTRB(0, 4, 0, 17),
+	  		  child: Text('${event.comments_count} коментарі'),
+	  		),
+	  	],
+	  ),
+		),
 	);
 
 	var card = Container(
