@@ -457,9 +457,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
 														String url = '$server_url$all_profiles_url/${app_service.current_profile?.id}/';
 														Requests().image_send(
-																	url, image,
-																	await app_service.get_access_token(),
-																	'user_id${app_service.user?.id}_profile_id${app_service.current_profile?.id}_user_avatar',
+																	url, image.path,
+																	access_token: await app_service.get_access_token(),
+																	image_name: 'user_id${app_service.user?.id}_profile_id${app_service.current_profile?.id}_user_avatar',
 																);
 														String image_url = await fetchProfileImage(app_service);
 														print(image_url);

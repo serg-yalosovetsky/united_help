@@ -192,7 +192,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 	final city_controller = TextEditingController();
 	final skills_controller = TextEditingController();
 	final members_controller = TextEditingController();
-
+	Map skill_map = {};
 	TextEditingController start_date_controller = TextEditingController();
 	TextEditingController start_time_controller = TextEditingController();
 	TextEditingController end_date_controller = TextEditingController();
@@ -236,7 +236,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
 	}
 
-	bool submit() {
+	Future<bool> submit() async {
+		print(11);
 		Event event = Event(
 				id: 0,
 				name: name_controller.text,
@@ -257,16 +258,20 @@ class NewEventScreenState extends State<NewEventScreen> {
 					_app_service.time_end?.hour ?? 0,
 					_app_service.time_end?.minute ?? 0,
 				).toString(),
-				image: image,
-				city: city,
-				location: location,
-				employment: employment,
-				owner: owner,
-				to: to,
-				skills: skills,
-				required_members: required_members);
-		return button_states.every((element) => element==true) &&
-				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
+				image: image?.path ?? '',
+				city: _app_service.filter_city,
+				location: location_controller.text,
+				employment: _app_service.filter_employment,
+				owner: 0,
+				to: roles_2_int(event_for),
+				skills: List.generate(
+						_app_service.skills.length,
+						(index) => skill_map[_app_service.skills[index]],
+				) ,
+				required_members: int.parse(members_controller.text)
+		);
+		var res = await postEvents(event.to_dict(), _app_service);
+		return res['success'] as bool;
 	}
 
 	@override
@@ -557,7 +562,13 @@ class NewEventScreenState extends State<NewEventScreen> {
 								() {Navigator.pop(context);},
 						'Новий івент',
 						TextButton(
-							onPressed: is_ready_to_submit() ? () {print('tap');} : null,
+							onPressed: is_ready_to_submit() ?
+									() async {
+										print(1);
+										await submit();
+										print(2);
+									}
+									: null,
 							child: Text(
 								'Готово',
 								style: TextStyle(
@@ -629,8 +640,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 								future: futureSkills,
 								builder: (context, snapshot) {
 									if (snapshot.hasData) {
-										print('snapshot.data');
-										print(snapshot.data);
+
+										snapshot.data?.list.forEach((element) {
+													skill_map[element.name] = element.id;
+										});
 										return Column(
 											children: [
 
@@ -643,7 +656,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 													setState(() {
 														skills_controller.text = '';
 														_app_service.skills_hint = [];
-														_app_service.skills.add(helper);
+														if (!_app_service.skills.contains(helper))
+																_app_service.skills.add(helper);
 														print('skillcard hint ${helper}');
 
 													});

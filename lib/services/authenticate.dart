@@ -161,6 +161,29 @@ class Requests {
   }
 
 
+  FutureMap file_wrapper(String url, Map<String, String> body, AppService app_service,
+      {String method = 'patch'}) async {
+    var r = await image_send(
+                url,
+                body['image']!,
+                body: body,
+                method: 'post',
+                access_token: await app_service.get_access_token(),
+    );
+    if (r['status_code'] == 403){
+      await app_service.relogin();
+      return await image_send(
+                url,
+                body['image']!,
+                body: body,
+                method: 'post',
+                access_token: await app_service.get_access_token(),
+      );
+    }
+    return r;
+  }
+
+
   FutureMap post(String url, Map body, [String? access_token]) async {
     var result;
     int status_code = 0;
@@ -193,28 +216,66 @@ class Requests {
   }
 
 
-  FutureMap image_send(String url, XFile image,
-                  [String? access_token, String? image_name, String? method]) async {
+  FutureMap image_send(String url, String image_path,
+                  {Map<String, String>? body, String? access_token, String? image_name, String? method}) async {
     if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
       url += '/';
     }
 
     method ??= 'patch';
     var request =  http.MultipartRequest(
-        method.toUpperCase(), Uri.parse(url)
+        method.toUpperCase(),
+        Uri.parse(url),
     );
     request.headers['Authorization'] = 'Bearer ${access_token}';
     request.files.add(await http.MultipartFile.fromPath(
         'image',
-        image.path,
+        image_path,
         filename: image_name,
-    )
-    );
+    ));
+    body?.remove('image');
+    body?.forEach((key, value) {request.fields[key] = value;});
     var response = await request.send();
     final res = await http.Response.fromStream(response);
-
+    print('res= ${res.body} ');
+    print(res.body);
+    print('res= ${res.statusCode} ');
+    print('res=  ${res.reasonPhrase}');
     return {'result': res.body, 'status_code': response.statusCode, };
   }
+
+
+  // FutureMap image_send2(String url, String image_path,
+  //     {Map<String, String>? body, String? access_token, String? image_name, String? method}) async {
+  //   if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+  //     url += '/';
+  //   }
+  //   String base64file = base64Encode(File(image_path).readAsBytesSync());
+  //   body?.remove('image');
+  //
+  //   var request =  http.MultipartRequest(
+  //     method.toUpperCase(),
+  //     Uri.parse(url),
+  //   );
+  //   request.headers['Authorization'] = 'Bearer ${access_token}';
+  //
+  //   try {
+  //     var response = await http.post(endPoint,headers: yourRequestHeaders, body:convert.json.encode(data));
+  //   } catch (e) {
+  //     throw (e.toString());
+  //   }
+  //
+  //
+  //
+  //   var response = await request.send();
+  //   final res = await http.Response.fromStream(response);
+  //   print('res= ${res.body} ');
+  //   print(res.body);
+  //   print('res= ${res.statusCode} ');
+  //   print('res=  ${res.reasonPhrase}');
+  //   return {'result': res.body, 'status_code': response.statusCode, };
+  // }
+
 
 }
 

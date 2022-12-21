@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:united_help/services/appservice.dart';
 
@@ -61,8 +62,8 @@ class Event {
     );
   }
 
-  Map to_dict () {
-    Map event_map = {
+  Map<String, dynamic> to_dict () {
+    return {
       'name': this.name,
       'description': this.description,
       'start_time': this.start_time,
@@ -75,7 +76,6 @@ class Event {
       'skills': this.skills,
       'required_members': this.required_members,
     };
-    return event_map;
   }
 
 }
@@ -125,17 +125,22 @@ Future<Events> fetchEvents(String event_query, AppService app_service) async {
 }
 
 
-Future<Event> postEvents(Map<String, dynamic> body, AppService app_service) async {
+FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
+  print(21);
   var r = Requests();
+  print(22);
   String url = '$server_url$all_events_url';
-  Map<String, dynamic> body = {
-    'name': app_service
-  };
+  print(23);
+  print(body['image']);
+  body['image'] = base64Encode(File(body['image']).readAsBytesSync());
+  print(24);
+  print(body['image']);
   final response = await r.post_wrapper(url, body, app_service);
+  print(25);
 
-  if (response['status_code'] == 200) {
+  if (response['status_code'] == 201) {
     var res  = response['result'];
-    return Event.fromJson(res);
+    return res;
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to load Event');

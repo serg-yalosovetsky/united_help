@@ -17,6 +17,20 @@ enum Roles  {
   organizer,
   refugee,
 }
+
+
+int roles_2_int(Roles role){
+  switch (role) {
+    case Roles.admin:
+      return 0;
+    case Roles.volunteer:
+      return 1;
+    case Roles.organizer:
+      return 2;
+    case Roles.refugee:
+      return 3;
+  }
+}
 // var rolesMap = {
 //   Roles.admin: 'admin',
 //   Roles.volunteer: 'volunteer',
