@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/welcome_button.dart';
 import 'package:united_help/screen/card_screen.dart';
@@ -167,6 +168,22 @@ Widget card_builder(Event event) {
 												child: Text(event.name, style: optionStyle,),
 											),
 
+
+										RatingBar.builder(
+											initialRating: 0,
+											minRating: 0,
+											direction: Axis.horizontal,
+											allowHalfRating: true,
+											itemCount: 5,
+											itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+											itemBuilder: (context, _) => Icon(
+												Icons.star,
+												color: Colors.amber,
+											),
+											onRatingUpdate: (rating) {
+												print(rating);
+											},
+										);
 											welcome_button_fun(
 													text: 'Залиште відгук',
 													padding: [0, 14, 0, 0],
