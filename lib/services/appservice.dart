@@ -99,7 +99,8 @@ class AppService with ChangeNotifier {
   bool get loginState => _loginState;
   bool get initialized => _initialized;
   bool get onboarding => _onboarding;
-  ListOrMap _list_or_map = ListOrMap.list;
+  SwitchEnum _list_or_map = SwitchEnum.first;
+  SwitchEnum _actual_or_history = SwitchEnum.first;
 
   Future<bool> login() async {
     var r = Requests();
@@ -245,11 +246,17 @@ class AppService with ChangeNotifier {
     _initialized = value;
     notifyListeners();
   }
-  set list_or_map(ListOrMap value) {
+  set list_or_map(SwitchEnum value) {
     _list_or_map = value;
     notifyListeners();
   }
-  ListOrMap get list_or_map => _list_or_map;
+  SwitchEnum get list_or_map => _list_or_map;
+
+  set actual_or_history(SwitchEnum value) {
+    _actual_or_history = value;
+    notifyListeners();
+  }
+  SwitchEnum get actual_or_history => _actual_or_history;
 
   set onboarding(bool value) {
     _onboarding = value;

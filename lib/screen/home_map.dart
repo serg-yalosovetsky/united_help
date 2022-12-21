@@ -219,11 +219,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         appBar: build_switch_app_bar(_app_service,
             fun: () {
               setState(() {
-                if (_app_service.list_or_map == ListOrMap.list){
-                  _app_service.list_or_map = ListOrMap.map;
+                if (_app_service.list_or_map == SwitchEnum.first){
+                  _app_service.list_or_map = SwitchEnum.second;
                   context.go(APP_PAGE.home_map.to_path);
                 } else {
-                  _app_service.list_or_map = ListOrMap.list;
+                  _app_service.list_or_map = SwitchEnum.first;
                   context.go(APP_PAGE.home_list.to_path);
                 }
               });

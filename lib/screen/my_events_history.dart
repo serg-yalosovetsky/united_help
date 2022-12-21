@@ -3,23 +3,24 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/routes/routes.dart';
 import 'package:united_help/screen/filter_screen.dart';
-import 'package:united_help/screen/my_events_history.dart';
 
 import '../fragment/bottom_navbar.dart';
 import '../fragment/events_list.dart';
+import '../fragment/events_list_history.dart';
 import '../fragment/events_list_organizer.dart';
 import '../fragment/switch_app_bar.dart';
 import '../services/appservice.dart';
+import 'my_events_organizer.dart';
 
-class MyEventsScreen extends StatefulWidget {
-  const MyEventsScreen({super.key});
+class MyEventsHistoryScreen extends StatefulWidget {
+  const MyEventsHistoryScreen({super.key});
 
   @override
-  State<MyEventsScreen> createState() => _MyEventsScreenState();
+  State<MyEventsHistoryScreen> createState() => _MyEventsHistoryScreenState();
 }
 
 
-class _MyEventsScreenState extends State<MyEventsScreen> {
+class _MyEventsHistoryScreenState extends State<MyEventsHistoryScreen> {
   int selected_index = 0;
   bool selected_list = true;
   late AppService _app_service;
@@ -38,21 +39,21 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
                 if (_app_service.actual_or_history == SwitchEnum.first){
                   _app_service.actual_or_history = SwitchEnum.second;
                   context.go(APP_PAGE.my_events_history.to_path);
+
                 } else {
                   _app_service.actual_or_history = SwitchEnum.first;
                   context.go(APP_PAGE.my_events.to_path);
                 }
                 });
               },
+              to_filters: null,
             map_or_history: false,
         ),
         body: SafeArea(
-          child: EventListOrganizerScreen(event_query: 'created',),
+          child: EventListHistoryScreen(event_query: 'finished',),
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () { context.go(APP_PAGE.new_events_choose_help_or_job.to_path); },
-          child: Icon(Icons.add),),
+
       ),
     );
   }
