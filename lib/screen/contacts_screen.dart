@@ -90,10 +90,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		String title = 'Finished event';
-		if (app_service.current_profile?.organization != null &&
-				app_service.current_profile!.organization!.isNotEmpty)
-				title = app_service.current_profile!.organization!;
+		String title = 'Contacts';
 		return Scaffold(
 			appBar: buildAppBar(
 			() {
@@ -110,9 +107,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
 							child: FutureBuilder<dynamic>(
 								future: future_contacts,
 								builder: (context, snapshot){
+
 									if (snapshot.hasData){
 										return ListView.builder(
 												shrinkWrap: true,
+												itemCount: snapshot.data.list.length,
 												itemBuilder: (BuildContext context, int index) {
 														UserProfile user = snapshot.data.list[index];
 														return Column(

@@ -342,6 +342,7 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
     url = '$url?$profile_query';
   print('url $url');
   final response = await r.get_wrapper(url, app_service);
+  print(6514989);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
