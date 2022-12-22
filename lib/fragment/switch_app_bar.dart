@@ -17,15 +17,25 @@ Map<SwitchEnum, String> actual_or_history_text = <SwitchEnum, String>{
   SwitchEnum.second:  'Історія',
 };
 
+Map<SwitchEnum, String> volunteers_or_refugees_text = <SwitchEnum, String>{
+  SwitchEnum.first:  'Волонтери',
+  SwitchEnum.second:  'Біженці',
+};
+
 
 AppBar build_switch_app_bar(
     AppService _app_service,
     {required Function fun,
     Function? to_filters,
-    bool map_or_history = true,
+    String map_or_history = 'map',
       }) {
-  var switch_enum_map = map_or_history ? list_or_map_text : actual_or_history_text;
-  print('switch_enum_map $switch_enum_map');
+
+  var switch_enum_map = list_or_map_text;
+  if (map_or_history == 'history')
+    switch_enum_map = actual_or_history_text;
+  if (map_or_history == 'contacts')
+    switch_enum_map = volunteers_or_refugees_text;
+
   return AppBar(
       backgroundColor: Colors.white,
       centerTitle: true,
@@ -38,7 +48,10 @@ AppBar build_switch_app_bar(
           ),
           CupertinoSlidingSegmentedControl<SwitchEnum>(
             backgroundColor: Color(0xFFF0F3FF),   //Color(0xFFF0F3FF)
-            groupValue: map_or_history ? _app_service.list_or_map : _app_service.actual_or_history,
+            groupValue: map_or_history=='history'
+                ? _app_service.actual_or_history :
+                  map_or_history=='contacts'
+                      ? _app_service.org_volunteers_or_refugees : _app_service.list_or_map,
             onValueChanged: (SwitchEnum? value) {
               if (value != null) {
                 fun();

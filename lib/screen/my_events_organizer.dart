@@ -47,7 +47,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
                         }
                         });
                       },
-                    map_or_history: false,
+                    map_or_history: 'history',
                 ),
         body: SafeArea(
           child: EventListOrganizerScreen(event_query: 'created',),

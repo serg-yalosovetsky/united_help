@@ -102,6 +102,7 @@ class AppService with ChangeNotifier {
   bool get onboarding => _onboarding;
   SwitchEnum _list_or_map = SwitchEnum.first;
   SwitchEnum _actual_or_history = SwitchEnum.first;
+  SwitchEnum _org_volunteers_or_refugees = SwitchEnum.first;
 
   Future<bool> login() async {
     var r = Requests();
@@ -266,6 +267,12 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
   SwitchEnum get actual_or_history => _actual_or_history;
+
+  set org_volunteers_or_refugees(SwitchEnum value) {
+    _org_volunteers_or_refugees = value;
+    notifyListeners();
+  }
+  SwitchEnum get org_volunteers_or_refugees => _org_volunteers_or_refugees;
 
   set onboarding(bool value) {
     _onboarding = value;

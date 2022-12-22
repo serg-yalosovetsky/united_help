@@ -50,7 +50,7 @@ class _MyEventsHistoryScreenState extends State<MyEventsHistoryScreen> {
                     });
                   },
                   to_filters: null,
-                map_or_history: false,
+                map_or_history: 'history',
             ),
         body: SafeArea(
           child: EventListHistoryScreen(event_query: 'finished',),

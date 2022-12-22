@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/models/comments.dart';
 import '../fragment/bottom_navbar.dart';
@@ -9,7 +10,9 @@ import '../fragment/card_detail.dart';
 import '../fragment/no_actual_events.dart';
 import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
+import '../fragment/switch_app_bar.dart';
 import '../models/profile.dart';
+import '../routes/routes.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
@@ -90,22 +93,31 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		String title = 'Contacts';
 		return Scaffold(
-			appBar: buildAppBar(
-			() {
-				Navigator.pop(context);
-			},
-				title,
+			appBar: build_switch_app_bar(
+				app_service,
+				fun: () {
+					setState(() {
+						if (app_service.org_volunteers_or_refugees == SwitchEnum.first){
+							app_service.org_volunteers_or_refugees = SwitchEnum.second;
+						} else {
+							app_service.org_volunteers_or_refugees = SwitchEnum.first;
+						}
+					});
+				},
+				to_filters: null,
+				map_or_history: 'contacts',
 			),
 			backgroundColor: Colors.white,
 
 			body: SafeArea(
 					child: Scaffold(
 						body: Container(
-							margin: EdgeInsets.all(10),
+							margin: EdgeInsets.fromLTRB(16, 20, 16, 0),
 							child: FutureBuilder<dynamic>(
-								future: future_contacts,
+								future: fetchContacts(
+										app_service.org_volunteers_or_refugees==SwitchEnum.first ? 'volunteers' : 'refugees',
+										app_service),
 								builder: (context, snapshot){
 
 									if (snapshot.hasData){
@@ -114,38 +126,86 @@ class _ContactsScreenState extends State<ContactsScreen> {
 												itemCount: snapshot.data.list.length,
 												itemBuilder: (BuildContext context, int index) {
 														UserProfile user = snapshot.data.list[index];
-														return Column(
-															children: [
-																Row(
-																	children: [
-																		ClipRRect(
-																			borderRadius: BorderRadius.circular(20.0),
-																			child: Image(
-																					image: CachedNetworkImageProvider(user.profile.image ?? ''),
-																					fit: BoxFit.fitWidth,
-																					width: 50,
-																			),
-																		),
-																		Column(
-																			children: [
-																				Text(user.user.username),
-																				Text(user.user.phone ?? user.user.email),
-																			],
-																		),
-																		user.user.telegram_phone!=null || user.user.nickname!=null ?
-																				Icon(Icons.telegram_rounded) :
-																				Container(),
-																		user.user.viber_phone!=null ?
-																				Image.asset(
-																						"images/img_24.png",
-																						width: 26.0,
-																						semanticLabel: 'viber phone edit',
-																				) :
-																				Container(),
+														return Padding(
+														  padding: const EdgeInsets.fromLTRB(0, 11, 0, 21),
+														  child: Column(
+														  	children: [
+														  		Row(
+														  			mainAxisAlignment: MainAxisAlignment.spaceBetween,
+														  			mainAxisSize: MainAxisSize.max,
+														  			children: [
+														  				Row(
+														  					children: [
+														  						ClipRRect(
+														  							borderRadius: BorderRadius.circular(20.0),
+														  							child: Image(
+														  								image: CachedNetworkImageProvider(user.profile.image ?? ''),
+														  								fit: BoxFit.fitWidth,
+														  								width: 50,
+														  							),
+														  						),
+														  						Padding(
+														  						  padding: const EdgeInsets.only(left: 13),
+														  						  child: Column(
+																							mainAxisAlignment: MainAxisAlignment.start,
+																							crossAxisAlignment: CrossAxisAlignment.start,
+														  						  	children: [
+														  						  		Padding(
+														  						  		  padding: const EdgeInsets.only(bottom: 1),
+														  						  		  child: Text(
+																									user.user.username,
+																									style: TextStyle(
+																										color: Color(0xFF002241),
+																										fontSize: 17,
+																										fontWeight: FontWeight.w500,
+																									),
+																								),
+														  						  		),
+														  						  		Text(
+																									user.user.phone ?? user.user.email,
+																									style: TextStyle(
+																										color: Color(0xFF748B9F),
+																										fontSize: 17,
+																										fontWeight: FontWeight.w400,
+																									),
+																								),
+														  						  	],
+														  						  ),
+														  						),
+														  					],
+														  				),
+														  				Row(
+														  					children: [
+														  						user.user.viber_phone!=null ?
+														  						Image.asset(
+														  							"images/img_24.png",
+														  							width: 26.0,
+														  							semanticLabel: 'viber phone edit',
+														  						) :
+														  						Container(),
 
-																	],
-																)
-															],
+														  						user.user.telegram_phone!=null || user.user.nickname!=null ?
+														  						Padding(
+														  						  padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+														  						  child: Icon(
+														  						  	Icons.telegram_rounded,
+														  						  	color: Color(0xff29b6f6),
+														  						  	size: 26,
+														  						  ),
+														  						) :
+														  						Container(),
+														  					],
+														  				),
+
+														  			],
+														  		),
+																	Container(
+																	  margin: const EdgeInsets.fromLTRB(0, 21, 0, 0),
+																	  child: Divider(height: 20, color: Color(0xFFBDD2E4),  thickness: 1,),
+																	)
+
+														  	],
+														  ),
 														);
 												},
 									);
