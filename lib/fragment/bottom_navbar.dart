@@ -34,11 +34,12 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 	static const bottom_selected_tab_color = Color.fromRGBO(0, 113, 216, 1);
 	static const bottom_unselected_tab_color = Color.fromRGBO(142, 142, 147, 1);
 
-	static const event_label = 'Мої івенти';
+	String event_label = 'Мої івенти';
 	static const notify_label = 'Сповіщення';
 	static const accaunt_label = 'Аккаунт';
 	String home_label = 'Головна';
 	IconData home_icon = Icons.home;
+	IconData event_icon = Icons.calendar_today;
 	late AppService app_service;
 
 
@@ -47,11 +48,18 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 	Widget build(BuildContext context) {
 		app_service = Provider.of<AppService>(context, listen: false);
 		if (app_service.role == Roles.organizer) {
-		  home_label = 'Новий івент';
-			home_icon = Icons.add_circle_outlined;
+		  home_label = 'Мої івенти';
+			home_icon = Icons.calendar_today;
 		} else {
 			home_label = 'Головна';
 			home_icon = Icons.home;
+		}
+		if (app_service.role == Roles.organizer) {
+			event_label = 'Контакти';
+			event_icon = Icons.contacts_outlined;
+		} else {
+			event_label = 'Мої івенти';
+			event_icon = Icons.calendar_today;
 		}
 
 		return BottomNavigationBar(
@@ -62,7 +70,7 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 					// backgroundColor: bottom_tab_color,
 				),
 				BottomNavigationBarItem(
-					icon: Icon(Icons.calendar_today),
+					icon: Icon(event_icon),
 					label: event_label,
 					// backgroundColor: bottom_tab_color,
 
@@ -90,16 +98,15 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 					selected_index = index;
 					if (index==0) {
 						if(app_service.role == Roles.organizer)
-							context.go(APP_PAGE.new_events_choose_help_or_job.to_path);
+							if(app_service.actual_or_history == SwitchEnum.first)
+								context.go(APP_PAGE.my_events.to_path);
+							else
+								context.go(APP_PAGE.my_events_history.to_path);
 						else
 							context.go('/');
 					}
 					if (index==1) {
-						if(app_service.actual_or_history == SwitchEnum.first)
-								context.go(APP_PAGE.my_events.to_path);
-						else
-							context.go(APP_PAGE.my_events_history.to_path);
-
+							context.go(APP_PAGE.contacts.to_path);
 					}
 					if (index==2) {
 						// context.go('/example');

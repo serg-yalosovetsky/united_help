@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:united_help/screen/contacts_screen.dart';
 import 'package:united_help/screen/filter_screen.dart';
 import 'package:united_help/screen/home_list.dart';
 import 'package:united_help/screen/login_screen.dart';
@@ -44,6 +45,7 @@ enum APP_PAGE {
   new_events_choose_help_or_job,
   my_events,
   my_events_history,
+  contacts,
   filters,
   error,
   account,
@@ -64,6 +66,8 @@ extension AppPageExtension on APP_PAGE {
         return "/my_events";
       case APP_PAGE.my_events_history:
         return "/my_events_history";
+      case APP_PAGE.contacts:
+        return "/contacts";
       case APP_PAGE.home_map:
         return "/map";
       case APP_PAGE.account:
@@ -112,6 +116,8 @@ extension AppPageExtension on APP_PAGE {
         return "MY_EVENTS_HISTORY";
       case APP_PAGE.new_events_choose_help_or_job:
         return "NEW_EVENTS_CHOOSE_HELP_OR_JOB";
+      case APP_PAGE.contacts:
+        return "CONTACTS";
       case APP_PAGE.register_login:
         return "REGISTER_LOGIN";
       case APP_PAGE.login:
@@ -189,6 +195,11 @@ class AppRouter {
         path: APP_PAGE.new_events_choose_help_or_job.to_path,
         name: APP_PAGE.new_events_choose_help_or_job.to_name,
         builder: (context, state) => NewEventChooseHelpOrJobScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.contacts.to_path,
+        name: APP_PAGE.contacts.to_name,
+        builder: (context, state) => ContactsScreen(profiles_query: 'volunteers'),
       ),
       GoRoute(
         path: APP_PAGE.filters.to_path,

@@ -9,6 +9,7 @@ String all_cities_url = '/cities';
 String all_comments_url = '/comments';
 String user_comments_url = '/usercomments';
 String all_profiles_url = '/profiles';
+String all_contacts_url = '/contacts';
 String userprofile_url = '/userprofile';
 String all_users_url = '/users';
 

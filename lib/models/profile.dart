@@ -14,7 +14,8 @@ class User {
   final String? nickname;
   final String? telegram_phone;
   final String? viber_phone;
-  final String reg_date;
+  final String? reg_date;
+  final bool is_online;
 
 
   const User({
@@ -26,11 +27,14 @@ class User {
     required this.nickname,
     required this.telegram_phone,
     required this.viber_phone,
-    required this.reg_date,
+    this.reg_date,
+    this.is_online = true,
 
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
+    print('json= $json');
+
     return User(
       id: json['id'],
       username: json['username'],
@@ -41,6 +45,7 @@ class User {
       telegram_phone: json['telegram_phone'],
       viber_phone: json['viber_phone'],
       reg_date: json['reg_date'],
+      is_online: json['is_online'] ?? false,
     );
     // print(e);
     // return e;
@@ -79,11 +84,11 @@ class Profile {
   Profile({
     required this.id,
     required this.role,
-    required this.rating,
+    this.rating = 0,
     required this.image,
-    required this.description,
-    required this.url,
-    required this.organization,
+    this.description,
+    this.url,
+    this.organization,
     required this.active,
     required this.skills,
 
@@ -98,8 +103,8 @@ class Profile {
       url: json['url'],
       organization: json['organization'],
       role: json['role'],
-      rating: json['rating'],
-      skills: json['skills'].cast<int>(),
+      rating: json['rating'] ?? 0,
+      skills: json['skills']?.cast<int>() ?? [],
     );
     // print(e);
     // return e;
@@ -135,6 +140,10 @@ class UserProfile {
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
+
+    print(User.fromJson(json['user']));
+    print(Profile.fromJson(json));
+
     return UserProfile(
       user: User.fromJson(json['user']),
       profile: Profile.fromJson(json),
@@ -198,6 +207,31 @@ class Profiles {
   }
 }
 
+
+class Contacts {
+  final int count;
+  final List<UserProfile> list;
+
+  const Contacts({
+    required this.count,
+    required this.list,
+  });
+
+  factory Contacts.fromJson(List<dynamic> json) {
+    print(12314324234);
+    print('json= $json');
+    var results = <UserProfile>[];
+    for (var user_profile in json) {
+      print('user_profile= $user_profile');
+
+      results.add(UserProfile.fromJson(user_profile));
+    }
+    return Contacts(
+      count: json.length,
+      list: results,
+    );
+  }
+}
 
 Future<Profiles> fetchProfiles(String profile_query, AppService app_service) async {
   var r = Requests();
@@ -294,6 +328,37 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
     print(response['result']);
     var r = UserProfile.fromJson(res);
     return r;
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to load UserProfile');
+  }
+}
+
+Future<dynamic> fetchContacts(String profile_query, AppService app_service) async {
+  var r = Requests();
+
+  String url = '$server_url$all_profiles_url$all_contacts_url/';
+  if (profile_query.isNotEmpty && (profile_query == 'refugees' || profile_query == 'volunteers'))
+    url = '$url?$profile_query';
+  print('url $url');
+  final response = await r.get_wrapper(url, app_service);
+
+  if (response['status_code'] == 200) {
+    var res  = response['result'];
+    print(response['result']);
+    if (profile_query.isNotEmpty && (profile_query == 'refugees' || profile_query == 'volunteers')) {
+      print(787907897);
+      print(res[profile_query]);
+      var r =  Contacts.fromJson(res[profile_query]);
+      print('r $r');
+      return r;
+
+    } else{
+      return {
+        'volunteers': Contacts.fromJson(res['volunteers']),
+        'refugees': Contacts.fromJson(res['refugees']),
+      };
+    }
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to load UserProfile');

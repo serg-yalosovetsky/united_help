@@ -228,7 +228,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 						"images/img_24.png",
 						// color: null,
 						width: 26.0,
-						semanticLabel: 'Login via google',
+						semanticLabel: 'viber phone edit',
 					),
 				),
 				Flexible(
@@ -247,7 +247,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 										if (is_phone.hasMatch(value))
 											return null;
 										else
-											return 'viber phone  is not valid';
+											return 'viber phone is not valid';
 									}
 									return null;
 								},

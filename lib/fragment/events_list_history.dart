@@ -10,6 +10,7 @@ import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
 import '../screen/finished_event_screen.dart';
+import '../screen/new_event_choose_help_or_job.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -55,8 +56,11 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
 									if (snapshot.data!.count <= 0){
-										return build_no_actual_widgets();
+										app_service.organizer_has_no_events = true;
+										return NewEventChooseHelpOrJobScreen();
+										// return build_no_actual_widgets();
 									}
+									app_service.organizer_has_no_events = false;
 
 		  						if (widget.is_listview)
 		  							return ListView.builder(

@@ -109,7 +109,6 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 		if (app_service.current_profile?.organization != null &&
 				app_service.current_profile!.organization!.isNotEmpty)
 				title = app_service.current_profile!.organization!;
-		print(1417864872364);
 		return Scaffold(
 			appBar: buildAppBar(
 			() {
@@ -196,7 +195,6 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 																	children: List<Widget>.generate(
 																		snapshot.data!.count,
 																			(index) {
-																			print(1231321231);
 																				return Container(
 																					margin: EdgeInsets.fromLTRB(0, 14, 0, 0),
 																					child: Card(

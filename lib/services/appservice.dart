@@ -71,6 +71,7 @@ class AppService with ChangeNotifier {
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
   bool _user_image_expire = false;
+  bool _organizer_has_no_events = false;
   List<String> _skills_hint = [];
   List<String> _skills = [];
   Employments employment = Employments.full;
@@ -217,6 +218,14 @@ class AppService with ChangeNotifier {
   }
   bool get user_image_expire => _user_image_expire;
 
+
+  bool get organizer_has_no_events => _organizer_has_no_events;
+  set organizer_has_no_events(bool has_events) {
+    _organizer_has_no_events = has_events;
+    notifyListeners();
+  }
+
+
   set skills_hint (List<String> value) {
     _skills_hint = value;
     notifyListeners();
@@ -305,6 +314,7 @@ class AppService with ChangeNotifier {
           shared_preferences.setString(organizer_key, organizer.encode());
       notifyListeners();
   }
+
   Profile? get refugee {
     var profile_str = shared_preferences.getString(organizer_key);
     return profile_str!=null ? Profile.decode(profile_str) : null;
