@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/routes/routes.dart';
 
 import '../services/appservice.dart';
@@ -94,7 +95,11 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 							context.go('/');
 					}
 					if (index==1) {
-						context.go(APP_PAGE.my_events.to_path);
+						if(app_service.actual_or_history == SwitchEnum.first)
+								context.go(APP_PAGE.my_events.to_path);
+						else
+							context.go(APP_PAGE.my_events_history.to_path);
+
 					}
 					if (index==2) {
 						// context.go('/example');
