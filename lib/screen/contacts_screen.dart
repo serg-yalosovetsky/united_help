@@ -4,10 +4,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/models/comments.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
 import '../fragment/no_actual_events.dart';
+import '../fragment/no_contacts.dart';
 import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
 import '../fragment/switch_app_bar.dart';
@@ -93,6 +95,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		Roles role = app_service.org_volunteers_or_refugees==SwitchEnum.first ? Roles.volunteer : Roles.refugee;
 		return Scaffold(
 			appBar: build_switch_app_bar(
 				app_service,
@@ -116,11 +119,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
 							margin: EdgeInsets.fromLTRB(16, 20, 16, 0),
 							child: FutureBuilder<dynamic>(
 								future: fetchContacts(
-										app_service.org_volunteers_or_refugees==SwitchEnum.first ? 'volunteers' : 'refugees',
-										app_service),
+										'${role.toString().substring(6)}s',
+										app_service
+								),
 								builder: (context, snapshot){
 
 									if (snapshot.hasData){
+										if (snapshot.data.list.length <= 0)
+											return build_no_contacts(context, role);
 										return ListView.builder(
 												shrinkWrap: true,
 												itemCount: snapshot.data.list.length,
@@ -161,7 +167,21 @@ class _ContactsScreenState extends State<ContactsScreen> {
 																									),
 																								),
 														  						  		),
-														  						  		Text(
+														  						  		GestureDetector(
+														  						  		  onTap: () async {
+																										late String url;
+																										if (user.user.phone != null)
+																												url = 'tel:${user.user.phone}';
+																										else
+																												url = 'mailto:${user.user.email}';
+
+																										if (await canLaunchUrl(Uri.parse(url))) {
+																										await launchUrl(Uri.parse(url));
+																										} else {
+																										throw "Error occured trying to call that number.";
+																										}
+																									},
+																									child: Text(
 																									user.user.phone ?? user.user.email,
 																									style: TextStyle(
 																										color: Color(0xFF748B9F),
@@ -169,6 +189,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 																										fontWeight: FontWeight.w400,
 																									),
 																								),
+														  						  		),
 														  						  	],
 														  						  ),
 														  						),
@@ -177,20 +198,63 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														  				Row(
 														  					children: [
 														  						user.user.viber_phone!=null ?
-														  						Image.asset(
-														  							"images/img_24.png",
-														  							width: 26.0,
-														  							semanticLabel: 'viber phone edit',
+														  						GestureDetector(
+																						onTap: () async {
+																							late String url;
+																							if (user.user.viber_phone != null && user.user.viber_phone!.isNotEmpty) {
+																								var phone = user.user.viber_phone;
+																								if (phone![0] == '+')
+																									phone = phone.substring(1);
+																								url = 'viber://chat?number=$phone';
+                                              } else {
+																								var phone = user.user.viber_phone;
+																								if (phone![0] == '+')
+																									phone = phone.substring(1);
+																							  url = 'viber://chat?number=$phone';
+																							}
+																							print(url);
+
+																							if (await canLaunchUrl(Uri.parse(url))) {
+																								await launchUrl(Uri.parse(url));
+																							} else {
+																								throw "Error occured trying to call that number.";
+																							}
+																						},
+																						child: Image.asset(
+														  						  	"images/img_24.png",
+														  						  	width: 26.0,
+														  						  	semanticLabel: 'viber phone edit',
+														  						  ),
 														  						) :
 														  						Container(),
 
 														  						user.user.telegram_phone!=null || user.user.nickname!=null ?
-														  						Padding(
-														  						  padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-														  						  child: Icon(
-														  						  	Icons.telegram_rounded,
-														  						  	color: Color(0xff29b6f6),
-														  						  	size: 26,
+														  						GestureDetector(
+																						onTap: () async {
+																							print('telegram');
+
+																							late String url;
+																							if (user.user.nickname != null && user.user.nickname!.isNotEmpty)
+																								url = 't.me/${user.user.nickname}';
+																							else if (user.user.telegram_phone != null && user.user.telegram_phone!.isNotEmpty)
+																								url = 't.me/${user.user.telegram_phone}';
+																							else
+																								url = 't.me/${user.user.phone}';
+																							print(url);
+
+																							if (await canLaunchUrl(Uri.parse(url))) {
+																								await launchUrl(Uri.parse(url));
+																							} else {
+																								throw "Error occured trying to call that number.";
+																							}
+																						},
+																						child: Padding(
+														  						    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+														  						    child: Icon(
+														  						    	Icons.telegram_rounded,
+														  						    	color: Color(0xff29b6f6),
+														  						    	size: 26,
+														  						    ),
 														  						  ),
 														  						) :
 														  						Container(),
@@ -216,7 +280,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 								},
 							),
 						),
-						bottomNavigationBar: buildBottomNavigationBar(),
+						bottomNavigationBar: const buildBottomNavigationBar(),
 
 					),
 

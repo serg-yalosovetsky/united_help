@@ -215,6 +215,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	@override
 	void initState() {
+		_app_service = Provider.of<AppService>(context, listen: false);
 		start_date_controller.text = date_to_str(DateTime.now());
 		start_time_controller.text = time_to_str(TimeOfDay.now());
 		end_date_controller.text = date_to_str(DateTime.now());
@@ -224,7 +225,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 		_app_service.time_start = TimeOfDay.now();
 		_app_service.time_end = TimeOfDay.now();
 
-		_app_service = Provider.of<AppService>(context, listen: false);
 		futureSkills = fetchSkills(skills_query, _app_service);
 		futureCities = fetchCities(cities_query, _app_service);
 		super.initState();
