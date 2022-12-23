@@ -27,8 +27,12 @@ class _MyEventsHistoryScreenState extends State<MyEventsHistoryScreen> {
   late AppService _app_service;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,

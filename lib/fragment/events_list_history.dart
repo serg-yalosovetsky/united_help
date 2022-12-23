@@ -45,14 +45,9 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		print('futureEvents');
-		futureEvents = fetchEvents(widget.event_query, app_service);
-
-		return Consumer<AppService>(
-		  builder: (context, cart, child) {
 				return Center(
 		  			child: FutureBuilder<Events>(
-		  				future: futureEvents,
+		  				future: fetchEvents(widget.event_query, app_service),
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
 									if (snapshot.data!.count <= 0){
@@ -84,42 +79,39 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 		  								},
 		  							);
 		  						else {
-										var widget_list = List<Widget>.generate(
-											snapshot.data!.count,
-											(index) {
-												return GestureDetector(
-													child: card_builder(snapshot.data!.list[index], app_service),
-													onTap: () {
-															setState(() {
-																Navigator.of(context).push(
-																	MaterialPageRoute(
-																		builder: (context) => FinishedEventScreen(
-																			event: snapshot.data!.list[index],
-																		),
-																	),
-																);
-															});
-
-													},
-												);
-											},
-										);
 										return Column(
-											children: widget_list,
+											children: List<Widget>.generate(
+												snapshot.data!.count,
+												(index) {
+													return GestureDetector(
+														child: card_builder(snapshot.data!.list[index], app_service),
+														onTap: () {
+																setState(() {
+																	Navigator.of(context).push(
+																		MaterialPageRoute(
+																			builder: (context) => FinishedEventScreen(
+																				event: snapshot.data!.list[index],
+																			),
+																		),
+																	);
+																});
+
+														},
+													);
+												},
+											),
 										);
             }
           } else if (snapshot.hasError) {
-		  						return build_no_internet();
-		  						// return Text('${snapshot.error}');
-		  					}
-		  					// return build_get_location_permission();
-		  					return const CircularProgressIndicator();
+							return build_no_internet();
+							// return Text('${snapshot.error}');
+						}
+						// return build_get_location_permission();
+						return const CircularProgressIndicator();
 
 		  				},
 		  			),
 		  		);
-				},
-		);
 	}
 }
 

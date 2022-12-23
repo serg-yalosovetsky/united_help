@@ -145,7 +145,8 @@ class Requests {
   FutureMap get_wrapper(String url, AppService app_service) async {
     var r = await get(url, await app_service.get_access_token());
     if (r['status_code'] == 403){
-      await app_service.relogin();
+      // await app_service.relogin();
+      app_service.set_access_token(null);
       return get(url, await app_service.get_access_token());
     }
     return r;
@@ -155,7 +156,9 @@ class Requests {
   FutureMap post_wrapper(String url, Map body, AppService app_service) async {
     var r = await post(url, body, await app_service.get_access_token());
     if (r['status_code'] == 403){
-      await app_service.relogin();
+      // await app_service.relogin();
+      app_service.set_access_token(null);
+
       return post(url, body, await app_service.get_access_token());
     }
     return r;

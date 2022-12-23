@@ -163,7 +163,7 @@ class AppRouter {
   late final GoRouter _go_router = GoRouter(
     refreshListenable: app_service,
     initialLocation: app_service.role==Roles.organizer ?
-                        APP_PAGE.new_events_choose_help_or_job.to_path :
+                        APP_PAGE.my_events.to_path :
                         APP_PAGE.home_list.to_path,
     routes: <GoRoute>[
       GoRoute(

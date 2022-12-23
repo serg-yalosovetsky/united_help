@@ -103,7 +103,7 @@ class Profile {
       url: json['url'],
       organization: json['organization'],
       role: json['role'],
-      rating: json['rating'] ?? 0,
+      rating: double.tryParse(json['rating'].toString()) ?? 0,
       skills: json['skills']?.cast<int>() ?? [],
     );
     // print(e);

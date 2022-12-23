@@ -68,7 +68,7 @@ class Event {
       skills: json['skills'].cast<int>(),
       required_members: json['required_members'],
       subscribed_members: json['subscribed_members'] ?? 0,
-      rating: json['rating'] ?? 0,
+      rating:  double.tryParse(json['rating'].toString()) ?? 0,
       comments_count: json['comments_count'] ?? 0,
 
     );
@@ -108,7 +108,6 @@ class Events {
   factory Events.fromJson(Map<String, dynamic> json) {
     var results = <Event>[];
     for (var event in json['results']) {
-      print('event = $event');
       results.add(Event.fromJson(event));
     }
     return Events(
@@ -125,7 +124,6 @@ class Events {
 Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_events_url/$event_query/';
-  print('url= $url');
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -139,17 +137,10 @@ Future<Events> fetchEvents(String event_query, AppService app_service) async {
 
 
 FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
-  print(21);
   var r = Requests();
-  print(22);
   String url = '$server_url$all_events_url';
-  print(23);
-  print(body['image']);
   body['image'] = base64Encode(File(body['image']).readAsBytesSync());
-  print(24);
-  print(body['image']);
   final response = await r.post_wrapper(url, body, app_service);
-  print(25);
 
   if (response['status_code'] == 201) {
     var res  = response['result'];
