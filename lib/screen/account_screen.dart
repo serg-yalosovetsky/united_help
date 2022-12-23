@@ -429,9 +429,15 @@ class _build_account_screenState extends State<build_account_screen> {
     					    ),
 									Container(
 									  child: widget.app_service.account_actual_events ?
-									  		EventListScreen(event_query: 'subscribed', is_listview: false,) :
+									  		EventListScreen(
+													event_query: widget.app_service.role==Roles.organizer ? 'created' : 'subscribed',
+													is_listview: false,
+												) :
 												// Container()
-									  		EventListScreen(event_query: 'attended', is_listview: false,),
+									  		EventListScreen(
+													event_query: widget.app_service.role==Roles.organizer ? 'finished' : 'attended',
+													is_listview: false,
+												),
 									),
     					  ],
     					),
