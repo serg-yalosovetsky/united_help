@@ -8,7 +8,7 @@
 PRODUCT_NAME = united_help
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.unitedHelp
+PRODUCT_BUNDLE_IDENTIFIER = ua.org.unitedHelp
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2022 com.example. All rights reserved.
