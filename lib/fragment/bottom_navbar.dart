@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/routes/routes.dart';
+import 'package:united_help/screen/notifications_screen.dart';
 
 import '../services/appservice.dart';
 import 'card_list.dart';
@@ -110,6 +111,12 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 					}
 					if (index==2) {
 						// context.go('/example');
+						Navigator.push(
+							context,
+							MaterialPageRoute(
+								builder: (context) => NotificationsScreen(),
+							),
+						);
 					}
 					if (index==3) {
 						context.go(APP_PAGE.account.to_path);

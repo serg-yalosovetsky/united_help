@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1000849064295",
+    "project_id": "ua-org-united-help",
+    "storage_bucket": "ua-org-united-help.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000849064295:android:9adc40be69dda6bfa5efc2",
+        "android_client_info": {
+          "package_name": "ua.org.united_help"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000849064295-asodcor4isc1oe1enhon2og4aaefnsb7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ua.org.united_help",
+            "certificate_hash": "9633ed5b09bc33cdce32c8ea17aadd20dbca453d"
+          }
+        },
+        {
+          "client_id": "1000849064295-ta51uhkg343bdek2g79qmr5hi9sstvmt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz56_4ZL0gG0X2NRZRydYEcbHJsxJe9Yw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000849064295-ta51uhkg343bdek2g79qmr5hi9sstvmt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
