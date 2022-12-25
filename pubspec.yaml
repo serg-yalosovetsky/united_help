@@ -57,6 +57,7 @@ dependencies:
   url_launcher: ^6.1.7
   firebase_messaging: ^14.2.0
   firebase_core: ^2.4.0
+  fluttertoast: ^7.1.2
   overlay_support: ^2.1.0
   isar: ^3.0.5
 #  syncfusion_flutter_datepicker: ^20.3.59
