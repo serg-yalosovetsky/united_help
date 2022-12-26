@@ -26,6 +26,9 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+isar_version: &isar_version 3.0.5 # define the version to be used
+
+
 dependencies:
   flutter:
     sdk: flutter
@@ -57,13 +60,16 @@ dependencies:
   url_launcher: ^6.1.7
   firebase_messaging: ^14.2.0
   firebase_core: ^2.4.0
-  fluttertoast: ^7.1.2
+  fluttertoast: ^8.1.2
   overlay_support: ^2.1.0
-  isar: ^3.0.5
+
+  isar: *isar_version
+  isar_flutter_libs: *isar_version # contains Isar Core
 #  syncfusion_flutter_datepicker: ^20.3.59
 
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
 
@@ -73,6 +79,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ">=2.0.1"
+
+  isar_generator: *isar_version
+  build_runner: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -6,11 +6,23 @@ import 'package:overlay_support/overlay_support.dart';
 import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
+import 'package:isar/isar.dart';
+
+
+
+import '../models/email.dart';
+import 'package:isar_email/models/email.dart';
+
+fun () async {
+	final isar = await Isar.open([EmailSchema]);
+}
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 	print("Handling a background message: ${message.messageId}");
 }
+
+
 
 class PushNotification {
 	PushNotification({
