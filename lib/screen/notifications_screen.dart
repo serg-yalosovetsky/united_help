@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
@@ -11,11 +12,13 @@ import 'package:isar/isar.dart';
 
 
 import '../models/email.dart';
-import 'package:isar_email/models/email.dart';
-
-fun () async {
-	final isar = await Isar.open([EmailSchema]);
-}
+import '../models/profile.dart';
+import '../services/appservice.dart';
+// import 'package:isar_email/models/email.dart';
+//
+// fun () async {
+// 	final isar = await Isar.open([EmailSchema]);
+// }
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -76,6 +79,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 	late int _totalNotifications;
 	late final FirebaseMessaging _messaging;
 	PushNotification? _notificationInfo;
+  late final AppService app_service = Provider.of<AppService>(context);
 
 	// For handling notification when the app is in terminated state
 	checkForInitialMessage() async {
@@ -174,7 +178,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		// final app_service = Provider.of<AppService>(context);
+		// app_service = Provider.of<AppService>(context);
 
 		return OverlaySupport(
 		  child: MaterialApp(
@@ -191,6 +195,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 									FirebaseMessaging.instance.getToken().then((value) {
 										String? token = value;
 										print('token $token');
+										print('token  is trying to send');
+										if (token != null) postFirebaseToken(token, app_service);
+
 									});
 								},
 								child: Text(

@@ -340,18 +340,12 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
   String url = '$server_url$all_profiles_url$all_contacts_url/';
   if (profile_query.isNotEmpty && (profile_query == 'refugees' || profile_query == 'volunteers'))
     url = '$url?$profile_query';
-  print('url $url');
   final response = await r.get_wrapper(url, app_service);
-  print(6514989);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print(response['result']);
     if (profile_query.isNotEmpty && (profile_query == 'refugees' || profile_query == 'volunteers')) {
-      print(787907897);
-      print(res[profile_query]);
       var r =  Contacts.fromJson(res[profile_query]);
-      print('r $r');
       return r;
 
     } else{
@@ -363,5 +357,23 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to load UserProfile');
+  }
+}
+
+
+FutureMap postFirebaseToken(String token, AppService app_service) async {
+  var r = Requests();
+  String url = '$server_url$add_fb_token';
+  print('url: $url');
+  var token_map = {'token': token};
+  print('token_map: $token_map');
+  final response = await r.post_wrapper(url, token_map, app_service);
+
+  if (response['status_code'] == 200) {
+    var res  = response['result'];
+    return res;
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to add new token');
   }
 }

@@ -450,7 +450,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 											onTap: () async {
 													final XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
 													if (image!= null) {
-														image?.saveTo('images/user_volunteer_avatar.png');
+														image.saveTo('images/user_volunteer_avatar.png');
 
 
 														app_service.user_image_expire = true;
