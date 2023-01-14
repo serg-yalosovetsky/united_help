@@ -62,9 +62,7 @@ dependencies:
   firebase_core: ^2.4.0
   fluttertoast: ^8.1.2
   overlay_support: ^2.1.0
-
-  isar: *isar_version
-  isar_flutter_libs: *isar_version # contains Isar Core
+  hive: ^2.2.3
 #  syncfusion_flutter_datepicker: ^20.3.59
 
 
@@ -79,8 +77,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ">=2.0.1"
-
-  isar_generator: *isar_version
   build_runner: any
 
 # For information on the generic Dart part of this file, see the

@@ -3,43 +3,37 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:hive/hive.dart';
 
 import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
-import 'package:isar/isar.dart';
 
 
-
-import '../models/email.dart';
+import '../models/notify.dart';
 import '../models/profile.dart';
 import '../services/appservice.dart';
-// import 'package:isar_email/models/email.dart';
-//
-// fun () async {
-// 	final isar = await Isar.open([EmailSchema]);
-// }
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+	var box = await Hive.openBox('myBox');
+
+	var notify = HivePushNotification()..title = 'title'
+																		 ..body = 'body'
+																		 ..data_title = 'title'
+																		 ..data_body = 'body';
+	box.add(notify);
+
+	print(box.getAt(0)); // Dave - 22
+
+	notify.age = 30;
+	notify.save();
+
+	print(box.getAt(0)) // Dave - 30
 	print("Handling a background message: ${message.messageId}");
 }
 
 
-
-class PushNotification {
-	PushNotification({
-		this.title,
-		this.body,
-		this.dataTitle,
-		this.dataBody,
-	});
-
-	String? title;
-	String? body;
-	String? dataTitle;
-	String? dataBody;
-}
 
 class NotificationBadge extends StatelessWidget {
 	final int totalNotifications;
@@ -131,6 +125,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 						dataTitle: message.data['title'],
 						dataBody: message.data['body'],
 					);
+
+
 
 					setState(() {
 						_notificationInfo = notification;
