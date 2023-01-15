@@ -87,7 +87,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 				child: MaterialApp(
 					debugShowCheckedModeBanner: false,
 					home: Scaffold(
-						appBar: buildAppBar(null, 'Новий івент',),
+						appBar: buildAppBar(null, 'Сповіщення',),
 						bottomNavigationBar: const buildBottomNavigationBar(),
 						backgroundColor: ColorConstant.whiteA700,
 						body: ValueListenableBuilder<Box>(
@@ -142,7 +142,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														return GestureDetector(
 														  onTap: () {
 																setState(() {
-																	box.getAt(index).is_read = !box.getAt(index).is_read;
+																	box.getAt(index).is_read = true;
 																});
 																print("box.getAt(index).is_read = ${box.getAt(index).is_read};");
 																// box.getAt(index).save();
@@ -180,8 +180,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														  	  		Flexible(
 														  	  		  child: Column(
 														  	  		  	children: [
-														  	  		  		Text('${box.getAt(index).body}'),
-														  	  		  		Text('${box.getAt(index).title}'),
+														  	  		  		Text(
+																								'${box.getAt(index).body.split(' ').take(5).fold('', (p, i) => '$p $i')}',
+																								style: TextStyle(
+																									fontSize: 16,
+																									fontWeight: FontWeight.w600,
+																									color: Color(0xFF002241),
+																								),
+																						),
+														  	  		  		Padding(
+														  	  		  		  padding: const EdgeInsets.only(top: 4.0),
+														  	  		  		  child: Text(
+																							'${box.getAt(index).title}',
+																							style: TextStyle(
+																								fontSize: 14,
+																								fontWeight: FontWeight.w400,
+																								color: Color(0xFF748B9F),
+																							),
+																						),
+														  	  		  		),
 														  	  		  	],
 														  	  		  ),
 														  	  		),
