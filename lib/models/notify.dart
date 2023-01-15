@@ -5,20 +5,33 @@ class PushNotification {
   PushNotification({
     this.title,
     this.body,
-    this.dataTitle,
-    this.dataBody,
+    this.data_title,
+    this.data_body,
+    this.is_read = false,
+    this.image,
   });
 
   String? title;
   String? body;
-  String? dataTitle;
-  String? dataBody;
+  String? data_title;
+  String? data_body;
+  bool is_read;
+  String? image;
 }
 
 
 @HiveType(typeId: 0)
 class HivePushNotification extends HiveObject {
+  HivePushNotification({
+    this.id = 0,
+    this.title = '',
+    this.body = '',
+    this.data_title = '',
+    this.data_body = '',
+    this.is_read = false,
+    this.image = '',
 
+  });
   @HiveField(0)
   late int id;
 
@@ -33,6 +46,12 @@ class HivePushNotification extends HiveObject {
 
   @HiveField(4)
   late String data_body;
+
+  @HiveField(5)
+  late bool is_read;
+
+  @HiveField(6)
+  late String image;
 }
 
 class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
@@ -42,12 +61,15 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
   @override
   HivePushNotification read(BinaryReader reader) {
     var map = reader.read();
-    return HivePushNotification()
-      ..id = map['id']
-      ..title = map['title']
-      ..body = map['body']
-      ..data_title = map['data_title']
-      ..data_body = map['data_body'];
+    return HivePushNotification(
+      id: map['id'],
+      title: map['title'],
+      body: map['body'],
+      data_title: map['data_title'],
+      data_body: map['data_body'],
+      is_read: map['is_read'] ?? false,
+      image: map['image'],
+    );
   }
 
   @override
@@ -58,6 +80,8 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
       'body': obj.body,
       'data_title': obj.data_title,
       'data_body': obj.data_body,
+      'is_read': obj.is_read,
+      'image': obj.image,
     });
   }
 }

@@ -279,6 +279,11 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get is_sent_firebase_token => shared_preferences.getBool('is_sent_firebase_token') ?? false;
+  set is_sent_firebase_token(bool value) {
+      shared_preferences.setBool('is_sent_firebase_token', value);
+  }
+
   Roles get role => isRole(shared_preferences.getString(profile_key) ?? '');
   set role(Roles value) {
     if (Roles.values.contains(role)){

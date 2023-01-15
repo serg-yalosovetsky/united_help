@@ -370,8 +370,7 @@ FutureMap postFirebaseToken(String token, AppService app_service) async {
   final response = await r.post_wrapper(url, token_map, app_service);
 
   if (response['status_code'] == 200) {
-    var res  = response['result'];
-    return res;
+    return response;
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to add new token');
