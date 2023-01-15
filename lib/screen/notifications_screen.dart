@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -95,35 +96,104 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 								return ListView.builder(
 													itemCount: box.length,
 													prototypeItem: Card(
-														child: Row(
-															mainAxisAlignment: MainAxisAlignment.start,
-															children: [
-																Flexible(
-																	child: Column(
-																		crossAxisAlignment: CrossAxisAlignment.start,
-																		children: [
-																			Text('${box.getAt(0).body}'),
-																			Text('${box.getAt(0).body}'),
-																		],
-																	),
-																),
-															],
+														shape: RoundedRectangleBorder(
+															borderRadius: BorderRadius.circular(20.0),
 														),
-													),
-													itemBuilder: (context, index) {
-														return Card(
+														child: Container(
+															decoration: BoxDecoration(
+																	border: Border.all(
+																		color: Colors.red,
+																		// Color(0xFFF0F7FF),
+																	),
+																	color: Colors.red,
+																	borderRadius: BorderRadius.all(Radius.circular(10))),
+															// padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
+															padding: const EdgeInsets.all(16),
 															child: Row(
+																mainAxisAlignment: MainAxisAlignment.start,
 																children: [
+																	LimitedBox(
+																		maxHeight: 60,
+																		maxWidth: 60,
+																		child: ClipRRect(
+																			borderRadius: BorderRadius.circular(8.0),
+																			child: Image(
+																				image: CachedNetworkImageProvider(box.getAt(0).image),
+																				height: 60,
+																				width: 60,
+																				// height: 142,
+																			),
+																		),
+																	),
 																	Flexible(
-																	  child: Column(
-																	  	children: [
-																	  		Text('${box.getAt(index).body}'),
-																	  		Text('${box.getAt(index).title}'),
-																	  	],
-																	  ),
+																		child: Column(
+																			crossAxisAlignment: CrossAxisAlignment.start,
+																			children: [
+																				Text('Новий відsdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffгук'),
+																				Text('Андрій Кметfghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhfghfghько залишив відгук до вашого івента про відносини.'),
+																			],
+																		),
 																	),
 																],
 															),
+														),
+													),
+													itemBuilder: (context, index) {
+														return GestureDetector(
+														  onTap: () {
+																setState(() {
+																	box.getAt(index).is_read = !box.getAt(index).is_read;
+																});
+																print("box.getAt(index).is_read = ${box.getAt(index).is_read};");
+																// box.getAt(index).save();
+															},
+															onHorizontalDragStart: (e) {box.deleteAt(index);},
+															child: Card(
+														  	shape: RoundedRectangleBorder(
+														  		borderRadius: BorderRadius.circular(12.0),
+														  	),
+														  	child: Container(
+														  		decoration: BoxDecoration(
+														  				border: Border.all(
+														  					color: box.getAt(index).is_read ? Colors.white : Color(0xFFF0F7FF),
+														  					// Color(0xFFF0F7FF),
+														  				),
+														  				color: box.getAt(index).is_read ? Colors.white : Color(0xFFF0F7FF) ,
+														  				borderRadius: BorderRadius.all(Radius.circular(10))),
+														  		// padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
+														  		padding: const EdgeInsets.all(16),
+														  	  child: Row(
+														  	  	children: [
+														  				Padding(
+														  				  padding: const EdgeInsets.fromLTRB(0, 0, 12, 0,),
+														  				  child: ClipRRect(
+														  				  	borderRadius: BorderRadius.circular(8.0),
+														  				  	child: Image(
+														  	  		  	image: CachedNetworkImageProvider(box.getAt(index).image),
+														  	  		  	fit: BoxFit.fitWidth,
+														  				  	height: 60,
+														  				  	width: 60,
+														  	  		  	// height: 142,
+														  	  		  ),
+														  	  		),
+														  				),
+														  	  		Flexible(
+														  	  		  child: Column(
+														  	  		  	children: [
+														  	  		  		Text('${box.getAt(index).body}'),
+														  	  		  		Text('${box.getAt(index).title}'),
+														  	  		  	],
+														  	  		  ),
+														  	  		),
+														  				Icon(
+														  					Icons.circle,
+														  					color: box.getAt(index).is_read ? Colors.white : Colors.blue,
+														  					size: 8,
+														  				)
+														  	  	],
+														  	  ),
+														  	),
+														  ),
 														);
 													},
 											);

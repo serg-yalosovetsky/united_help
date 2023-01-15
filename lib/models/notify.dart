@@ -30,7 +30,8 @@ class HivePushNotification extends HiveObject {
     this.data_body = '',
     this.is_read = false,
     this.image = '',
-
+    this.notify_type = '',
+    this.event_id = 0,
   });
   @HiveField(0)
   late int id;
@@ -52,6 +53,12 @@ class HivePushNotification extends HiveObject {
 
   @HiveField(6)
   late String image;
+
+  @HiveField(6)
+  late String notify_type;
+
+  @HiveField(6)
+  late int event_id;
 }
 
 class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
@@ -68,7 +75,9 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
       data_title: map['data_title'],
       data_body: map['data_body'],
       is_read: map['is_read'] ?? false,
-      image: map['image'],
+      image: map['image'] ?? '',
+      notify_type: map['notify_type'] ?? '',
+      event_id: map['event_id'] ?? 0,
     );
   }
 
@@ -82,6 +91,8 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
       'data_body': obj.data_body,
       'is_read': obj.is_read,
       'image': obj.image,
+      'notify_type': obj.notify_type,
+      'event_id': obj.event_id,
     });
   }
 }

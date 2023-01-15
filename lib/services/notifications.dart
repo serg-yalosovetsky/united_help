@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:united_help/services/urls.dart';
 
 import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
@@ -46,7 +47,6 @@ send_firebase_token_to_server(AppService app_service) async {
 Future store_message(RemoteMessage message) async {
 	print('STORED BOX start');
 
-	print(234234);
 
 	try {
 		var counter = await Hive.openBox<int>('counter');
@@ -55,31 +55,49 @@ Future store_message(RemoteMessage message) async {
 		print(e);
 		registerHive();
 	}
-	print(243575);
 
 	var counter = await Hive.openBox<int>('counter');
-	print(684681);
-
-	int? counter_value = 0;
-
-	counter_value = counter.get('notify_counter', defaultValue: 0);
-
 	var box = await Hive.openBox('notifications');
 
-	counter_value ??= 0;
-	counter_value ++;
+	int counter_value = 0;
 
+	counter_value = counter.get('notify_counter', defaultValue: 0) ?? 0;
+
+	int __counter = 0;
+	bool new_notify = true;
+	for (HivePushNotification item in box.values) {
+		if (item.event_id == int.parse(message.data['event_id']) &&
+				item.notify_type == message.data['notify_type']
+				) {
+			new_notify = false;
+			break;
+		}
+		__counter ++;
+	}
+	counter_value ++;
+	String image = message.data['image'] ?? '';
+	if (image.contains('127.0.0.1')) {
+		image = image.replaceAll('127.0.0.1', server_address);
+	}
 	var notify = HivePushNotification(
 		id: counter_value,
 		title: message.notification?.title ?? '',
 		body: message.notification?.body ?? '',
 		data_title: message.data['title'] ?? '',
 		data_body: message.data['body'] ?? '',
+		image: image,
 		is_read: false,
+		notify_type: message.data['notify_type'] ?? '',
+		event_id: int.parse(message.data['event_id']),
 	);
-
 	try{
-			await box.put(counter_value, notify);
+		print('$new_notify $__counter');
+			if (new_notify) {
+				await box.put(counter_value, notify);
+			}
+			else {
+				await box.put(__counter, notify);
+			}
 	}
 	catch (e) {print(e);}
 
@@ -93,15 +111,15 @@ Future store_message(RemoteMessage message) async {
 	print('box.isOpen  ${box.isOpen}');
 	print('box.path  ${box.path}');
 	print('box.name  ${box.name}');
-	print('box.getAt(0)  ${box.getAt(0)?.id}');
-	print('box.getAt(${box.length-1})  ${box.getAt(box.length-1)?.id}');
+	// print('box.getAt(0)  ${box.getAt(0)?.id}');
+	// print('box.getAt(${box.length-1})  ${box.getAt(box.length-1)?.id}');
 	print('box.keys  ${box.keys}');
-	print('box.keyAt(0)  ${box.keyAt(0)}');
+	// print('box.keyAt(0)  ${box.keyAt(0)}');
 	print("message.data['event_id'] ${message.data['event_id']}");
 	print("message.data['image'] ${message.data['image']}");
-	box.close();
+	// box.close();
 
-	print(442567);
+	print('STORED BOX finish');
 }
 
 
