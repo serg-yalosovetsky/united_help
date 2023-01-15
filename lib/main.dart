@@ -3,14 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+
 import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/routes/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/auth_service.dart';
+
+import 'models/notify.dart';
 
 // void main() => runApp( UnitedHelp());
 
@@ -21,6 +27,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences shared_preferences = await SharedPreferences.getInstance();
   final FlutterSecureStorage secure_storage = FlutterSecureStorage();
+  final appDocumentDirectory = await path_provider.getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocumentDirectory.path);
+  Hive.registerAdapter(HivePushNotificationAdapter());
 
   await SentryFlutter.init(
         (options) {

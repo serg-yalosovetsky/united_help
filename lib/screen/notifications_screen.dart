@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
@@ -15,21 +17,85 @@ import '../models/profile.dart';
 import '../services/appservice.dart';
 
 
+// https://blog.logrocket.com/add-flutter-push-notifications-firebase-cloud-messaging/
+
+
+Future store_message(RemoteMessage message) async {
+	print('STORED BOX start');
+
+	print(234234);
+
+	try {
+		var counter = await Hive.openBox<int>('counter');
+
+	}
+	catch (e) {
+		print(e);
+		final appDocumentDirectory = await getApplicationDocumentsDirectory();
+		await Hive.initFlutter(appDocumentDirectory.path);
+		Hive.registerAdapter(HivePushNotificationAdapter());
+
+		// Hive.init(appDocumentDirectory.path);
+		var counter = await Hive.openBox<int>('counter');
+
+	}
+	var counter = await Hive.openBox<int>('counter');
+
+
+	int? counter_value = 0;
+	print(5683);
+
+	counter_value = counter.get('notify_counter', defaultValue: 0);
+
+	print(346346);
+
+	var box = await Hive.openBox('notifications');
+	print(3541);
+
+	counter_value ??= 0;
+	counter_value ++;
+	print(23);
+
+	var notify = HivePushNotification()
+		..id = counter_value
+		..title = message.notification?.title ?? ''
+		..body = message.notification?.body ?? ''
+		..data_title = message.data['title'] ?? ''
+		..data_body = message.data['body'] ?? '';
+	print(2342);
+	// box.add(notify);
+
+	try{
+			await box.put(counter_value, notify);
+	}
+	catch (e) {print(e);}
+
+	try{notify.save();}
+	catch (e) {print(e);}
+
+	print(536);
+
+	print(468);
+	counter.put('notify_counter', counter_value);
+	print('STORED BOX');
+	print('box.values ${box.values.length} ');
+	print('box.length  ${box.length}');
+	print('box.isOpen  ${box.isOpen}');
+	print('box.path  ${box.path}');
+	print('box.name  ${box.name}');
+	print('box.getAt(0)  ${box.getAt(0)?.id}');
+	// print('box.getAt(1)  ${box.getAt(1)?.id}');
+	print('box.keys  ${box.keys}');
+	print('box.keyAt(0)  ${box.keyAt(0)}');
+	box.close();
+
+	print(442567);
+}
+
+
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-	var box = await Hive.openBox('myBox');
+	store_message(message);
 
-	var notify = HivePushNotification()..title = 'title'
-																		 ..body = 'body'
-																		 ..data_title = 'title'
-																		 ..data_body = 'body';
-	box.add(notify);
-
-	print(box.getAt(0)); // Dave - 22
-
-	notify.age = 30;
-	notify.save();
-
-	print(box.getAt(0)) // Dave - 30
 	print("Handling a background message: ${message.messageId}");
 }
 
@@ -125,14 +191,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 						dataTitle: message.data['title'],
 						dataBody: message.data['body'],
 					);
-
-
-
-					setState(() {
-						_notificationInfo = notification;
-						_totalNotifications ++;
-					});
-					// For displaying the notification as an overlay
 					showSimpleNotification(
 						Text(_notificationInfo!.title!),
 						leading: NotificationBadge(totalNotifications: _totalNotifications),
@@ -140,6 +198,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 						background: Colors.cyan.shade700,
 						duration: Duration(seconds: 2),
 					);
+
+					store_message(message);
+
+					setState(() {
+						_notificationInfo = notification;
+						_totalNotifications ++;
+					});
+					// For displaying the notification as an overlay
+
 				}
 			});
 
@@ -162,6 +229,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 				dataTitle: message.data['title'],
 				dataBody: message.data['body'],
 			);
+
+			store_message(message);
+
 			setState(() {
 				_notificationInfo = notification;
 				_totalNotifications++;
