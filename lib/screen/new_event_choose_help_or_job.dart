@@ -78,7 +78,7 @@ class NewEventChooseHelpOrJobScreen extends StatelessWidget {
 											fun: () {
 												Navigator.of(context).push(
 													MaterialPageRoute(
-														builder: (context) => NewEventScreen(event_for: Roles.refugee.toString(),),
+														builder: (context) => NewEventScreen(event_for_or_edit: Roles.refugee.toString(),),
 													),
 												);
 												},
@@ -91,7 +91,7 @@ class NewEventChooseHelpOrJobScreen extends StatelessWidget {
 											fun: () {
 												Navigator.of(context).push(
 													MaterialPageRoute(
-														builder: (context) => NewEventScreen(event_for: Roles.volunteer.toString(),),
+														builder: (context) => NewEventScreen(event_for_or_edit: Roles.volunteer.toString(),),
 													),
 												);
 												},

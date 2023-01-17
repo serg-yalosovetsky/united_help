@@ -178,11 +178,8 @@ class _FiltersCardState extends State<FiltersCard> {
 									Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
 									bool is_finded = false;
 									for (var city in alias.keys){
-										print(city);
-										print(alias[city]);
 										for (var alia in alias[city]!.split(' ')){
 											if (alia.toLowerCase().startsWith(value.toLowerCase())){
-												print('contain!! $city');
 												is_finded = true;
 												// _app_service.city_hint = [city];
 											}
@@ -207,11 +204,8 @@ class _FiltersCardState extends State<FiltersCard> {
 										bool is_finded = false;
 										List<String> cities_hint = [];
                     for (var city in alias.keys) {
-                      print(city);
-                      print(alias[city]);
                       for (var alia in alias[city]!.split(' ')) {
                         if (alia.toLowerCase().startsWith(text.toLowerCase())) {
-                          print('contain!! $city');
                           is_finded = true;
 													cities_hint.add(city);
                         }
@@ -265,7 +259,6 @@ class _FiltersCardState extends State<FiltersCard> {
 									bool is_finded = false;
 									for (var skill in skills){
 											if (skill.toLowerCase().startsWith(value.toLowerCase())){
-												print('contain!! $skill');
 												is_finded = true;
 												// _app_service.city_hint = [city];
 										}
@@ -290,9 +283,7 @@ class _FiltersCardState extends State<FiltersCard> {
 										List<String> skills_hint = [];
 
 										for (var skill in skills) {
-												print(skill);
 												if (skill.toLowerCase().startsWith(text.toLowerCase())) {
-													print('contain!! $skill');
 													is_finded = true;
 													skills_hint.add(skill);
 											}

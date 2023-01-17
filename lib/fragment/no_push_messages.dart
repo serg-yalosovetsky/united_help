@@ -1,49 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
+import 'package:united_help/routes/routes.dart';
 
 import '../screen/email_password_confirmation.dart';
+import '../services/appservice.dart';
 
 
-
-Future<LocationData?> check_location() async {
-
-  Location location = Location();
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
-
-  print(0);
-  _serviceEnabled = await location.serviceEnabled();
-  print(1);
-  if (!_serviceEnabled) {
-    print(2);
-    _serviceEnabled = await location.requestService();
-    print(3);
-    if (!_serviceEnabled) {
-      print(4);
-      return null;
-    }
-  }
-
-  _permissionGranted = await location.hasPermission();
-  if (_permissionGranted == PermissionStatus.denied) {
-    _permissionGranted = await location.requestPermission();
-    if (_permissionGranted != PermissionStatus.granted) {
-      return null;
-    }
-  }
-
-  return location.getLocation();
-}
-
-
-Widget build_get_location_permission() {
+Widget build_no_push_messages() {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
-          'images/img_21.png',
+          'images/img_27.png',
           width: 147,
               ),
         Padding(
@@ -58,6 +29,7 @@ Widget build_get_location_permission() {
             textAlign: TextAlign.center,
           ),
         ),
+
 
       ],
     ),

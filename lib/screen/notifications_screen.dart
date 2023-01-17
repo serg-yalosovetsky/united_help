@@ -13,6 +13,7 @@ import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 
 
+import '../fragment/no_push_messages.dart';
 import '../models/notify.dart';
 import '../models/profile.dart';
 import '../services/appservice.dart';
@@ -93,7 +94,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 						body: ValueListenableBuilder<Box>(
 							valueListenable: Hive.box('notifications').listenable(),
 							builder: (context, box, widget) {
-								return ListView.builder(
+								if (box.length <= 0)
+										return build_no_push_messages();
+								else
+										return ListView.builder(
 													itemCount: box.length,
 													prototypeItem: Card(
 														shape: RoundedRectangleBorder(

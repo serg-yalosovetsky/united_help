@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/welcome_button.dart';
+import 'package:united_help/routes/routes.dart';
 import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
@@ -16,6 +17,7 @@ import 'no_internet.dart';
 import 'skill_card.dart';
 import '../models/events.dart';
 import '../services/urls.dart';
+import 'package:go_router/go_router.dart';
 
 
 class EventListOrganizerScreen extends StatefulWidget {
@@ -67,7 +69,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 		  								itemCount: snapshot.data!.count,
 		  								itemBuilder: (context, index) {
 		  									return GestureDetector(
-		  											child: card_builder(snapshot.data!.list[index]),
+		  											child: card_builder(context, snapshot.data!.list[index], app_service),
 		  											onTap: () {
 		  												Navigator.of(context).push(
 		  													MaterialPageRoute(
@@ -84,7 +86,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 											snapshot.data!.count,
 											(index) {
 												return GestureDetector(
-													child: card_builder(snapshot.data!.list[index]),
+													child: card_builder(context, snapshot.data!.list[index], app_service),
 													onTap: () {
 															setState(() {
 																Navigator.of(context).push(
@@ -120,15 +122,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 }
 
 
-Widget card_builder(Event event) {
-	String employment_string = '';
-	if (event.employment == 0)
-		employment_string = 'Постійна зайнятість';
-	else if (event.employment == 1)
-		employment_string = show_nice_time(event.start_time, event.end_time);
-	else if (event.employment == 2)
-		employment_string = show_nice_time(event.start_time);
-
+Widget card_builder(BuildContext context, Event event, AppService app_service) {
 
 	var card = Container(
 		margin: const EdgeInsets.all(10),
@@ -173,11 +167,18 @@ Widget card_builder(Event event) {
 											welcome_button_fun(
 													text: 'Волонтери ${event.subscribed_members} з ${event.required_members}',
 													padding: [0, 14, 0, 0],
-													fun: () {},
+													fun: () {
+														app_service.bottom_navbar_order = 1;
+														context.go('${APP_PAGE.contacts.to_path}/event_id${event.id}');
+													},
 											),
 											social_button(
 													text: 'Редагувати',
-													padding: [0, 12, 0, 19])
+													padding: [0, 12, 0, 19],
+													fun: () {
+														context.go('${APP_PAGE.new_events.to_path}/${event.id}');
+													},
+											),
 										],
 									),
 								),

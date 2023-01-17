@@ -43,7 +43,11 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 	IconData event_icon = Icons.calendar_today;
 	late AppService app_service;
 
-
+	@override
+  void initState() {
+		// app_service = Provider.of<AppService>(context, listen: false);
+    super.initState();
+  }
 
 	@override
 	Widget build(BuildContext context) {
@@ -91,10 +95,11 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 					// backgroundColor: Colors.pink,
 				),
 			],
-			currentIndex: selected_index,
+			currentIndex: app_service.bottom_navbar_order >= 0 ? app_service.bottom_navbar_order : selected_index,
 			selectedItemColor: bottom_selected_tab_color,
 			unselectedItemColor: bottom_unselected_tab_color,
 			onTap: (int index) {
+				app_service.bottom_navbar_order = -1;
 				setState(() {
 					selected_index = index;
 					if (index==0) {
@@ -107,7 +112,7 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 							context.go('/');
 					}
 					if (index==1) {
-							context.go(APP_PAGE.contacts.to_path);
+							context.go('${APP_PAGE.contacts.to_path}/volunteers');
 					}
 					if (index==2) {
 						// context.go('/example');

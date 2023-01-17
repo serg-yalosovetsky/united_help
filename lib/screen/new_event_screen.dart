@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,28 +22,28 @@ import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
+import 'card_screen.dart';
+
+
+bool isNumeric(String s) {
+	if (s == null) {
+		return false;
+	}
+	return double.tryParse(s) != null;
+}
+
 var form_padding = const EdgeInsets.fromLTRB(16, 13, 16, 0);
 var header_padding = const EdgeInsets.fromLTRB(0, 0, 8, 0);
 
-class NewEventScreen extends StatefulWidget {
-	final String event_for;
-	const NewEventScreen({
-		super.key,
-		required this.event_for,
-	});
-
-  @override
-  State<NewEventScreen> createState() => NewEventScreenState();
-}
 
 
 Widget build_skills_columns({
-			required data,
-			// required BuildContext context,
-			required int width,
-			required AppService app_service,
-			required Function fun,
-			}) {
+	required data,
+	// required BuildContext context,
+	required int width,
+	required AppService app_service,
+	required Function fun,
+}) {
 	List<String> skills_list = [];
 	data.forEach((element) {skills_list.add(element); });
 	var skills_card_blueprint = calculate_cities_widgets(
@@ -132,7 +133,7 @@ Widget build_employments_rows({
 	required int width,
 	required AppService app_service,
 	required Function fun,
-	}
+}
 		) {
 	List<String> cities_list = [];
 	data.forEach((element) {cities_list.add(element); });
@@ -165,6 +166,18 @@ Widget build_employments_rows({
 }
 
 
+
+class NewEventScreen extends StatefulWidget {
+	final String event_for_or_edit;
+	const NewEventScreen({
+		super.key,
+		required this.event_for_or_edit,
+	});
+
+  @override
+  State<NewEventScreen> createState() => NewEventScreenState();
+}
+
 class NewEventScreenState extends State<NewEventScreen> {
 
 	final int image_index = 0;
@@ -172,7 +185,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 	final int bio_index = 2;
 	final int location_index = 3;
 	final int recuired_people_index = 4;
-	List<bool> button_states = List<bool>.generate(5, (index) => false);
+	late List<bool> button_states;
 
 	late Future<Skills> futureSkills;
 	late Roles event_for;
@@ -197,6 +210,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 	TextEditingController start_time_controller = TextEditingController();
 	TextEditingController end_date_controller = TextEditingController();
 	TextEditingController end_time_controller = TextEditingController();
+	late bool one_time_counter;
 
 	@override
   void dispose() {
@@ -215,6 +229,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	@override
 	void initState() {
+		one_time_counter = false;
 		_app_service = Provider.of<AppService>(context, listen: false);
 		start_date_controller.text = date_to_str(DateTime.now());
 		start_time_controller.text = time_to_str(TimeOfDay.now());
@@ -237,7 +252,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 	}
 
 	submit() async {
-		print(11);
 		Event event = Event(
 				id: 0,
 				name: name_controller.text,
@@ -267,7 +281,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 				skills: List.generate(
 						_app_service.skills.length,
 						(index) => skill_map[_app_service.skills[index]],
-				) ,
+				),
 				required_members: int.parse(members_controller.text),
 				subscribed_members: 0,
 		);
@@ -278,7 +292,19 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		if (widget.event_for == Roles.refugee.toString()) {
+		if (!one_time_counter) {
+			setState(() {
+				button_states = List<bool>.generate(5,
+								(index) =>
+						(isNumeric(widget.event_for_or_edit) &&
+								int.tryParse(widget.event_for_or_edit)! >= 0) ? true : false
+				);
+				_app_service.filter_city = 0;
+				_app_service.filter_employment = 0;
+			});
+
+		}
+		if (widget.event_for_or_edit == Roles.refugee.toString()) {
 				event_for = Roles.refugee;
 		} else {
 			event_for = Roles.volunteer;
@@ -301,7 +327,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 									for (var city in alias.keys){
 											for (var alia in alias[city]!.split(' ')){
 												if (alia.toLowerCase().startsWith(value.toLowerCase())){
-													print('contain!! $city');
 													is_finded = true;
 													// _app_service.city_hint = [city];
 												}
@@ -326,11 +351,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 										bool is_finded = false;
 										List<String> cities_hint = [];
                     for (var city in alias.keys) {
-                      print(city);
-                      print(alias[city]);
                       for (var alia in alias[city]!.split(' ')) {
                         if (alia.toLowerCase().startsWith(text.toLowerCase())) {
-                          print('contain!! $city');
                           is_finded = true;
 													cities_hint.add(city);
                         }
@@ -374,9 +396,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 									bool is_finded = false;
 									List<String> skills_hint = [];
 									for (var skill in skills.list) {
-										print(skill);
 										if (skill.name.toLowerCase().startsWith(text.toLowerCase())) {
-											print('contain!! $skill');
 											is_finded = true;
 											skills_hint.add(skill.name);
 										}
@@ -559,15 +579,291 @@ class NewEventScreenState extends State<NewEventScreen> {
 			),
 		);
 
-		return Scaffold(
+		Widget edit_forms({Event? event}){
+			late Widget image_widget;
+			if (event != null && !one_time_counter) {
+				for (int i=0; i< button_states.length; i++) {
+					// setState(() {
+						button_states[i] = true;
+					// });
+				}
+				// setState(() {
+					_app_service.filter_city = event.city;
+					_app_service.filter_employment = event.employment;
+				// });
+				name_controller.text = event.name;
+				bio_controller.text = event.description;
+				location_controller.text = event.location;
+				members_controller.text = event.required_members.toString();
+				_app_service.data_start = DateTime.tryParse(event.end_time);
+				_app_service.data_end = DateTime.tryParse(event.end_time);
+				_app_service.time_start = TimeOfDay.fromDateTime(_app_service.data_start!);
+				_app_service.time_end = TimeOfDay.fromDateTime(_app_service.data_end!);
+
+				image_widget = Image(
+						image: CachedNetworkImageProvider(event.image),
+						fit: BoxFit.fitWidth
+				);
+			}
+			else {
+				image_widget = Image.asset(
+					'images/img_25.png',
+					fit: BoxFit.fitWidth,
+				);
+			}
+
+			return Column(
+				children: [
+					GestureDetector(
+						onTap: () async {
+							image = await ImagePicker().pickImage(source: ImageSource.gallery);
+							if (image!= null) {
+								setState(() {
+									button_states[image_index] = true;
+								});
+							}
+
+						},
+						child: Padding(
+							padding: form_padding,
+							child: ClipRRect(
+								borderRadius: BorderRadius.circular(20.0),
+								child: ConstrainedBox(
+									constraints: const BoxConstraints(
+										minWidth: 70,
+										minHeight: 80,
+										maxWidth: double.infinity,
+										maxHeight: 450,
+									),
+									child: (button_states[image_index] && (image != null) && (image?.path != null)) ?
+									Image.file(
+										File(image?.path ?? ''),
+										fit: BoxFit.fitWidth,
+									) : image_widget,
+								),
+							),
+						),
+					),
+					build_bold_left_text(
+						'Назва',
+						padding: header_padding,
+					),
+					form_name,
+					build_bold_left_text(
+						'Опис',
+						padding: header_padding,
+					),
+					form_bio,
+
+
+					build_bold_left_text(
+						'Вміння',
+						padding: header_padding,
+					),
+
+					FutureBuilder<Skills>(
+						future: futureSkills,
+						builder: (context, snapshot) {
+							if (snapshot.hasData) {
+
+								if (!one_time_counter) {
+									one_time_counter = true;
+									snapshot.data?.list.forEach((element){
+										if (event != null && event.skills.contains(element.id)) {
+											_app_service.skills.add(element.name);
+										}
+										skill_map[element.name] = element.id;
+									});
+								}
+
+								return Column(
+									children: [
+
+										form_skills(snapshot.data!),
+
+										_app_service.skills_hint.isNotEmpty
+												? build_helpers_text(_app_service.skills_hint, (String helper) {
+											print('hint early ${helper}');
+
+											setState(() {
+												skills_controller.text = '';
+												_app_service.skills_hint = [];
+												if (!_app_service.skills.contains(helper))
+													_app_service.skills.add(helper);
+												print('skillcard hint ${helper}');
+
+											});
+										})
+												: Container(),
+
+										_app_service.skills.isNotEmpty
+												? build_skills_columns(
+											data: _app_service.skills,
+											// context: context,
+											width: MediaQuery.of(context).size.width.floor() - 70,
+											app_service: _app_service,
+											fun: (String helper) {
+												print('skillcard early ${helper}');
+												setState(() {
+													// var index = _app_service.skills.indexOf(helper);
+													if (_app_service.skills.indexOf(helper) >= 0) {
+														_app_service.skills.removeAt(_app_service.skills.indexOf(helper));
+													}
+													print('_app_service.skills ${_app_service.skills}');
+												});
+											},
+										)
+												: Container(),
+
+									],
+								);
+
+							} else if (snapshot.hasError) {
+								// return Text('${snapshot.error}');
+								return build_no_internet();
+
+							}
+
+							return const CircularProgressIndicator();
+						},
+					),
+
+
+
+					build_bold_left_text(
+						'Місто',
+						padding: header_padding,
+					),
+					FutureBuilder<Cities>(
+						future: futureCities,
+						builder: (context, snapshot) {
+							if (snapshot.hasData) {
+								return build_cities_columns(
+									data: snapshot.data!.list,
+									width: MediaQuery.of(context).size.width.floor() - 50,
+									// context: context,
+									app_service: _app_service,
+									fun: (String helper) {
+										setState(() {
+											city_controller.text = helper;
+											_app_service.city_hint = [];
+										});
+									},
+									form_city: form_city,
+								);
+
+							} else if (snapshot.hasError) {
+								// return Text('${snapshot.error}');
+								return build_no_internet();
+
+							}
+
+							return const CircularProgressIndicator();
+						},
+					),
+
+					build_bold_left_text(
+						'Локація',
+						padding: header_padding,
+					),
+					form_location,
+
+					build_bold_left_text(
+						'Зайнятість',
+						padding: header_padding,
+					),
+
+					build_employments_rows(
+						data: employments_text.values,
+						// context: context,
+						width: MediaQuery.of(context).size.width.floor() - 20,
+						app_service: _app_service,
+						fun: (String helper) {
+						},
+					),
+
+
+					build_bold_left_text(
+						'Дата',
+						padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+					),
+
+					Row(
+						children: [
+							build_left_text('Початок'),
+
+							build_date_picker(
+								context: context,
+								controller: start_date_controller,
+								app_service: _app_service,
+								is_start: true,
+							),
+
+							build_time_picker(
+								context: context,
+								controller: start_time_controller,
+								app_service: _app_service,
+								is_start: true,
+							),
+
+						],
+					),
+
+
+					Row(
+						children: [
+							build_left_text('Кінець   '),
+
+							build_date_picker(context: context,
+								controller: end_date_controller,
+								app_service: _app_service,
+								is_start: false,
+							),
+
+							build_time_picker(context: context,
+								controller: end_time_controller,
+								app_service: _app_service,
+								is_start: false,
+							),
+
+						],
+					),
+
+					build_bold_left_text(
+						'Кількість місць',
+						padding: header_padding,
+					),
+					form_members,
+
+					welcome_button_fun(
+						text: 'Опублікувати',
+						padding: [0, 19, 0, 46],
+						fun: is_ready_to_submit() ?
+								() async {
+							submit();
+						} : null,
+					),
+
+				],
+			);
+		}
+
+
+			return Scaffold(
 				appBar: buildAppBar(
-								() {Navigator.pop(context);},
-						'Новий івент',
+								() {
+									(isNumeric(widget.event_for_or_edit) &&
+											int.tryParse(widget.event_for_or_edit)! >= 0) ?
+													context.go(APP_PAGE.my_events.to_path) :
+													Navigator.pop(context);
+									},
+						(isNumeric(widget.event_for_or_edit) &&
+								int.tryParse(widget.event_for_or_edit)! >= 0) ? 'Редагувати івент' : 'Новий івент',
 						TextButton(
 							onPressed: is_ready_to_submit() ?
 									() async {
-										await submit();
-									}
+								await submit();
+							}
 									: null,
 							child: Text(
 								'Готово',
@@ -582,253 +878,30 @@ class NewEventScreenState extends State<NewEventScreen> {
 				),
 
 				body: SingleChildScrollView(
-					child: Column(
-						children: [
-							GestureDetector(
-								onTap: () async {
-									image = await ImagePicker().pickImage(source: ImageSource.gallery);
-									if (image!= null) {
-										// image?.saveTo('images/user_new_event.png');
-										setState(() {
-											button_states[image_index] = true;
-										});
-									}
+					child: (isNumeric(widget.event_for_or_edit) &&
+							int.tryParse(widget.event_for_or_edit)! >= 0) ?
+					FutureBuilder<Event>(
+						future: fetchEvent(int.tryParse(widget.event_for_or_edit)!, _app_service),
+						builder: (context, snapshot) {
+							if (snapshot.hasData) {
 
-								},
-								child: Padding(
-									padding: form_padding,
-									child: ClipRRect(
-										borderRadius: BorderRadius.circular(20.0),
-										child: ConstrainedBox(
-											constraints: const BoxConstraints(
-												minWidth: 70,
-												minHeight: 80,
-												maxWidth: double.infinity,
-												maxHeight: 450,
-											),
-											child: (button_states[image_index] && (image != null) && (image?.path != null)) ?
-											Image.file(
-												File(image?.path ?? ''),
-												fit: BoxFit.fitWidth,
-											) :
-											Image.asset(
-												'images/img_25.png',
-												fit: BoxFit.fitWidth,
-											),
-										),
-									),
-								),
-							),
-							build_bold_left_text(
-								'Назва',
-								padding: header_padding,
-							),
-							form_name,
-							build_bold_left_text(
-								'Опис',
-								padding: header_padding,
-							),
-							form_bio,
+								return edit_forms(event: snapshot.data);
 
+							} else if (snapshot.hasError) {
+								// return Text('${snapshot.error}');
+								return build_no_internet();
+							}
 
-							build_bold_left_text(
-								'Вміння',
-								padding: header_padding,
-							),
+							return const CircularProgressIndicator();
+						},
+					) : edit_forms(),
 
-							FutureBuilder<Skills>(
-								future: futureSkills,
-								builder: (context, snapshot) {
-									if (snapshot.hasData) {
-
-										snapshot.data?.list.forEach((element) {
-													skill_map[element.name] = element.id;
-										});
-										return Column(
-											children: [
-
-												form_skills(snapshot.data!),
-
-												_app_service.skills_hint.isNotEmpty
-														? build_helpers_text(_app_service.skills_hint, (String helper) {
-													print('hint early ${helper}');
-
-													setState(() {
-														skills_controller.text = '';
-														_app_service.skills_hint = [];
-														if (!_app_service.skills.contains(helper))
-																_app_service.skills.add(helper);
-														print('skillcard hint ${helper}');
-
-													});
-												})
-														: Container(),
-
-												_app_service.skills.isNotEmpty
-														? build_skills_columns(
-													data: _app_service.skills,
-													// context: context,
-													width: MediaQuery.of(context).size.width.floor() - 70,
-													app_service: _app_service,
-													fun: (String helper) {
-														print('skillcard early ${helper}');
-														setState(() {
-															// var index = _app_service.skills.indexOf(helper);
-															if (_app_service.skills.indexOf(helper) >= 0) {
-																_app_service.skills.removeAt(_app_service.skills.indexOf(helper));
-															}
-															print('_app_service.skills ${_app_service.skills}');
-														});
-													},
-												)
-														: Container(),
-
-											],
-										);
-
-									} else if (snapshot.hasError) {
-										// return Text('${snapshot.error}');
-										return build_no_internet();
-
-									}
-
-									return const CircularProgressIndicator();
-								},
-							),
-
-
-
-							build_bold_left_text(
-								'Місто',
-								padding: header_padding,
-							),
-							FutureBuilder<Cities>(
-								future: futureCities,
-								builder: (context, snapshot) {
-									if (snapshot.hasData) {
-										return build_cities_columns(
-											data: snapshot.data!.list,
-											width: MediaQuery.of(context).size.width.floor() - 50,
-											// context: context,
-											app_service: _app_service,
-											fun: (String helper) {
-												setState(() {
-													city_controller.text = helper;
-													_app_service.city_hint = [];
-												});
-											},
-											form_city: form_city,
-										);
-
-									} else if (snapshot.hasError) {
-										// return Text('${snapshot.error}');
-										return build_no_internet();
-
-									}
-
-									return const CircularProgressIndicator();
-								},
-							),
-
-							build_bold_left_text(
-								'Локація',
-								padding: header_padding,
-							),
-							form_location,
-
-							build_bold_left_text(
-								'Зайнятість',
-								padding: header_padding,
-							),
-
-							build_employments_rows(
-								data: employments_text.values,
-								// context: context,
-								width: MediaQuery.of(context).size.width.floor() - 20,
-								app_service: _app_service,
-								fun: (String helper) {
-								},
-							),
-
-
-							build_bold_left_text(
-								'Дата',
-								padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-							),
-
-							Row(
-								children: [
-									build_left_text('Початок'),
-
-									build_date_picker(
-										context: context,
-										controller: start_date_controller,
-										app_service: _app_service,
-										is_start: true,
-									),
-
-									build_time_picker(
-										context: context,
-										controller: start_time_controller,
-										app_service: _app_service,
-										is_start: true,
-									),
-
-								],
-							),
-
-
-							Row(
-								children: [
-									build_left_text('Кінець   '),
-
-									build_date_picker(context: context,
-										controller: end_date_controller,
-										app_service: _app_service,
-										is_start: false,
-									),
-
-									build_time_picker(context: context,
-										controller: end_time_controller,
-										app_service: _app_service,
-										is_start: false,
-									),
-
-								],
-							),
-
-							build_bold_left_text(
-								'Кількість місць',
-								padding: header_padding,
-							),
-							form_members,
-							
-							welcome_button_fun(
-								text: 'Опублікувати',
-								padding: [0, 19, 0, 46],
-								fun: is_ready_to_submit() ?
-									() async {
-										submit();
-								} : null,
-							),
-
-							// social_button(
-							// 	text: 'Відмінити івент',
-							// 	padding: [0, 19, 0, 46],
-							// 	fun: is_ready_to_submit() ?
-							// 			() async {
-							// 		submit();
-							// 	} : null, icon: null,
-							// ),
-							
-						],
-					),
 				),
 				bottomNavigationBar: const buildBottomNavigationBar(),
 
 			);
+		}
 
-	}
 
 	Widget build_left_text(String text) {
 	  return Padding(
@@ -886,7 +959,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 					}
 				},
 			)
-	);
+		);
 	}
 
 	Widget build_time_picker({

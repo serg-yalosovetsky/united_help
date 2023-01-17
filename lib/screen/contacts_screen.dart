@@ -88,6 +88,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 	late Future<dynamic> future_contacts;
 	@override
   void initState() {
+		print('profiles_query ${widget.profiles_query}');
 		app_service = Provider.of<AppService>(context, listen: false);
 		future_contacts = fetchContacts(widget.profiles_query, app_service);
 		super.initState();
@@ -118,10 +119,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 						body: Container(
 							margin: EdgeInsets.fromLTRB(16, 20, 16, 0),
 							child: FutureBuilder<dynamic>(
-								future: fetchContacts(
-										'${role.toString().substring(6)}s',
-										app_service
-								),
+								future: future_contacts,
 								builder: (context, snapshot){
 
 									if (snapshot.hasData){

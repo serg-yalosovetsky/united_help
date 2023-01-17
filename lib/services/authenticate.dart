@@ -120,8 +120,8 @@ class Requests {
     ).then((response) {
       status_code = response.statusCode;
       result = jsonDecode(utf8.decode(response.bodyBytes));
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
+      // print("Response status: ${response.statusCode}");
+      // print("Response body: ${response.body}");
     }).catchError((error){
       result = error;
       print("Method: GET");
@@ -208,8 +208,8 @@ class Requests {
       headers: headers,
     ).then((response) {
       status_code = response.statusCode;
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
+      // print("Response status: ${response.statusCode}");
+      // print("Response body: ${response.body}");
       result = jsonDecode(utf8.decode(response.bodyBytes));
     }).catchError((error){
       result = error;

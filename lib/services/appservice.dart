@@ -71,6 +71,7 @@ class AppService with ChangeNotifier {
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
   bool _user_image_expire = false;
+  int _bottom_navbar_order = 0;
   bool _organizer_has_no_events = false;
   List<String> _skills_hint = [];
   List<String> _skills = [];
@@ -219,6 +220,11 @@ class AppService with ChangeNotifier {
   }
   bool get user_image_expire => _user_image_expire;
 
+  set bottom_navbar_order(int value) {
+    _bottom_navbar_order = value;
+    notifyListeners();
+  }
+  int get bottom_navbar_order => _bottom_navbar_order;
 
   bool get organizer_has_no_events => _organizer_has_no_events;
   set organizer_has_no_events(bool has_events) {

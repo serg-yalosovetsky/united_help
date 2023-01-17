@@ -146,7 +146,11 @@ class social_button extends StatelessWidget {
 							borderRadius: BorderRadius.circular(22.0),
 						),
 					),
-					onPressed: () {},
+					onPressed: () {
+						if (fun != null) {
+						  fun!();
+						}
+					},
 					child:
 								icon!=null ? Row(
 									children: [

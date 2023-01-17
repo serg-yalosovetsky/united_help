@@ -177,9 +177,11 @@ class AppRouter {
         builder: (context, state) => const GoogleMapScreen(),
       ),
       GoRoute(
-        path: '${APP_PAGE.new_events.to_path}/:event_for',
+        path: '${APP_PAGE.new_events.to_path}/:event_for_or_edit',
         name: APP_PAGE.new_events.to_name,
-        builder: (context, state) => NewEventScreen(event_for: state.params['event_for'] ?? ''),
+        builder: (context, state) => NewEventScreen(
+          event_for_or_edit: state.params['event_for_or_edit'] ?? '',
+        ),
       ),
       GoRoute(
         path: APP_PAGE.my_events.to_path,
@@ -197,9 +199,9 @@ class AppRouter {
         builder: (context, state) => NewEventChooseHelpOrJobScreen(),
       ),
       GoRoute(
-        path: APP_PAGE.contacts.to_path,
+        path: '${APP_PAGE.contacts.to_path}/:contacts_type',
         name: APP_PAGE.contacts.to_name,
-        builder: (context, state) => ContactsScreen(profiles_query: 'volunteers'),
+        builder: (context, state) => ContactsScreen(profiles_query: state.params['contacts_type'] ?? 'volunteers'),
       ),
       GoRoute(
         path: APP_PAGE.filters.to_path,
