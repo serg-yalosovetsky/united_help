@@ -21,6 +21,7 @@ import '../screen/home_map.dart';
 import '../screen/my_events_history.dart';
 import '../screen/my_events_organizer.dart';
 import '../screen/new_event_choose_help_or_job.dart';
+import '../screen/notifications_screen.dart';
 import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
 import '../screen/settings_screen.dart';
@@ -51,6 +52,7 @@ enum APP_PAGE {
   account,
   edit_account,
   settings,
+  notifications,
 }
 
 extension AppPageExtension on APP_PAGE {
@@ -96,6 +98,8 @@ extension AppPageExtension on APP_PAGE {
         return "/register";
       case APP_PAGE.filters:
         return "/filters";
+      case APP_PAGE.notifications:
+        return "/notifications";
       case APP_PAGE.error:
         return "/error";
       default:
@@ -142,6 +146,8 @@ extension AppPageExtension on APP_PAGE {
         return "SETTINGS";
       case APP_PAGE.splash:
         return "SPLASH";
+      case APP_PAGE.notifications:
+        return "NOTIFICATIONS";
       case APP_PAGE.error:
         return "ERROR";
       case APP_PAGE.welcome:
@@ -267,6 +273,11 @@ class AppRouter {
         path: APP_PAGE.splash.to_path,
         name: APP_PAGE.splash.to_name,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.notifications.to_path,
+        name: APP_PAGE.notifications.to_name,
+        builder: (context, state) => NotificationsScreen(),
       ),
       GoRoute(
         path: "/map",

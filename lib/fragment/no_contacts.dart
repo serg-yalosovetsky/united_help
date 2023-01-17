@@ -7,7 +7,8 @@ import '../screen/email_password_confirmation.dart';
 import '../services/appservice.dart';
 
 
-Widget build_no_contacts(BuildContext context, Roles events_for) {
+Widget build_no_contacts(BuildContext context, Roles events_for,
+    {bool to_event = false}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -20,8 +21,10 @@ Widget build_no_contacts(BuildContext context, Roles events_for) {
         Padding(
           padding: const EdgeInsets.fromLTRB(33, 9, 33, 0),
           child: Text(
-              'В вас немає контактів, які записані на ваші івенти',
-              style: TextStyle(
+            !to_event ? 'В вас немає контактів, які записані на ваші івенти'
+                      : 'На ваші івенти поки ніхто не записаний',
+
+            style: TextStyle(
                 fontSize: 17,
                 color: Color(0xFF547FA6),
                 fontWeight: FontWeight.w500,
@@ -29,6 +32,7 @@ Widget build_no_contacts(BuildContext context, Roles events_for) {
             textAlign: TextAlign.center,
           ),
         ),
+        !to_event ?
         welcome_button(
           text_style: TextStyle(
             fontSize: 18,
@@ -41,7 +45,7 @@ Widget build_no_contacts(BuildContext context, Roles events_for) {
             if (events_for == Roles.refugee || events_for == Roles.volunteer)
               context.go('${APP_PAGE.new_events.to_path}/${events_for.toString().substring(6)}');
           },
-        ),
+        ) : Container(),
 
       ],
     ),

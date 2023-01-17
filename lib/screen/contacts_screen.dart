@@ -25,7 +25,12 @@ import 'account_screen.dart';
 
 class ContactsScreen extends StatefulWidget {
 	final String profiles_query;
-	const ContactsScreen({super.key, required this.profiles_query});
+	final String? event_name;
+	const ContactsScreen({
+		super.key,
+		required this.profiles_query,
+		this.event_name,
+	});
 
   @override
   State<ContactsScreen> createState() => _ContactsScreenState();
@@ -97,22 +102,33 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		bool event_contacts = (widget.profiles_query.isNotEmpty && (widget.profiles_query == 'refugees' ||
+				widget.profiles_query == 'volunteers')) ? false : true;
 		Roles role = app_service.org_volunteers_or_refugees==SwitchEnum.first ? Roles.volunteer : Roles.refugee;
 		return Scaffold(
-			appBar: build_switch_app_bar(
-				app_service,
-				fun: () {
-					setState(() {
-						if (app_service.org_volunteers_or_refugees == SwitchEnum.first){
-							app_service.org_volunteers_or_refugees = SwitchEnum.second;
-						} else {
-							app_service.org_volunteers_or_refugees = SwitchEnum.first;
-						}
-					});
-				},
-				to_filters: null,
-				map_or_history: 'contacts',
-			),
+			appBar: !event_contacts  ?
+							build_switch_app_bar(
+								app_service,
+								fun: () {
+									setState(() {
+										if (app_service.org_volunteers_or_refugees == SwitchEnum.first){
+											app_service.org_volunteers_or_refugees = SwitchEnum.second;
+										} else {
+											app_service.org_volunteers_or_refugees = SwitchEnum.first;
+										}
+									});
+								},
+								to_filters: null,
+								map_or_history: 'contacts',
+							) :
+							buildAppBar(
+								() {
+									app_service.bottom_navbar_order = 0;
+									Navigator.pop(context);
+									app_service.bottom_navbar_order = -1;
+								},
+								'Контакти ${widget.event_name ?? widget.profiles_query}',
+							),
 			backgroundColor: Colors.white,
 
 			body: SafeArea(
@@ -124,8 +140,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
 								builder: (context, snapshot){
 
 									if (snapshot.hasData){
-										if (snapshot.data.list.length <= 0)
-											return build_no_contacts(context, role);
+										if (snapshot.data.list.length <= 0) {
+										  return build_no_contacts(context, role, to_event: event_contacts);
+										}
 										return ListView.builder(
 												shrinkWrap: true,
 												itemCount: snapshot.data.list.length,

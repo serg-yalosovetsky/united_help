@@ -47,7 +47,6 @@ send_firebase_token_to_server(AppService app_service) async {
 Future store_message(RemoteMessage message) async {
 	print('STORED BOX start');
 
-
 	try {
 		var counter = await Hive.openBox<int>('counter');
 	}
@@ -58,7 +57,7 @@ Future store_message(RemoteMessage message) async {
 
 	var counter = await Hive.openBox<int>('counter');
 	var box = await Hive.openBox('notifications');
-
+	late var spec_box;
 	int counter_value = 0;
 
 	counter_value = counter.get('notify_counter', defaultValue: 0) ?? 0;
@@ -70,6 +69,10 @@ Future store_message(RemoteMessage message) async {
 				item.notify_type == message.data['notify_type']
 				) {
 			new_notify = false;
+			if (item.event_id != 0 && (item.notify_type == 'subscribe' ||
+																 item.notify_type == 'review'))
+					spec_box = await Hive.openBox('notifications_${item.notify_type}_${item.event_id}');
+
 			break;
 		}
 		__counter ++;
@@ -97,6 +100,7 @@ Future store_message(RemoteMessage message) async {
 			}
 			else {
 				await box.put(__counter, notify);
+				await spec_box.put(spec_box.length, notify);
 			}
 	}
 	catch (e) {print(e);}

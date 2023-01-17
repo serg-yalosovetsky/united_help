@@ -37,7 +37,8 @@ AppBar build_switch_app_bar(
     switch_enum_map = volunteers_or_refugees_text;
 
   return AppBar(
-      backgroundColor: Colors.white,
+    automaticallyImplyLeading: false,
+    backgroundColor: Colors.white,
       centerTitle: true,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,

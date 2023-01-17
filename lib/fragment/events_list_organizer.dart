@@ -9,6 +9,7 @@ import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../screen/contacts_screen.dart';
 import '../screen/new_event_choose_help_or_job.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
@@ -169,7 +170,17 @@ Widget card_builder(BuildContext context, Event event, AppService app_service) {
 													padding: [0, 14, 0, 0],
 													fun: () {
 														app_service.bottom_navbar_order = 1;
-														context.go('${APP_PAGE.contacts.to_path}/event_id${event.id}');
+														// context.go('${APP_PAGE.contacts.to_path}/event_id${event.id}');
+														Navigator.push(
+															context,
+															MaterialPageRoute(
+																builder: (context) => ContactsScreen(
+																		profiles_query: 'event_id${event.id}',
+																		event_name: event.name,
+																),
+															),
+														);
+
 													},
 											),
 											social_button(

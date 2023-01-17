@@ -72,35 +72,26 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 				BottomNavigationBarItem(
 					icon: Icon(home_icon),
 					label: home_label,
-					// backgroundColor: bottom_tab_color,
 				),
 				BottomNavigationBarItem(
 					icon: Icon(event_icon),
 					label: event_label,
-					// backgroundColor: bottom_tab_color,
-
-					// backgroundColor: Colors.green,
 				),
 				BottomNavigationBarItem(
 					icon: Icon(Icons.notifications),
 					label: notify_label,
-					// backgroundColor: bottom_tab_color,
-					// backgroundColor: Colors.purple,
 				),
 				BottomNavigationBarItem(
 					icon: Icon(Icons.person),
 					label: accaunt_label,
-					// backgroundColor: bottom_tab_color,
-
-					// backgroundColor: Colors.pink,
 				),
 			],
 			currentIndex: app_service.bottom_navbar_order >= 0 ? app_service.bottom_navbar_order : selected_index,
 			selectedItemColor: bottom_selected_tab_color,
 			unselectedItemColor: bottom_unselected_tab_color,
 			onTap: (int index) {
-				app_service.bottom_navbar_order = -1;
 				setState(() {
+					app_service.bottom_navbar_order = -1;
 					selected_index = index;
 					if (index==0) {
 						if(app_service.role == Roles.organizer)
@@ -115,13 +106,7 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 							context.go('${APP_PAGE.contacts.to_path}/volunteers');
 					}
 					if (index==2) {
-						// context.go('/example');
-						Navigator.push(
-							context,
-							MaterialPageRoute(
-								builder: (context) => NotificationsScreen(),
-							),
-						);
+						context.go(APP_PAGE.notifications.to_path);
 					}
 					if (index==3) {
 						context.go('${APP_PAGE.account.to_path}/0');

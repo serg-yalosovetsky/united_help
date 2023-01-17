@@ -21,56 +21,23 @@ import '../services/notifications.dart';
 
 
 
-//
-// class NotificationBadge extends StatelessWidget {
-// 	final int totalNotifications;
-//
-// 	const NotificationBadge({required this.totalNotifications});
-//
-// 	@override
-// 	Widget build(BuildContext context) {
-// 		return Container(
-// 			width: 40.0,
-// 			height: 40.0,
-// 			decoration: new BoxDecoration(
-// 				color: Colors.red,
-// 				shape: BoxShape.circle,
-// 			),
-// 			child: Center(
-// 				child: Padding(
-// 					padding: const EdgeInsets.all(8.0),
-// 					child: Text(
-// 						'$totalNotifications',
-// 						style: TextStyle(color: Colors.white, fontSize: 20),
-// 					),
-// 				),
-// 			),
-// 		);
-// 	}
-// }
-
-
-
 class NotificationsScreen extends StatefulWidget {
-  @override
+	final String? box_name;
+	const NotificationsScreen({
+		super.key,
+		this.box_name,
+	});
+	@override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-	late int _totalNotifications;
-	late final FirebaseMessaging _messaging;
-	PushNotification? _notificationInfo;
   late AppService app_service;
-
-	// For handling notification when the app is in terminated state
-
 
 	@override
 	void initState() {
 		registerHive();
 		super.initState();
-		// app_service = Provider.of<AppService>(context);
-		// send_firebase_token_to_server(app_service);
 	}
 
 	Future<bool> future_builder_fun() async {
@@ -82,22 +49,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 	@override
 	Widget build(BuildContext context) {
 
-
-			//
 			Widget app = OverlaySupport(
 				child: MaterialApp(
 					debugShowCheckedModeBanner: false,
 					home: Scaffold(
-						appBar: buildAppBar(null, 'Сповіщення',),
+						appBar: buildAppBar(
+							widget.box_name!=null ? (){
+								Navigator.pop(context);
+							} : null,
+							'Сповіщення',
+						),
 						bottomNavigationBar: const buildBottomNavigationBar(),
 						backgroundColor: ColorConstant.whiteA700,
 						body: ValueListenableBuilder<Box>(
-							valueListenable: Hive.box('notifications').listenable(),
-							builder: (context, box, widget) {
-								if (box.length <= 0)
-										return build_no_push_messages();
-								else
-										return ListView.builder(
+							valueListenable: Hive.box(widget.box_name ?? 'notifications').listenable(),
+							builder: (BuildContext context, Box<dynamic> box, _widget) {
+								if (box.length <= 0) {
+								 		return build_no_push_messages();
+								} else {
+									  return ListView.builder(
 													itemCount: box.length,
 													prototypeItem: Card(
 														shape: RoundedRectangleBorder(
@@ -107,7 +77,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 															decoration: BoxDecoration(
 																	border: Border.all(
 																		color: Colors.red,
-																		// Color(0xFFF0F7FF),
 																	),
 																	color: Colors.red,
 																	borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -143,13 +112,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														),
 													),
 													itemBuilder: (context, index) {
+														HivePushNotification box_item = box.getAt(index);
 														return GestureDetector(
 														  onTap: () {
 																setState(() {
-																	box.getAt(index).is_read = true;
+																	box_item.is_read = true;
 																});
-																print("box.getAt(index).is_read = ${box.getAt(index).is_read};");
-																// box.getAt(index).save();
+																if (widget.box_name==null && (box_item.notify_type == 'subscribe' ||
+																		box_item.notify_type == 'review')) {
+																  Navigator.push(
+																		context,
+																		MaterialPageRoute(
+																			builder: (context) => NotificationsScreen(
+																					box_name: 'notifications_${box_item.notify_type}_${box_item.event_id}',
+																			),
+																		),
+																	);
+																}
+
+																print("box.getAt(index).is_read = ${box_item.is_read};");
 															},
 															onHorizontalDragStart: (e) {box.deleteAt(index);},
 															child: Card(
@@ -159,12 +140,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														  	child: Container(
 														  		decoration: BoxDecoration(
 														  				border: Border.all(
-														  					color: box.getAt(index).is_read ? Colors.white : Color(0xFFF0F7FF),
+														  					color: box_item.is_read ? Colors.white : Color(0xFFF0F7FF),
 														  					// Color(0xFFF0F7FF),
 														  				),
-														  				color: box.getAt(index).is_read ? Colors.white : Color(0xFFF0F7FF) ,
+														  				color: box_item.is_read ? Colors.white : Color(0xFFF0F7FF) ,
 														  				borderRadius: BorderRadius.all(Radius.circular(10))),
-														  		// padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
 														  		padding: const EdgeInsets.all(16),
 														  	  child: Row(
 														  	  	children: [
@@ -173,19 +153,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														  				  child: ClipRRect(
 														  				  	borderRadius: BorderRadius.circular(8.0),
 														  				  	child: Image(
-														  	  		  	image: CachedNetworkImageProvider(box.getAt(index).image),
-														  	  		  	fit: BoxFit.fitWidth,
-														  				  	height: 60,
-														  				  	width: 60,
-														  	  		  	// height: 142,
-														  	  		  ),
-														  	  		),
+																						image: CachedNetworkImageProvider(box_item.image),
+																						fit: BoxFit.fitWidth,
+																						height: 60,
+																						width: 60,
+																						// height: 142,
+														  	  		  	),
+														  	  			),
 														  				),
 														  	  		Flexible(
 														  	  		  child: Column(
 														  	  		  	children: [
 														  	  		  		Text(
-																								'${box.getAt(index).body.split(' ').take(5).fold('', (p, i) => '$p $i')}',
+																								'${box_item.body.split(' ').take(5).fold('', (p, i) => '$p $i')}',
 																								style: TextStyle(
 																									fontSize: 16,
 																									fontWeight: FontWeight.w600,
@@ -195,7 +175,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														  	  		  		Padding(
 														  	  		  		  padding: const EdgeInsets.only(top: 4.0),
 														  	  		  		  child: Text(
-																							'${box.getAt(index).title}',
+																							'${box_item.title}',
 																							style: TextStyle(
 																								fontSize: 14,
 																								fontWeight: FontWeight.w400,
@@ -208,7 +188,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														  	  		),
 														  				Icon(
 														  					Icons.circle,
-														  					color: box.getAt(index).is_read ? Colors.white : Colors.blue,
+														  					color: box_item.is_read ? Colors.white : Colors.blue,
 														  					size: 8,
 														  				)
 														  	  	],
@@ -218,14 +198,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 														);
 													},
 											);
+								}
 							},
 						),
 
-
-							// Text("{Hive.box('notifications').length}"),
-
-
-						// ),
 				),
 			),
 		);
