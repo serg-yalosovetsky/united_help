@@ -73,13 +73,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		var SFProTextSemibold18 = TextStyle(
-			color: ColorConstant.whiteA700,
-			fontSize: 18,
-			// height: 18,
-			fontFamily: 'SF Pro Text',
-			fontWeight: FontWeight.w600,
-		);
 
 		Widget form_name = Form(
 			key: _form_key_name,

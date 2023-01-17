@@ -12,7 +12,11 @@ import '../models/profile.dart';
 
 
 class AccountScreen extends StatelessWidget {
-	const AccountScreen({super.key});
+	final int user_id;
+	const AccountScreen({
+		super.key,
+		this.user_id = 0,
+	});
 	void _showDialog(BuildContext context) {
 		showDialog(
 			context: context,
@@ -35,21 +39,28 @@ class AccountScreen extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
-		const List skills = [
-			"Microsoft Office", "Комунікативність",
-			"Пунктуальність", "Організованість"
-		];
 		 AppService app_service = Provider.of<AppService>(context, listen: false);
 
 		return Scaffold(
 			appBar: AppBar(
+				automaticallyImplyLeading: false,
 				title: Row(
 					children: [
-						Icon(Icons.arrow_back_ios, size: 23,),
-						const Text(
-							'Назад',
-							style: back_style,
+						GestureDetector(
+						  onTap: () {
+								Navigator.pop(context);
+							},
+							child: Row(
+						  		children: [
+						  			Icon(Icons.arrow_back_ios, size: 23,),
+						  			const Text(
+						  				'Назад',
+						  				style: back_style,
+						  			),
+						  		],
+						  ),
 						),
+
 						Expanded(
 							child: Padding(
 								padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -69,7 +80,7 @@ class AccountScreen extends StatelessWidget {
 				),
 				backgroundColor: Colors.white,
 				foregroundColor: Colors.blue,
-				actions: [
+				actions: user_id==0 ? [
 					PopupMenuButton<int>(
 						icon: Icon(Icons.more_horiz_rounded),
 						enableFeedback: true,
@@ -108,11 +119,10 @@ class AccountScreen extends StatelessWidget {
 							}
 						},
 					),
-
-				],
+				] : null,
 			),
-			body: const SafeArea(
-				child: account_screen(),
+			body: SafeArea(
+				child: account_screen(user_id: user_id),
 			),
 			bottomNavigationBar: buildBottomNavigationBar(),
 
@@ -123,8 +133,10 @@ class AccountScreen extends StatelessWidget {
 
 
 class account_screen extends StatefulWidget {
+	final int user_id;
 	const account_screen({
 		Key? key,
+		required this.user_id,
 	}) : super(key: key);
 
 
@@ -158,12 +170,10 @@ class _account_screenState extends State<account_screen> {
 		return Column(children: columns);
 	}
 
-	late Future<UserProfile> future_user_profile;
 	late AppService _app_service;
 	@override
   void initState() {
 		_app_service = Provider.of<AppService>(context, listen: false);
-		future_user_profile = fetchUserProfile('', _app_service); //_app_service.role.toString()
     super.initState();
   }
 	@override
@@ -171,13 +181,16 @@ class _account_screenState extends State<account_screen> {
 		User? user = _app_service.user;
 		Profile? profile = _app_service.current_profile;
 
-		if (user == null || profile == null) {
+		if (user == null || profile == null || widget.user_id!=0) {
 		  return FutureBuilder<UserProfile>(
-					future: future_user_profile,
+					future: fetchUserProfile('${widget.user_id}', _app_service),
 					builder: (context, snapshot){
 						if (snapshot.hasData){
-							_app_service.user = snapshot.data!.user;
-							_app_service.current_profile = snapshot.data!.profile;
+							if (widget.user_id != 0) {
+								_app_service.user = snapshot.data!.user;
+								_app_service.current_profile = snapshot.data!.profile;
+							}
+
 							return build_account_screen(
 								userprofile: snapshot.data!,
 								app_service: _app_service,

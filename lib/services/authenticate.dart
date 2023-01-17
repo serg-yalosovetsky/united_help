@@ -164,6 +164,17 @@ class Requests {
     return r;
   }
 
+  FutureMap patch_wrapper(String url, Map body, AppService app_service) async {
+    var r = await patch(url, body, await app_service.get_access_token());
+    if (r['status_code'] == 403){
+      // await app_service.relogin();
+      app_service.set_access_token(null);
+
+      return post(url, body, await app_service.get_access_token());
+    }
+    return r;
+  }
+
 
   FutureMap file_wrapper(String url, Map<String, String> body, AppService app_service,
       {String method = 'patch'}) async {
@@ -219,6 +230,37 @@ class Requests {
     return {'result': result, 'status_code': status_code, };
   }
 
+
+  FutureMap patch(String url, Map body, [String? access_token]) async {
+    var result;
+    int status_code = 0;
+
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
+      HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
+    };
+    if (access_token != null) {
+      headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
+    }
+    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+      url += '/';
+    }
+    await http.patch(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: headers,
+    ).then((response) {
+      status_code = response.statusCode;
+      // print("Response status: ${response.statusCode}");
+      // print("Response body: ${response.body}");
+      result = jsonDecode(utf8.decode(response.bodyBytes));
+    }).catchError((error){
+      result = error;
+      print("Type: post");
+      print("Error: $error");
+    });
+    return {'result': result, 'status_code': status_code, };
+  }
 
   FutureMap image_send(String url, String image_path,
                   {Map<String, String>? body, String? access_token, String? image_name, String? method}) async {

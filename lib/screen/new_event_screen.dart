@@ -253,7 +253,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	submit() async {
 		Event event = Event(
-				id: 0,
+				id: (isNumeric(widget.event_for_or_edit) &&
+						int.tryParse(widget.event_for_or_edit)! >= 0) ? int.tryParse(widget.event_for_or_edit)! : 0,
 				name: name_controller.text,
 				enabled: true,
 				description: bio_controller.text,
@@ -662,12 +663,14 @@ class NewEventScreenState extends State<NewEventScreen> {
 					),
 
 					FutureBuilder<Skills>(
+						//TODO RangeErrror (index) in creating new event
 						future: futureSkills,
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
 
 								if (!one_time_counter) {
 									one_time_counter = true;
+									_app_service.skills = [];
 									snapshot.data?.list.forEach((element){
 										if (event != null && event.skills.contains(element.id)) {
 											_app_service.skills.add(element.name);

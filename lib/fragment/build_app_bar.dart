@@ -21,7 +21,7 @@ AppBar buildAppBar(Function? fun, String title,
                   'Назад',
                   style: TextStyle(
                       color: (fun!=null) ? Colors.blue : Colors.white,
-                      fontSize: 17,
+                      fontSize: 18,
                   ),
                 ),
               ],

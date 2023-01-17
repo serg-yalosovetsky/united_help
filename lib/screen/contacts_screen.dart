@@ -20,6 +20,7 @@ import '../services/authenticate.dart';
 import '../models/events.dart';
 import '../services/show_nice_time.dart';
 import '../services/urls.dart';
+import 'account_screen.dart';
 
 
 class ContactsScreen extends StatefulWidget {
@@ -130,143 +131,155 @@ class _ContactsScreenState extends State<ContactsScreen> {
 												itemCount: snapshot.data.list.length,
 												itemBuilder: (BuildContext context, int index) {
 														UserProfile user = snapshot.data.list[index];
-														return Padding(
-														  padding: const EdgeInsets.fromLTRB(0, 11, 0, 21),
-														  child: Column(
-														  	children: [
-														  		Row(
-														  			mainAxisAlignment: MainAxisAlignment.spaceBetween,
-														  			mainAxisSize: MainAxisSize.max,
-														  			children: [
-														  				Row(
-														  					children: [
-														  						ClipRRect(
-														  							borderRadius: BorderRadius.circular(20.0),
-														  							child: Image(
-														  								image: CachedNetworkImageProvider(user.profile.image ?? ''),
-														  								fit: BoxFit.fitWidth,
-														  								width: 50,
-														  							),
-														  						),
-														  						Padding(
-														  						  padding: const EdgeInsets.only(left: 13),
-														  						  child: Column(
-																							mainAxisAlignment: MainAxisAlignment.start,
-																							crossAxisAlignment: CrossAxisAlignment.start,
-														  						  	children: [
-														  						  		Padding(
-														  						  		  padding: const EdgeInsets.only(bottom: 1),
-														  						  		  child: Text(
-																									user.user.username,
-																									style: TextStyle(
-																										color: Color(0xFF002241),
-																										fontSize: 17,
-																										fontWeight: FontWeight.w500,
-																									),
-																								),
-														  						  		),
-														  						  		GestureDetector(
-														  						  		  onTap: () async {
-																										late String url;
-																										if (user.user.phone != null)
-																												url = 'tel:${user.user.phone}';
-																										else
-																												url = 'mailto:${user.user.email}';
+														return GestureDetector(
+															onTap: () {
+																Navigator.push(
+																	context,
+																	MaterialPageRoute(
+																		builder: (context) => AccountScreen(user_id: user.profile.id),
+																	),
+																);
 
-																										if (await canLaunchUrl(Uri.parse(url))) {
-																										await launchUrl(Uri.parse(url));
-																										} else {
-																										throw "Error occured trying to call that number.";
-																										}
-																									},
-																									child: Text(
-																									user.user.phone ?? user.user.email,
-																									style: TextStyle(
-																										color: Color(0xFF748B9F),
-																										fontSize: 17,
-																										fontWeight: FontWeight.w400,
-																									),
-																								),
-														  						  		),
-														  						  	],
-														  						  ),
-														  						),
-														  					],
-														  				),
-														  				Row(
-														  					children: [
-														  						user.user.viber_phone!=null ?
-														  						GestureDetector(
-																						onTap: () async {
-																							late String url;
-																							if (user.user.viber_phone != null && user.user.viber_phone!.isNotEmpty) {
-																								var phone = user.user.viber_phone;
-																								if (phone![0] == '+')
-																									phone = phone.substring(1);
-																								url = 'viber://chat?number=$phone';
+																// context.go('${APP_PAGE.account.to_path}/${user.profile.id}');
+															},
+														  child: Padding(
+														    padding: const EdgeInsets.fromLTRB(0, 11, 0, 21),
+														    child: Column(
+														    	children: [
+														    		Row(
+														    			mainAxisAlignment: MainAxisAlignment.spaceBetween,
+														    			mainAxisSize: MainAxisSize.max,
+														    			children: [
+														    				Row(
+														    					children: [
+														    						ClipRRect(
+														    							borderRadius: BorderRadius.circular(20.0),
+														    							child: Image(
+														    								image: CachedNetworkImageProvider(user.profile.image ?? ''),
+														    								fit: BoxFit.fitWidth,
+														    								width: 50,
+														    							),
+														    						),
+														    						Padding(
+														    						  padding: const EdgeInsets.only(left: 13),
+														    						  child: Column(
+														  									mainAxisAlignment: MainAxisAlignment.start,
+														  									crossAxisAlignment: CrossAxisAlignment.start,
+														    						  	children: [
+														    						  		Padding(
+														    						  		  padding: const EdgeInsets.only(bottom: 1),
+														    						  		  child: Text(
+														  												user.user.username,
+														  												style: TextStyle(
+														  													color: Color(0xFF002241),
+														  													fontSize: 17,
+														  													fontWeight: FontWeight.w500,
+														  												),
+														  											),
+														    						  		),
+														    						  		GestureDetector(
+														    						  		  onTap: () async {
+														  												late String url;
+														  												if (user.user.phone != null)
+														  														url = 'tel:${user.user.phone}';
+														  												else
+														  														url = 'mailto:${user.user.email}';
+
+														  												if (await canLaunchUrl(Uri.parse(url))) {
+														  												await launchUrl(Uri.parse(url));
+														  												} else {
+														  												throw "Error occured trying to call that number.";
+														  												}
+														  											},
+														  											child: Text(
+														  											user.user.phone ?? user.user.email,
+														  											style: TextStyle(
+														  												color: Color(0xFF748B9F),
+														  												fontSize: 17,
+														  												fontWeight: FontWeight.w400,
+														  											),
+														  										),
+														    						  		),
+														    						  	],
+														    						  ),
+														    						),
+														    					],
+														    				),
+														    				Row(
+														    					children: [
+														    						user.user.viber_phone!=null ?
+														    						GestureDetector(
+														  								onTap: () async {
+														  									late String url;
+														  									if (user.user.viber_phone != null && user.user.viber_phone!.isNotEmpty) {
+														  										var phone = user.user.viber_phone;
+														  										if (phone![0] == '+')
+														  											phone = phone.substring(1);
+														  										url = 'viber://chat?number=$phone';
                                               } else {
-																								var phone = user.user.viber_phone;
-																								if (phone![0] == '+')
-																									phone = phone.substring(1);
-																							  url = 'viber://chat?number=$phone';
-																							}
-																							print(url);
+														  										var phone = user.user.viber_phone;
+														  										if (phone![0] == '+')
+														  											phone = phone.substring(1);
+														  									  url = 'viber://chat?number=$phone';
+														  									}
+														  									print(url);
 
-																							if (await canLaunchUrl(Uri.parse(url))) {
-																								await launchUrl(Uri.parse(url));
-																							} else {
-																								throw "Error occured trying to call that number.";
-																							}
-																						},
-																						child: Image.asset(
-														  						  	"images/img_24.png",
-														  						  	width: 26.0,
-														  						  	semanticLabel: 'viber phone edit',
-														  						  ),
-														  						) :
-														  						Container(),
+														  									if (await canLaunchUrl(Uri.parse(url))) {
+														  										await launchUrl(Uri.parse(url));
+														  									} else {
+														  										throw "Error occured trying to call that number.";
+														  									}
+														  								},
+														  								child: Image.asset(
+														    						  	"images/img_24.png",
+														    						  	width: 26.0,
+														    						  	semanticLabel: 'viber phone edit',
+														    						  ),
+														    						) :
+														    						Container(),
 
-														  						user.user.telegram_phone!=null || user.user.nickname!=null ?
-														  						GestureDetector(
-																						onTap: () async {
-																							print('telegram');
+														    						user.user.telegram_phone!=null || user.user.nickname!=null ?
+														    						GestureDetector(
+														  								onTap: () async {
+														  									print('telegram');
 
-																							late String url;
-																							if (user.user.nickname != null && user.user.nickname!.isNotEmpty)
-																								url = 't.me/${user.user.nickname}';
-																							else if (user.user.telegram_phone != null && user.user.telegram_phone!.isNotEmpty)
-																								url = 't.me/${user.user.telegram_phone}';
-																							else
-																								url = 't.me/${user.user.phone}';
-																							print(url);
+														  									late String url;
+														  									if (user.user.nickname != null && user.user.nickname!.isNotEmpty)
+														  										url = 't.me/${user.user.nickname}';
+														  									else if (user.user.telegram_phone != null && user.user.telegram_phone!.isNotEmpty)
+														  										url = 't.me/${user.user.telegram_phone}';
+														  									else
+														  										url = 't.me/${user.user.phone}';
+														  									print(url);
 
-																							if (await canLaunchUrl(Uri.parse(url))) {
-																								await launchUrl(Uri.parse(url));
-																							} else {
-																								throw "Error occured trying to call that number.";
-																							}
-																						},
-																						child: Padding(
-														  						    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-														  						    child: Icon(
-														  						    	Icons.telegram_rounded,
-														  						    	color: Color(0xff29b6f6),
-														  						    	size: 26,
-														  						    ),
-														  						  ),
-														  						) :
-														  						Container(),
-														  					],
-														  				),
+														  									if (await canLaunchUrl(Uri.parse(url))) {
+														  										await launchUrl(Uri.parse(url));
+														  									} else {
+														  										throw "Error occured trying to call that number.";
+														  									}
+														  								},
+														  								child: Padding(
+														    						    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+														    						    child: Icon(
+														    						    	Icons.telegram_rounded,
+														    						    	color: Color(0xff29b6f6),
+														    						    	size: 26,
+														    						    ),
+														    						  ),
+														    						) :
+														    						Container(),
+														    					],
+														    				),
 
-														  			],
-														  		),
-																	Container(
-																	  margin: const EdgeInsets.fromLTRB(0, 21, 0, 0),
-																	  child: Divider(height: 20, color: Color(0xFFBDD2E4),  thickness: 1,),
-																	)
+														    			],
+														    		),
+														  			Container(
+														  			  margin: const EdgeInsets.fromLTRB(0, 21, 0, 0),
+														  			  child: Divider(height: 20, color: Color(0xFFBDD2E4),  thickness: 1,),
+														  			)
 
-														  	],
+														    	],
+														    ),
 														  ),
 														);
 												},

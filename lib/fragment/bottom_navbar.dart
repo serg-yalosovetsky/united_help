@@ -124,7 +124,7 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 						);
 					}
 					if (index==3) {
-						context.go(APP_PAGE.account.to_path);
+						context.go('${APP_PAGE.account.to_path}/0');
 					}
 
 				});

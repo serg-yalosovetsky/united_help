@@ -229,9 +229,9 @@ class AppRouter {
         builder: (context, state) => WelcomeRegisterOrLoginScreen(),
       ),
       GoRoute(
-        path: APP_PAGE.account.to_path,
+        path: '${APP_PAGE.account.to_path}/:account_id',
         name: APP_PAGE.account.to_name,
-        builder: (context, state) => AccountScreen(),
+        builder: (context, state) => AccountScreen(user_id: int.parse(state.params['account_id'] ?? '0')),
       ),
       GoRoute(
         path: APP_PAGE.edit_account.to_path,

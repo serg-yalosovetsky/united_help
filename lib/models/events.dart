@@ -76,7 +76,9 @@ class Event {
 
   Map<String, dynamic> to_dict () {
     return {
+      'id': this.id,
       'name': this.name,
+      'enabled': this.enabled,
       'description': this.description,
       'start_time': this.start_time,
       'end_time': this.end_time,
@@ -120,7 +122,6 @@ class Events {
 }
 
 
-
 Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
   String url = '$server_url$all_events_url/$event_query/';
@@ -139,11 +140,24 @@ Future<Events> fetchEvents(String event_query, AppService app_service) async {
 
 FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_events_url';
-  body['image'] = base64Encode(File(body['image']).readAsBytesSync());
-  final response = await r.post_wrapper(url, body, app_service);
+  print('postEvents');
+  print(body);
 
-  if (response['status_code'] == 201) {
+  String url = '$server_url$all_events_url';
+  if (body['id'] != 0){
+    url = '$url/${body["id"]}/';
+  }
+  if (body['image'] == '') {
+    body.removeWhere((key, value) => key=='image' && value == '');
+  }
+  else {
+    body['image'] = base64Encode(File(body['image']).readAsBytesSync());
+  }
+
+  final response = (body['id'] != 0) ? await r.patch_wrapper(url, body, app_service)
+                                     : await r.post_wrapper(url, body, app_service);
+
+  if (response['status_code'] == 200 || response['status_code'] == 201) {
     var res  = response['result'];
     return res;
   } else {

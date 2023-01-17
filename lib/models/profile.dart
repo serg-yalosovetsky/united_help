@@ -311,9 +311,13 @@ Future<User> fetchUser(String user_query, AppService app_service) async {
 Future<UserProfile> fetchUserProfile(String profile_query, AppService app_service) async {
   var r = Requests();
 
-  String url = '$server_url$userprofile_url/$profile_query';
-  if (profile_query.isEmpty)
-    url += '1';
+  String url = '$server_url$userprofile_url/';
+  if (profile_query.isEmpty || profile_query == '0') {
+    url += '${app_service.user?.id}/';
+  } else {
+    url += '$profile_query/';
+  }
+
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -325,6 +329,8 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
     throw Exception('Failed to load UserProfile');
   }
 }
+
+
 
 Future<dynamic> fetchContacts(String profile_query, AppService app_service) async {
   var r = Requests();
