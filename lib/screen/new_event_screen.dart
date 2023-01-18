@@ -252,11 +252,13 @@ class NewEventScreenState extends State<NewEventScreen> {
 	}
 
 	submit() async {
+		bool is_edit_event = (isNumeric(widget.event_for_or_edit) &&
+				int.tryParse(widget.event_for_or_edit)! >= 0);
 		Event event = Event(
-				id: (isNumeric(widget.event_for_or_edit) &&
-						int.tryParse(widget.event_for_or_edit)! >= 0) ? int.tryParse(widget.event_for_or_edit)! : 0,
+
+				id: is_edit_event ? int.tryParse(widget.event_for_or_edit)! : 0,
 				name: name_controller.text,
-				enabled: true,
+				enabled: _app_service.event_enabled ?? true,
 				description: bio_controller.text,
 				reg_date: '',
 				start_time: DateTime(
@@ -286,19 +288,23 @@ class NewEventScreenState extends State<NewEventScreen> {
 				required_members: int.parse(members_controller.text),
 				subscribed_members: 0,
 		);
-		var res = await postEvents(event.to_dict(), _app_service);
+		Map<String, dynamic> event_dict = event.to_dict();
+		if (_app_service.event_enabled == null) {
+		  event_dict.remove('enabled');
+		}
+		var res = await postEvents(event_dict, _app_service);
 		context.go(APP_PAGE.my_events.to_path);
 		// return res['success'] as bool;
 	}
 
 	@override
 	Widget build(BuildContext context) {
+		bool is_edit_event = (isNumeric(widget.event_for_or_edit) &&
+														int.tryParse(widget.event_for_or_edit)! >= 0);
 		if (!one_time_counter) {
 			setState(() {
 				button_states = List<bool>.generate(5,
-								(index) =>
-						(isNumeric(widget.event_for_or_edit) &&
-								int.tryParse(widget.event_for_or_edit)! >= 0) ? true : false
+								(index) => is_edit_event ? true : false
 				);
 				_app_service.filter_city = 0;
 				_app_service.filter_employment = 0;
@@ -840,12 +846,21 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 					welcome_button_fun(
 						text: 'Опублікувати',
-						padding: [0, 19, 0, 46],
+						padding: [0, 19, 0, 14],
 						fun: is_ready_to_submit() ?
 								() async {
+							_app_service.event_enabled = true;
 							submit();
 						} : null,
 					),
+					is_edit_event ? social_button(
+						text: 'Відмінити івент',
+						padding: [0, 0, 0, 19],
+						fun: () async {
+							_app_service.event_enabled = false;
+							var res = await activate_deactivate_Event(event?.id ?? 0, false, _app_service);
+						},
+					) : Container(),
 
 				],
 			);
@@ -855,16 +870,15 @@ class NewEventScreenState extends State<NewEventScreen> {
 			return Scaffold(
 				appBar: buildAppBar(
 								() {
-									(isNumeric(widget.event_for_or_edit) &&
-											int.tryParse(widget.event_for_or_edit)! >= 0) ?
+									is_edit_event ?
 													context.go(APP_PAGE.my_events.to_path) :
 													Navigator.pop(context);
 									},
-						(isNumeric(widget.event_for_or_edit) &&
-								int.tryParse(widget.event_for_or_edit)! >= 0) ? 'Редагувати івент' : 'Новий івент',
+						is_edit_event ? 'Редагувати івент' : 'Новий івент',
 						TextButton(
 							onPressed: is_ready_to_submit() ?
 									() async {
+								_app_service.event_enabled = null;
 								await submit();
 							}
 									: null,
@@ -881,13 +895,12 @@ class NewEventScreenState extends State<NewEventScreen> {
 				),
 
 				body: SingleChildScrollView(
-					child: (isNumeric(widget.event_for_or_edit) &&
-							int.tryParse(widget.event_for_or_edit)! >= 0) ?
+					child: is_edit_event ?
 					FutureBuilder<Event>(
 						future: fetchEvent(int.tryParse(widget.event_for_or_edit)!, _app_service),
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-
+								_app_service.event_enabled = snapshot.data?.enabled ?? true;
 								return edit_forms(event: snapshot.data);
 
 							} else if (snapshot.hasError) {
