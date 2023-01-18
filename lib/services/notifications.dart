@@ -56,7 +56,9 @@ Future store_message(RemoteMessage message) async {
 	}
 
 	var counter = await Hive.openBox<int>('counter');
-	var box = await Hive.openBox('notifications');
+	var volunteer_box = await Hive.openBox('volunteer_notifications');
+	var refugee_box = await Hive.openBox('refugee_notifications');
+	var organizer_box = await Hive.openBox('organizer_notifications');
 	late var spec_box;
 	int counter_value = 0;
 
@@ -64,6 +66,11 @@ Future store_message(RemoteMessage message) async {
 
 	int __counter = 0;
 	bool new_notify = true;
+	Box<dynamic> box = volunteer_box;
+	if (message.data['to_profile'] == Roles.organizer.name) box = organizer_box;
+	if (message.data['to_profile'] == Roles.volunteer.name) box = volunteer_box;
+	if (message.data['to_profile'] == Roles.refugee.name) box = refugee_box;
+
 	for (HivePushNotification item in box.values) {
 		if (item.event_id == int.parse(message.data['event_id']) &&
 				item.notify_type == message.data['notify_type']
@@ -71,7 +78,7 @@ Future store_message(RemoteMessage message) async {
 			new_notify = false;
 			if (item.event_id != 0 && (item.notify_type == 'subscribe' ||
 																 item.notify_type == 'review'))
-					spec_box = await Hive.openBox('notifications_${item.notify_type}_${item.event_id}');
+					spec_box = await Hive.openBox('${message.data["to_profile"]}_notifications_${item.notify_type}_${item.event_id}');
 
 			break;
 		}
@@ -86,12 +93,16 @@ Future store_message(RemoteMessage message) async {
 		id: counter_value,
 		title: message.notification?.title ?? '',
 		body: message.notification?.body ?? '',
-		data_title: message.data['title'] ?? '',
-		data_body: message.data['body'] ?? '',
+		to_profile: message.data['notify_type'] ?? '',
+		data: message.data['_data'] ?? '',
 		image: image,
 		is_read: false,
 		notify_type: message.data['notify_type'] ?? '',
 		event_id: int.parse(message.data['event_id']),
+		event_to: message.data['event_to'] ?? '',
+		event_name: message.data['event_name'] ?? '',
+		actor_name: message.data['actor_name'] ?? '',
+		actor_profile_id: int.parse(message.data['actor_profile_id']),
 	);
 	try{
 		print('$new_notify $__counter');

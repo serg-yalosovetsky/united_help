@@ -62,7 +62,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 						bottomNavigationBar: const buildBottomNavigationBar(),
 						backgroundColor: ColorConstant.whiteA700,
 						body: ValueListenableBuilder<Box>(
-							valueListenable: Hive.box(widget.box_name ?? 'notifications').listenable(),
+							valueListenable: Hive.box(widget.box_name ?? '${app_service.role.name}_notifications').listenable(),
 							builder: (BuildContext context, Box<dynamic> box, _widget) {
 								if (box.length <= 0) {
 								 		return build_no_push_messages();
@@ -118,18 +118,29 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																setState(() {
 																	box_item.is_read = true;
 																});
+																String subnotifications = '${app_service.role.name}_notifications_${box_item.notify_type}_${box_item.event_id}';
 																if (widget.box_name==null && (box_item.notify_type == 'subscribe' ||
 																		box_item.notify_type == 'review')) {
-																  Navigator.push(
-																		context,
-																		MaterialPageRoute(
-																			builder: (context) => NotificationsScreen(
-																					box_name: 'notifications_${box_item.notify_type}_${box_item.event_id}',
-																			),
-																		),
-																	);
-																}
+																	try {
+																		Hive.boxExists(subnotifications).then((bool value) {
+																			if (value) {
+																			  Navigator.push(
+																					context,
+																					MaterialPageRoute(
+																						builder: (context) => NotificationsScreen(
+																							box_name: subnotifications,
+																						),
+																					),
+																				);
+																			}
+                            				});
 
+																	}
+																	catch (e) {
+																		print(e);
+																	}
+
+																}
 																print("box.getAt(index).is_read = ${box_item.is_read};");
 															},
 															onHorizontalDragStart: (e) {box.deleteAt(index);},
