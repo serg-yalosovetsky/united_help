@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:united_help/constants.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
+import '../models/profile.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
@@ -10,6 +13,7 @@ import '../services/urls.dart';
 class EventScreen extends StatefulWidget {
 	final Event event;
 	final String title;
+
 	final Map<int, String> skills_names;
 	const EventScreen({
 		super.key,
@@ -26,6 +30,7 @@ class _EventScreenState extends State<EventScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		AppService app_service = Provider.of<AppService>(context, listen: false);
 
 		return Scaffold(
 			appBar: buildAppBar(
@@ -38,7 +43,18 @@ class _EventScreenState extends State<EventScreen> {
 			// foregroundColor: Colors.blue,
 
 			body: SafeArea(
-					child: card_detail(event: widget.event, skills_names: widget.skills_names),
+					child: FutureBuilder<Profile>(
+						future: fetchProfile('${widget.event.owner}/', app_service),
+					  builder: (BuildContext context, AsyncSnapshot<Profile> snapshot) {
+							print('snapshot.hasError ${snapshot.hasError}');
+							print('snapshot.hasData ${snapshot.hasData}');
+							return card_detail(
+									event: widget.event,
+									skills_names: widget.skills_names,
+									owner: snapshot.data,
+								);
+						},
+					),
 
 			),
 

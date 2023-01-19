@@ -75,6 +75,7 @@ class Profile {
   final int role;
   final double rating;
   String? image;
+  final String name;
   final String? description;
   final String? url;
   final String? organization;
@@ -86,6 +87,7 @@ class Profile {
     required this.role,
     this.rating = 0,
     required this.image,
+    required this.name,
     this.description,
     this.url,
     this.organization,
@@ -98,6 +100,7 @@ class Profile {
     return Profile(
       id: json['id'],
       active: json['active'],
+      name: json['name'] ?? '',
       description: json['description'],
       image: json['image'],
       url: json['url'],
@@ -248,12 +251,17 @@ Future<Profiles> fetchProfiles(String profile_query, AppService app_service) asy
 
 
 Future<Profile> fetchProfile(String profile_query, AppService app_service) async {
+  print(235235);
   var r = Requests();
   String url = '$server_url$all_profiles_url/$profile_query';
   final response = await r.get_wrapper(url, app_service);
-
+  print('response[status_code]');
+  print(response['status_code']);
   if (response['status_code'] == 200) {
     var res  = response['result'];
+    print('\n\n');
+    print(res);
+
     var r = Profile.fromJson(res);
     return r;
   } else {

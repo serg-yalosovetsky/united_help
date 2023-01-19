@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/models/profile.dart';
 import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/services/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
@@ -39,6 +40,19 @@ class _EventListScreenState extends State<EventListScreen> {
 		super.initState();
 	}
 
+	push_event_screen(AsyncSnapshot<Events> snapshot, int index) async {
+		Profile owner = await fetchProfile('${snapshot.data!.list[index].owner}/', app_service);
+		Navigator.of(context).push(
+			MaterialPageRoute(
+				builder: (context) => EventScreen(
+					event: snapshot.data!.list[index],
+					skills_names: app_service.skills_names,
+					title: snapshot.data!.list[index].name,
+				),
+			),
+		);
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		print('futureEvents');
@@ -49,15 +63,15 @@ class _EventListScreenState extends State<EventListScreen> {
 				return Center(
 		  			child: FutureBuilder<Events>(
 		  				future: futureEvents,
-		  				builder: (context, snapshot) {
+		  				builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
 		  					if (snapshot.hasData) {
 
 									if (snapshot.data!.count <= 0){
 										return build_no_actual_widgets();
 									}
 
-		  						if (widget.is_listview)
-		  							return ListView.builder(
+		  						if (widget.is_listview) {
+		  						  return ListView.builder(
 		  								scrollDirection: Axis.vertical,
 		  								shrinkWrap: true,
 		  								itemCount: snapshot.data!.count,
@@ -65,28 +79,6 @@ class _EventListScreenState extends State<EventListScreen> {
 		  									return GestureDetector(
 		  											child: card_builder(snapshot.data!.list[index]),
 		  											onTap: () {
-		  												Navigator.of(context).push(
-		  													MaterialPageRoute(
-		  														builder: (context) => EventScreen(
-																		event: snapshot.data!.list[index],
-																		skills_names: app_service.skills_names,
-																		title: snapshot.data!.list[index].name,
-																	),
-		  													),
-		  												);
-		  											},
-
-		  									);
-		  								},
-		  							);
-		  						else {
-										var widget_list = List<Widget>.generate(
-											snapshot.data!.count,
-											(index) {
-												return GestureDetector(
-													child: card_builder(snapshot.data!.list[index]),
-													onTap: () {
-															setState(() {
 																Navigator.of(context).push(
 																	MaterialPageRoute(
 																		builder: (context) => EventScreen(
@@ -96,8 +88,27 @@ class _EventListScreenState extends State<EventListScreen> {
 																		),
 																	),
 																);
-															});
+														},
 
+		  									);
+		  								},
+		  							);
+		  						} else {
+										var widget_list = List<Widget>.generate(
+											snapshot.data!.count,
+											(index) {
+												return GestureDetector(
+													child: card_builder(snapshot.data!.list[index]),
+													onTap: () {
+															Navigator.of(context).push(
+																MaterialPageRoute(
+																	builder: (context) => EventScreen(
+																		event: snapshot.data!.list[index],
+																		skills_names: app_service.skills_names,
+																		title: snapshot.data!.list[index].name,
+																	),
+																),
+															);
 													},
 												);
 											},
