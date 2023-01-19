@@ -4,15 +4,19 @@ class welcome_button extends StatelessWidget {
 	const welcome_button({
 		Key? key,
 		required this.text,
-		required this.padding,
-		required this.active,
+		this.padding,
+		this.active = false,
 		required this.fun,
+		this.text_style,
+		this.icon_widget,
 	}) : super(key: key);
 
+	final TextStyle? text_style;
 	final String text;
-	final List<double> padding;
+	final Widget? icon_widget;
+	final List<double>? padding;
 	final bool active;
-	final Function fun;
+	final dynamic fun;
 
 
 	@override
@@ -27,33 +31,44 @@ class welcome_button extends StatelessWidget {
 			text_color = inactive_text_color;
 			button_color = inactive_color;
 		}
-		var text_style = TextStyle(
-			color: text_color,
-			fontSize: 18,
-			// height: 18,
-			fontFamily: 'SF Pro Text',
-			fontWeight: FontWeight.w600,
-		);
-		return Padding(
-			padding: EdgeInsets.fromLTRB(padding[0], padding[1], padding[2], padding[3]),
-			child: SizedBox(
-				height: 44,
-				width: 230,
-				child: ElevatedButton(
-					style: ElevatedButton.styleFrom(
-						primary: button_color,
-						shape: RoundedRectangleBorder(
-							borderRadius: BorderRadius.circular(22.0),
-						),
-					),
-					onPressed: () {fun();},
-					child: Text(
-						text,
-						style: text_style,
-					),
-				),
+		Widget button_text = Text(
+			text,
+			style: text_style ?? TextStyle(
+				color: text_color,
+				fontSize: 18,
+				fontFamily: 'SF Pro Text',
+				fontWeight: FontWeight.w600,
 			),
 		);
+		Widget button_label = Row(
+			mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+			mainAxisSize: MainAxisSize.min,
+			children: [
+				button_text,
+				icon_widget ?? Container(),
+		],);
+		Widget button = SizedBox(
+			height: 44,
+			width: 230,
+			child: ElevatedButton(
+				style: ElevatedButton.styleFrom(
+					primary: button_color,
+					shape: RoundedRectangleBorder(
+						borderRadius: BorderRadius.circular(22.0),
+					),
+				),
+				onPressed: () {fun();},
+				child: icon_widget!=null ? button_label : button_text,
+			),
+		);
+		if (padding != null) {
+		  return Padding(
+			padding: EdgeInsets.fromLTRB(padding![0], padding![1], padding![2], padding![3]),
+			child: button,
+		);
+		} else {
+		  return button;
+		}
 	}
 }
 

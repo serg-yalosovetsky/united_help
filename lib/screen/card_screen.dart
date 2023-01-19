@@ -43,9 +43,9 @@ class _EventScreenState extends State<EventScreen> {
 			// foregroundColor: Colors.blue,
 
 			body: SafeArea(
-					child: FutureBuilder<Profile>(
-						future: fetchProfile('${widget.event.owner}/', app_service),
-					  builder: (BuildContext context, AsyncSnapshot<Profile> snapshot) {
+					child: FutureBuilder<UserProfile>(
+						future: fetchUserProfile('${widget.event.owner}/', app_service),
+					  builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
 							print('snapshot.hasError ${snapshot.hasError}');
 							print('snapshot.hasData ${snapshot.hasData}');
 							return card_detail(

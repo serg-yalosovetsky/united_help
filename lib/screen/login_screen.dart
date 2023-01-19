@@ -9,6 +9,7 @@ import 'package:united_help/services/urls.dart';
 import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../fragment/build_app_bar.dart';
+import '../fragment/welcome_button.dart';
 import '../routes/routes.dart';
 import '../services/appservice.dart';
 import '../services/authenticate.dart';
@@ -244,44 +245,3 @@ class _LoginScreenState extends State<LoginScreen> {
 
 }
 
-
-class welcome_button extends StatelessWidget {
-  const welcome_button({
-    Key? key,
-	  required this.text_style,
-	  required this.text,
-	  required this.padding,
-		this.fun,
-  }) : super(key: key);
-
-  final TextStyle text_style;
-	final String text;
-	final VoidCallback? fun;
-  final List<double> padding;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(padding[0], padding[1], padding[2], padding[3]),
-      child: SizedBox(
-		  height: 44,
-			width: 230,
-        child: ElevatedButton(
-          style: ButtonStyle(
-    		  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    		  RoundedRectangleBorder(
-    				borderRadius: BorderRadius.circular(22.0),
-    				// side: BorderSide(color: Colors.red)
-    				),
-    		  ),
-    	),
-          onPressed: fun,
-          child: Text(
-      	  	text,
-      	  	style: text_style,
-      	  ),
-        ),
-      ),
-    );
-  }
-}

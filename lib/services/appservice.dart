@@ -84,7 +84,7 @@ class AppService with ChangeNotifier {
   DateTime? data_start;
   DateTime? data_end;
   bool _account_actual_events = true;
-  bool? event_enabled = true;
+  bool? event_active = true;
 
 
   String init_key = 'init_key';

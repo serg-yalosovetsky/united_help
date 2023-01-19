@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:united_help/fragment/welcome_button.dart';
 
 import '../screen/email_password_confirmation.dart';
 
@@ -74,7 +75,7 @@ Widget build_get_location_permission() {
           ),
           text: 'Надати доступ',
           padding: const [0, 16, 0, 0],
-          fun: ()async { await check_location();},
+          fun: () async { await check_location();},
         ),
 
       ],

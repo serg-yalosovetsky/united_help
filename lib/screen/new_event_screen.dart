@@ -258,7 +258,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 				id: is_edit_event ? int.tryParse(widget.event_for_or_edit)! : 0,
 				name: name_controller.text,
-				enabled: _app_service.event_enabled ?? true,
+				active: _app_service.event_active ?? true,
 				description: bio_controller.text,
 				reg_date: '',
 				start_time: DateTime(
@@ -289,8 +289,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 				subscribed_members: 0,
 		);
 		Map<String, dynamic> event_dict = event.to_dict();
-		if (_app_service.event_enabled == null) {
-		  event_dict.remove('enabled');
+		if (_app_service.event_active == null) {
+		  event_dict.remove('active');
 		}
 		var res = await postEvents(event_dict, _app_service);
 		context.go(APP_PAGE.my_events.to_path);
@@ -849,7 +849,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						padding: [0, 19, 0, 14],
 						fun: is_ready_to_submit() ?
 								() async {
-							_app_service.event_enabled = true;
+							_app_service.event_active = true;
 							submit();
 						} : null,
 					),
@@ -857,8 +857,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 						text: 'Відмінити івент',
 						padding: [0, 0, 0, 19],
 						fun: () async {
-							_app_service.event_enabled = false;
-							var res = await activate_deactivate_Event(event?.id ?? 0, false, _app_service);
+							_app_service.event_active = false;
+							var res = await activate_deactivate_event(event?.id ?? 0, false, _app_service);
 						},
 					) : Container(),
 
@@ -878,7 +878,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						TextButton(
 							onPressed: is_ready_to_submit() ?
 									() async {
-								_app_service.event_enabled = null;
+								_app_service.event_active = null;
 								await submit();
 							}
 									: null,
@@ -900,7 +900,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						future: fetchEvent(int.tryParse(widget.event_for_or_edit)!, _app_service),
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								_app_service.event_enabled = snapshot.data?.enabled ?? true;
+								_app_service.event_active = snapshot.data?.active ?? true;
 								return edit_forms(event: snapshot.data);
 
 							} else if (snapshot.hasError) {

@@ -11,7 +11,7 @@ import 'filter.dart';
 class Event {
   final int id;
   final String name;
-  final bool enabled;
+  final bool active;
   final String description;
   final String reg_date;
   final String start_time;
@@ -25,13 +25,14 @@ class Event {
   final List<int> skills;
   final int required_members;
   final int subscribed_members;
+  bool subscribed;
   final double rating;
   final int comments_count;
 
-  const Event({
+  Event({
     required this.id,
     required this.name,
-    required this.enabled,
+    required this.active,
     required this.description,
     required this.reg_date,
     required this.start_time,
@@ -45,41 +46,42 @@ class Event {
     required this.skills,
     required this.required_members,
     this.subscribed_members = 0,
+    this.subscribed = false,
     this.rating = 0.0,
     this.comments_count = 0,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    print('EVENT');
-    print(json);
+    // print(json);
     return Event(
-      id: json['id'],
-      name: json['name'],
-      enabled: json['enabled'],
-      description: json['description'],
-      reg_date: json['reg_date'],
-      start_time: json['start_time'],
-      end_time: json['end_time'],
-      image: json['image'],
-      city: json['city'],
-      location: json['location'],
-      employment: json['employment'],
-      owner: json['owner'],
-      to: json['to'],
-      skills: json['skills'].cast<int>(),
-      required_members: json['required_members'],
-      subscribed_members: json['subscribed_members'] ?? 0,
-      rating:  double.tryParse(json['rating'].toString()) ?? 0,
-      comments_count: json['comments_count'] ?? 0,
+        id: json['id'],
+        name: json['name'],
+        active: json['active'],
+        description: json['description'],
+        reg_date: json['reg_date'],
+        start_time: json['start_time'],
+        end_time: json['end_time'],
+        image: json['image'],
+        city: json['city'],
+        location: json['location'],
+        employment: json['employment'],
+        owner: json['owner'],
+        to: json['to'],
+        skills: json['skills'].cast<int>(),
+        required_members: json['required_members'],
+        subscribed_members: json['subscribed_members'] ?? 0,
+        subscribed: json['subscribed'] ?? false,
+        rating: double.tryParse(json['rating'].toString()) ?? 0,
+        comments_count: json['comments_count'] ?? 0,
 
-    );
+      );
   }
 
   Map<String, dynamic> to_dict () {
     return {
       'id': this.id,
       'name': this.name,
-      'enabled': this.enabled,
+      'active': this.active,
       'description': this.description,
       'start_time': this.start_time,
       'end_time': this.end_time,
@@ -90,6 +92,7 @@ class Event {
       'to': this.to,
       'skills': this.skills,
       'required_members': this.required_members,
+      'subscribed': this.subscribed,
     };
   }
 
@@ -203,7 +206,7 @@ FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   }
 }
 
-FutureMap activate_deactivate_Event(int event_id, bool activate, AppService app_service) async {
+FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_service) async {
   var r = Requests();
   print('activate_deactivate_Event');
 
@@ -211,6 +214,22 @@ FutureMap activate_deactivate_Event(int event_id, bool activate, AppService app_
   var response = await r.post_wrapper(url, {}, app_service);
 
   if (response['status_code'] == 200 || response['status_code'] == 201) {
+    return response['result'];
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to load Event');
+  }
+}
+
+
+FutureMap subscribe_unsubscribe_event(int event_id, bool activate, AppService app_service) async {
+  var r = Requests();
+  print('subscribe_unsubscribe_event');
+
+  String url = '$server_url$all_events_url/$event_id/${activate ? 'subscribe' : 'unsubscribe'}/';
+  var response = await r.post_wrapper(url, {}, app_service);
+
+  if (response['status_code'] == 200 || response['status_code'] == 204) {
     return response['result'];
   } else {
     app_service.set_access_token(null);

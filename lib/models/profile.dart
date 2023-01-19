@@ -75,9 +75,9 @@ class Profile {
   final int role;
   final double rating;
   String? image;
-  final String name;
   final String? description;
   final String? url;
+  bool? is_me_subscribe_to;
   final String? organization;
   final bool active;
   final List<int> skills;
@@ -87,23 +87,22 @@ class Profile {
     required this.role,
     this.rating = 0,
     required this.image,
-    required this.name,
     this.description,
     this.url,
+    this.is_me_subscribe_to,
     this.organization,
     required this.active,
     required this.skills,
-
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
       id: json['id'],
       active: json['active'],
-      name: json['name'] ?? '',
       description: json['description'],
       image: json['image'],
       url: json['url'],
+      is_me_subscribe_to: json['is_subscribe'],
       organization: json['organization'],
       role: json['role'],
       rating: double.tryParse(json['rating'].toString()) ?? 0,
@@ -121,6 +120,7 @@ class Profile {
       'image': this.image,
       'description': this.description,
       'url': this.url,
+      'is_me_subscribe_to': this.is_me_subscribe_to,
       'organization': this.organization,
       'skills': this.skills,
     };
@@ -321,9 +321,9 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
 
   String url = '$server_url$userprofile_url/';
   if (profile_query.isEmpty || profile_query == '0') {
-    url += '${app_service.user?.id}/';
+    url += '${app_service.user?.id}';
   } else {
-    url += '$profile_query/';
+    url += '$profile_query';
   }
 
   final response = await r.get_wrapper(url, app_service);
@@ -385,5 +385,24 @@ FutureMap postFirebaseToken(String token, AppService app_service) async {
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to add new token');
+  }
+}
+
+FutureMap subscribe_unsubscribe_organizer(int organizer, bool subscribe, AppService app_service) async {
+  var r = Requests();
+  String url = '$server_url$all_profiles_url/$organizer/';
+
+  String action = '';
+  if (subscribe) action = 'subscribe/';
+  else action = 'unsubscribe/';
+  url += action;
+
+  final response = await r.post_wrapper(url, {}, app_service);
+
+  if (response['status_code'] == 200) {
+    return response;
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to $action');
   }
 }

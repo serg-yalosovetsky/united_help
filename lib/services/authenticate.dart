@@ -111,8 +111,8 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-      url += '/';
+    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]'))){
+      if (!url.endsWith('/')) url += '/';
     }
     await http.get(
       Uri.parse(url),
