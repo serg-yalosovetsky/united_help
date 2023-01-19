@@ -67,7 +67,11 @@ class _EventListScreenState extends State<EventListScreen> {
 		  											onTap: () {
 		  												Navigator.of(context).push(
 		  													MaterialPageRoute(
-		  														builder: (context) => EventScreen(event: snapshot.data!.list[index],),
+		  														builder: (context) => EventScreen(
+																		event: snapshot.data!.list[index],
+																		skills_names: app_service.skills_names,
+																		title: snapshot.data!.list[index].name,
+																	),
 		  													),
 		  												);
 		  											},
@@ -87,6 +91,8 @@ class _EventListScreenState extends State<EventListScreen> {
 																	MaterialPageRoute(
 																		builder: (context) => EventScreen(
 																			event: snapshot.data!.list[index],
+																			skills_names: app_service.skills_names,
+																			title: snapshot.data!.list[index].name,
 																		),
 																	),
 																);

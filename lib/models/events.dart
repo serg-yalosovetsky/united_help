@@ -6,6 +6,7 @@ import 'package:united_help/services/appservice.dart';
 
 import '../services/authenticate.dart';
 import '../services/urls.dart';
+import 'filter.dart';
 
 class Event {
   final int id;
@@ -122,15 +123,51 @@ class Events {
 }
 
 
+Future<Event> fetchEvent(int event_id, AppService app_service) async {
+  var r = Requests();
+  String url = '$server_url$all_events_url/$event_id';
+  final response = await r.get(url, await app_service.get_access_token());
+
+  if (response['status_code'] == 200) {
+    return Event.fromJson(response['result']);
+  } else {
+    app_service.set_access_token(null);
+    throw Exception('Failed to load Event');
+  }
+}
+
+
 Future<Events> fetchEvents(String event_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/$event_query/';
+  String url = '$server_url$all_events_url/';
+  if (event_query != ''){
+    url += '$event_query/';
+  }
   print('url= $url');
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    return Events.fromJson(res);
+    Events events = Events.fromJson(res);
+
+    bool update_skills_map = false;
+    if (app_service.skills_names.isEmpty) {
+      update_skills_map = true;
+    } else {
+      events_loop:
+      for (Event e in events.list) {
+        for (int skill in e.skills){
+          if (app_service.skills_names[skill] == null || app_service.skills_names[skill]!.isEmpty){
+            update_skills_map = true;
+            break events_loop;
+          }
+        }
+      }
+    }
+    if (update_skills_map) {
+      app_service.skills_names = (await fetchSkills('', app_service)).to_dict();
+    }
+    return events;
   } else {
     app_service.set_access_token(null);
     throw Exception('Failed to load Event');

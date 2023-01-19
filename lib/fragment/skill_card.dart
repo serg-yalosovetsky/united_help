@@ -102,7 +102,8 @@ class buildCityCardState extends State<buildCityCard> {
 }
 
 
-class buildSkillCard extends StatefulWidget {
+
+class buildSkillCard extends StatelessWidget {
   const buildSkillCard({
     Key? key,
     required this.title,
@@ -117,68 +118,30 @@ class buildSkillCard extends StatefulWidget {
   final fun;
 
   @override
-  State<buildSkillCard> createState() => buildSkillCardState();
-}
-
-class buildSkillCardState extends State<buildSkillCard> {
-  late AppService _app_service;
-
-  @override
-  void initState() {
-    _app_service = Provider.of<AppService>(context, listen: false);
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(
-              color: inactive_color,
+              color: active != null && active! ? active_color : inactive_color,
             ),
-            color: inactive_color,
+            color: active != null && active! ? active_color : inactive_color,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(15),
-        child: Row(
-          children: [
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: 18,
-                color: inactive_text_color,
-              ),
-            ),
-            GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(6.0, 0, 0, 0),
-                child: const Icon(
-                  Icons.cancel_outlined,
-                  size: 15,
-                ),
-              ),
-              onTap: () {
-                // if (widget.fun==null) {
-                //   setState(() {
-                //     var index = _app_service.skills.indexOf(widget.title);
-                //     print(index);
-                //     if (index >= 0)
-                //       _app_service.skills.removeAt(index);
-                //
-                //   });
-                // } else widget.fun();
-                widget.fun();
-                  // print('skillcard ${widget.title}');
-                  // print(_app_service.skills);
-              },
-            ),
-          ],
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            color: active != null && active! ? active_text_color : inactive_text_color,
+          ),
         ),
       ),
     );
   }
 }
+
 
 
 Widget buildSkillCard3({

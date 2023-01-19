@@ -66,8 +66,11 @@ class AppService with ChangeNotifier {
     'filters_employment': -1,
     'new_event_cities': -1,
     'filters_cities': -1,
-
   };
+
+  Map<int, String> skills_names = {
+  };
+
   bool _open_text_field_choose_other_city = false;
   List<String> _city_hint = [];
   bool _user_image_expire = false;

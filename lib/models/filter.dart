@@ -44,7 +44,6 @@ class Skills {
   factory Skills.fromJson(Map<String, dynamic> json) {
     var results = <Skill>[];
     for (var skill in json['results']) {
-      print('skill= $skill');
       results.add(Skill.fromJson(skill));
     }
     return Skills(
@@ -53,6 +52,13 @@ class Skills {
       previous: json['previous'],
       next: json['next'],
     );
+  }
+  Map<int, String> to_dict() {
+    Map<int, String> map = {};
+    for (Skill skill in this.list) {
+      map[skill.id] = skill.name;
+    }
+    return map;
   }
 }
 
@@ -131,9 +137,7 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
   if (response['status_code'] == 200) {
     var res  = response['result'];
     print(response['result']);
-    print('SUCCESS FINISH');
     var r = Skills.fromJson(res);
-    print('SUCCESS FINISH2');
     return r;
   } else {
     app_service.set_access_token(null);

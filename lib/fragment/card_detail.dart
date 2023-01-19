@@ -9,8 +9,10 @@ class card_detail extends StatelessWidget {
   const card_detail({
       Key? key,
     required this.event,
+    required this.skills_names,
   }) : super(key: key);
   final Event event;
+  final Map<int, String> skills_names;
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -25,8 +27,8 @@ class card_detail extends StatelessWidget {
     int i = 0;
     while (i <= skills.length/2.ceil()) {
       List<Widget> rows = [];
-      if (i < skills.length) rows.add(buildCityCard(title: skills[i], id: 0));
-      if (i + 1 < skills.length) rows.add(buildCityCard(title: skills[i+1], id: 0));
+      if (i < skills.length) rows.add(buildCityCard(title: skills_names[skills[i]] ?? '', id: 0));
+      if (i + 1 < skills.length) rows.add(buildCityCard(title: skills_names[skills[i + 1]] ?? '', id: 0));
       Widget row_widget = Row(
         children: rows,
       );
@@ -112,11 +114,11 @@ class card_detail extends StatelessWidget {
                       build_location(event.location, Icons.location_on),
                       build_description(event.description),
                       Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 0, 30),
+                        margin: const EdgeInsets.fromLTRB(16, 0, 0, 16),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: Align(
-							alignment: Alignment.centerLeft,
+							              alignment: Alignment.centerLeft,
                             child: Text(
                               'Необхідні скіли',
                               style: timerBoldStyle,
@@ -124,11 +126,14 @@ class card_detail extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        // height: 500,
-                        // width: 500,
-                        margin: const EdgeInsets.fromLTRB(20, 0, 8, 30),
-                        child: return_skills_card(event.skills),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          children: List<Widget>.generate(
+                            event.skills.length,
+                              (index) => buildCityCard(title: skills_names[event.skills[index]] ?? '', id: event.skills[index]),
+                          ),
+                        ),
                       ),
                     ],
                   ),

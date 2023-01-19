@@ -63,8 +63,8 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 										return NewEventChooseHelpOrJobScreen();
 									}
 									app_service.organizer_has_no_events = false;
-									if (widget.is_listview)
-		  							return ListView.builder(
+									if (widget.is_listview) {
+									  return ListView.builder(
 		  								scrollDirection: Axis.vertical,
 		  								shrinkWrap: true,
 		  								itemCount: snapshot.data!.count,
@@ -74,7 +74,10 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 		  											onTap: () {
 		  												Navigator.of(context).push(
 		  													MaterialPageRoute(
-		  														builder: (context) => EventScreen(event: snapshot.data!.list[index],),
+		  														builder: (context) => EventScreen(
+																		event: snapshot.data!.list[index],
+																		skills_names: app_service.skills_names,
+																	),
 		  													),
 		  												);
 		  											},
@@ -82,7 +85,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 		  									);
 		  								},
 		  							);
-		  						else {
+									} else {
 										var widget_list = List<Widget>.generate(
 											snapshot.data!.count,
 											(index) {
@@ -94,6 +97,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 																	MaterialPageRoute(
 																		builder: (context) => EventScreen(
 																			event: snapshot.data!.list[index],
+																			skills_names: app_service.skills_names,
 																		),
 																	),
 																);
