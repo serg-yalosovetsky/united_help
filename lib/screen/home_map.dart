@@ -289,7 +289,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                                 event: events[index],
                                 fun: () {
                                   setState(() {
-                                    print(943857);
+                                    current_camera_position = index;
                                     mapController?.animateCamera(
                                         CameraUpdate.newCameraPosition(
                                             CameraPosition(target:
@@ -302,8 +302,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                                           //17 is new zoom level
                                         ),
                                     );
-                                    current_camera_position = index;
-                                    print(current_camera_position);
+
                                   });
                                 },
                               )
@@ -346,6 +345,26 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   }
 }
 
+
+String trim_text(String init_str){
+  if (init_str.isEmpty || init_str.split(' ').length <= 2){
+    return init_str;
+  }
+  else {
+    List<String> list_str = init_str.split(' ');
+    String str_res = '';
+    for (int i = 0; i < init_str.split(' ').length; i++) {
+      if (list_str.sublist(0, i).join(' ').length < 22){
+        str_res = list_str.sublist(0, i).join(' ');
+      }
+      else {
+        return str_res;
+      }
+    }
+    return '${list_str[0]} ${list_str[1]}..';
+  }
+}
+
 class build_stack_map_card extends StatelessWidget {
   const build_stack_map_card({
     Key? key,
@@ -369,7 +388,7 @@ class build_stack_map_card extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width - 16 - 40,
         margin: const EdgeInsets.fromLTRB(0, 0, 11, 18),
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
             border: Border.all(
               color: Colors.white,
@@ -401,8 +420,8 @@ class build_stack_map_card extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
                     child: Text(
-                      event.name,
-                      style: TextStyle(
+                      trim_text(event.name),
+                      style: const TextStyle(
                         fontSize: 18,
                         color: Color(0xFF002241),
                         fontWeight: FontWeight.w600,
@@ -413,13 +432,13 @@ class build_stack_map_card extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
                     child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0,0,6,0),
                           child: Icon(Icons.access_time_outlined),
                         ),
                         Text(
                             employment_string,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               color: Color(0xFF7C7C7C),
                               fontWeight: FontWeight.w400,
@@ -430,13 +449,13 @@ class build_stack_map_card extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0,0,6,0),
                         child: Icon(Icons.location_on),
                       ),
                       Text(
                         event.location,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 17,
                           color: Color(0xFF7C7C7C),
                           fontWeight: FontWeight.w400,
