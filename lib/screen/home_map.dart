@@ -216,6 +216,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late Set<Marker> markers;
   late List<Event> events;
   final GlobalKey globalKey = GlobalKey();
+  int current_camera_position = 0;
+
   @override
   Widget build(BuildContext context) {
 
@@ -255,15 +257,22 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 children: [
                   // MyMarker(globalKey),
                   GoogleMap(
-                    onMapCreated: _onMapCreated,
+                    onMapCreated: (controller) { //method called when map is created
+                        setState(() {
+                          mapController = controller;
+                        });
+                      },
                     myLocationEnabled: true,
                     compassEnabled: true,
                     tiltGesturesEnabled: true,
                     zoomControlsEnabled: false,
                     initialCameraPosition: CameraPosition(
-                      target: _center,
-                      zoom: 11.0,
+                      target: LatLng(
+                          events[current_camera_position].location_lat,
+                          events[current_camera_position].location_lon),
+                      zoom: 9.0,
                     ),
+
                     markers: markers,
                   ),
                   SingleChildScrollView(
@@ -276,8 +285,28 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                           ),
                           ...List.generate(
                               events.length,
-                              (index) => build_stack_map_card(event: events[index],
-                          )
+                              (index) => build_stack_map_card(
+                                event: events[index],
+                                fun: () {
+                                  setState(() {
+                                    print(943857);
+                                    mapController?.animateCamera(
+                                        CameraUpdate.newCameraPosition(
+                                            CameraPosition(target:
+                                                LatLng(
+                                                    events[current_camera_position].location_lat,
+                                                    events[current_camera_position].location_lon
+                                                ),
+                                                zoom: 17
+                                            ),
+                                          //17 is new zoom level
+                                        ),
+                                    );
+                                    current_camera_position = index;
+                                    print(current_camera_position);
+                                  });
+                                },
+                              )
                           ),
                         ],
                       )
@@ -321,8 +350,10 @@ class build_stack_map_card extends StatelessWidget {
   const build_stack_map_card({
     Key? key,
     required this.event,
+    this.fun
   }) : super(key: key);
   final Event event;
+  final dynamic fun;
 
   @override
   Widget build(BuildContext context) {
@@ -333,89 +364,92 @@ class build_stack_map_card extends StatelessWidget {
       employment_string = show_nice_time(event.start_time, event.end_time);
     else if (event.employment == 2)
       employment_string = show_nice_time(event.start_time);
-    return Container(
-      width: MediaQuery.of(context).size.width - 16 - 40,
-      margin: const EdgeInsets.fromLTRB(0, 0, 11, 18),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          border: Border.all(
+    return GestureDetector(
+      onTap: () {if (fun!=null) fun();},
+      child: Container(
+        width: MediaQuery.of(context).size.width - 16 - 40,
+        margin: const EdgeInsets.fromLTRB(0, 0, 11, 18),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white,
+            ),
             color: Colors.white,
-          ),
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(10))
-      ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 19, 0),
-              child: Container(
-                height: 91,
-                width: 100,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image(
-                    image: CachedNetworkImageProvider(event.image),
-                    fit: BoxFit.fill,
-                    // height: 142,
+            borderRadius: BorderRadius.all(Radius.circular(10))
+        ),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 19, 0),
+                child: Container(
+                  height: 91,
+                  width: 100,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image(
+                      image: CachedNetworkImageProvider(event.image),
+                      fit: BoxFit.fill,
+                      // height: 142,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
-                  child: Text(
-                    event.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFF002241),
-                      fontWeight: FontWeight.w600,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
+                    child: Text(
+                      event.name,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF002241),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: Row(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,6,0),
+                          child: Icon(Icons.access_time_outlined),
+                        ),
+                        Text(
+                            employment_string,
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Color(0xFF7C7C7C),
+                              fontWeight: FontWeight.w400,
+                            ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0,0,6,0),
-                        child: Icon(Icons.access_time_outlined),
+                        child: Icon(Icons.location_on),
                       ),
                       Text(
-                          employment_string,
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Color(0xFF7C7C7C),
-                            fontWeight: FontWeight.w400,
-                          ),
+                        event.location,
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xFF7C7C7C),
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0,0,6,0),
-                      child: Icon(Icons.location_on),
-                    ),
-                    Text(
-                      event.location,
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Color(0xFF7C7C7C),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
 
-              ],
-            ),
-          ],
-        ),
+                ],
+              ),
+            ],
+          ),
+      ),
     );
   }
 }
