@@ -49,7 +49,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 	@override
 	Widget build(BuildContext context) {
 		app_service = Provider.of<AppService>(context);
-		String box_name = widget.box_name ?? '${app_service.role.name}_notifications';
+		String box_name = widget.box_name ?? '${app_service.role.name.toLowerCase()}_notifications';
 			Widget app = OverlaySupport(
 				child: MaterialApp(
 					debugShowCheckedModeBanner: false,

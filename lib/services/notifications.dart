@@ -67,9 +67,9 @@ Future store_message(RemoteMessage message) async {
 	int __counter = 0;
 	bool new_notify = true;
 	Box<dynamic> box = volunteer_box;
-	if (message.data['to_profile'] == Roles.organizer.name) box = organizer_box;
-	if (message.data['to_profile'] == Roles.volunteer.name) box = volunteer_box;
-	if (message.data['to_profile'] == Roles.refugee.name) box = refugee_box;
+	if (message.data['to_profile'].toLowerCase() == Roles.organizer.name.toLowerCase()) box = organizer_box;
+	if (message.data['to_profile'].toLowerCase() == Roles.volunteer.name.toLowerCase()) box = volunteer_box;
+	if (message.data['to_profile'].toLowerCase() == Roles.refugee.name.toLowerCase()) box = refugee_box;
 
 	for (HivePushNotification item in box.values) {
 		if (item.event_id == int.parse(message.data['event_id']) &&

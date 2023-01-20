@@ -78,7 +78,7 @@ dynamic get_markers()  {
           snippet: 'My Custom Subtitle',
         ),
         // icon: BitmapDescriptor.fromBytes(customMarker!),
-        icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan), //Icon for Marker
       ));
 
   markers.add(Marker( //add second marker

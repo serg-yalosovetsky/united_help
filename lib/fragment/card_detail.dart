@@ -126,7 +126,7 @@ class _card_detailState extends State<card_detail> {
                         ),
                       ),
                     ),
-                    widget.owner != null ?
+                    widget.owner != null && app_service.role != Roles.organizer ?
                     Column(
                       children: [
                         Container(
@@ -269,7 +269,7 @@ class _card_detailState extends State<card_detail> {
                         ),
                       ],
                     ) : Container(),
-                    welcome_button(
+                    app_service.role != Roles.organizer ? welcome_button(
                       text: widget.event.subscribed ?
                       'Записано ' :
                       'Записатись ${widget.event.subscribed_members} з ${widget.event.required_members}',
@@ -287,7 +287,7 @@ class _card_detailState extends State<card_detail> {
                       active: true,
                       padding: [0, 31, 0, 0],
 
-                    ),
+                    ) : Container(),
             ],
 
           ),
