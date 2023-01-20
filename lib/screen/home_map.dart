@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_marker/marker_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,12 +9,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/fragment/get_location_permission.dart';
+import 'package:united_help/fragment/no_internet.dart';
+import 'package:united_help/models/events.dart';
 import 'dart:ui' as ui;
 
 import '../fragment/bottom_navbar.dart';
 import '../fragment/switch_app_bar.dart';
 import '../routes/routes.dart';
 import '../services/appservice.dart';
+import '../services/show_nice_time.dart';
 import 'filter_screen.dart';
 
 
@@ -62,34 +66,36 @@ Future<Uint8List?> getBytesFromAsset({required String path, required int width})
       ?.buffer.asUint8List();
 }
 
-dynamic get_markers()  {
+dynamic get_markers(List<Event> events)  {
 
   Set<Marker> markers = Set();
-  // final Uint8List? customMarker= await getBytesFromAsset(
-  //     path: 'images/img.png',
-  //     width: 50 // size of custom image as marker
-  // );
-  markers.add(
-      Marker( //add first marker
-        markerId: MarkerId('first'),
-        position: LatLng(49.908697, 30.217050), //position of marker
-        infoWindow: InfoWindow( //popup info
-          title: 'My Custom Title ',
-          snippet: 'My Custom Subtitle',
-        ),
-        // icon: BitmapDescriptor.fromBytes(customMarker!),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan), //Icon for Marker
-      ));
+  for (Event event in events) {
+    print(239845);
+    print('${event.location_lat}, ${event.location_lon}');
+    markers.add(
+        Marker( //add first marker
+          markerId: MarkerId('first'),
+          position: LatLng(event.location_lat, event.location_lon), //position of marker
+          infoWindow: InfoWindow( //popup info
+            title: event.name,
+            snippet: 'lat:${event.location_lat}, lon:${event.location_lon}',
+          ),
+          // icon: BitmapDescriptor.fromBytes(customMarker!),
+          // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan), //Icon for Marker
+          icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+        ));
+  }
 
-  markers.add(Marker( //add second marker
-    markerId: MarkerId('second'),
-    position: LatLng(49.957509, 30.224144), //position of marker
-    infoWindow: InfoWindow( //popup info
-      title: 'My Custom Title ',
-      snippet: 'My Custom Subtitle',
-    ),
-    icon: BitmapDescriptor.defaultMarker, //Icon for Marker
-  ));
+
+  // markers.add(Marker( //add second marker
+  //   markerId: MarkerId('second'),
+  //   position: LatLng(49.957509, 30.224144), //position of marker
+  //   infoWindow: InfoWindow( //popup info
+  //     title: 'My Custom Title ',
+  //     snippet: 'My Custom Subtitle',
+  //   ),
+  //   icon: BitmapDescriptor.defaultMarker, //Icon for Marker
+  // ));
   return markers;
 }
 
@@ -207,8 +213,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       );
     super.initState();
   }
-
-  Set<Marker> markers = get_markers();
+  late Set<Marker> markers;
+  late List<Event> events;
   final GlobalKey globalKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -237,101 +243,55 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 ),
               );
             }),
-        // floatingActionButton: FloatingActionButton(
-        //   child: Icon(Icons.add),
-        //   onPressed: () async {
-        //
-        //     BitmapDescriptor markerbitmap = await BitmapDescriptor.fromAssetImage(
-        //       ImageConfiguration(),
-        //       "images/img.png",
-        //     );
-        //     // setState(() {
-        //     //   markers.add(
-        //     //       Marker( //add start location marker
-        //     //         markerId: MarkerId('startLocation.toString()'),
-        //     //         position: LatLng(49.958601, 30.217047), //position of marker
-        //     //         infoWindow: InfoWindow( //popup info
-        //     //           title: 'Starting Point ',
-        //     //           snippet: 'Start Marker',
-        //     //         ),
-        //     //         icon: markerbitmap, //Icon for Marker
-        //     //       )
-        //     //   );
-        //     // markers = markers;
-        //     // });
-        //
-        //     print('add marker');
-        //     var new_marker = await Marker(
-        //         markerId: MarkerId('third'),
-        //         position: LatLng(49.988601, 30.217047), //position of marker
-        //         infoWindow: InfoWindow( //popup info
-        //           title: 'My sadle ',
-        //           snippet: 'Msditle',
-        //         ),
-        //         // icon: await MarkerIcon.downloadResizePictureCircle(
-        //         //   // assetPath: 'images/img_ellipse11.png',
-        //         //   //   height: 20,
-        //         //   //   width: 20,
-        //         //     'https://cdn-icons-png.flaticon.com/512/6750/6750242.png',
-        //         //     size: 150,
-        //         //     addBorder: true,
-        //         //     borderColor: Colors.white,
-        //         //     borderSize: 15
-        //         // ),
-        //         // icon: await MarkerIcon.pictureAssetWithCenterText(
-        //         //     assetPath: 'images/img_ellipse11.png',
-        //         //     text: 'some rfgmpofr text',
-        //         //     size: Size.square(300),
-        //         //     fontSize: 30,
-        //         //     fontColor: Colors.white,
-        //         // ),
-        //         // icon: await MarkerIcon.widgetToIcon(globalKey),
-        //         icon: await MarkerIcon.circleCanvasWithText(size: Size.square(150), circleColor: Colors.white, fontSize: 28, text: 'Text sfdfsdf')
-        //     );
-        //     setState(()  {
-        //       markers.add(new_marker);
-        //     });
-        //     print('add marker');
-        //
-        //   },
-        // ),
-        //
-        body: Stack(
-          children: [
-            // MyMarker(globalKey),
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              myLocationEnabled: true,
-              compassEnabled: true,
-              tiltGesturesEnabled: true,
-              zoomControlsEnabled: false,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-              ),
-              markers: markers,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 16,
-                      height: 0,
+
+        body: FutureBuilder<Events>(
+          future: fetchEvents('', _app_service),
+          builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              markers = get_markers(snapshot.data!.list);
+              events = snapshot.data!.list;
+              return Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: [
+                  // MyMarker(globalKey),
+                  GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    myLocationEnabled: true,
+                    compassEnabled: true,
+                    tiltGesturesEnabled: true,
+                    zoomControlsEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      target: _center,
+                      zoom: 11.0,
                     ),
-                    build_stack_map_card(),
-                    build_stack_map_card(),
-                  ],
-                )
-            ),
-          ],
-          alignment: AlignmentDirectional.bottomStart,
+                    markers: markers,
+                  ),
+                  SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 16,
+                            height: 0,
+                          ),
+                          ...List.generate(
+                              events.length,
+                              (index) => build_stack_map_card(event: events[index],
+                          )
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              );
+            }
+            return build_no_internet();
+          },
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
 
       ),
     );
-
 
 
     Widget future =  FutureBuilder<LocationData?>(
@@ -360,13 +320,30 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 class build_stack_map_card extends StatelessWidget {
   const build_stack_map_card({
     Key? key,
+    required this.event,
   }) : super(key: key);
+  final Event event;
 
   @override
   Widget build(BuildContext context) {
+    String employment_string = '';
+    if (event.employment == 0)
+      employment_string = 'Постійна зайнятість';
+    else if (event.employment == 1)
+      employment_string = show_nice_time(event.start_time, event.end_time);
+    else if (event.employment == 2)
+      employment_string = show_nice_time(event.start_time);
     return Container(
       width: MediaQuery.of(context).size.width - 16 - 40,
-      margin: EdgeInsets.fromLTRB(0, 0, 11, 18),
+      margin: const EdgeInsets.fromLTRB(0, 0, 11, 18),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.white,
+          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10))
+      ),
         child: Row(
           children: [
             Padding(
@@ -376,25 +353,22 @@ class build_stack_map_card extends StatelessWidget {
                 width: 100,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                      'images/img_4.png',
-                      // width: 100,
+                  child: Image(
+                    image: CachedNetworkImageProvider(event.image),
                     fit: BoxFit.fill,
-                      // height: 91,
+                    // height: 142,
                   ),
                 ),
-
               ),
-
             ),
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
-                  child: Text('Гуманітарний штаб',
+                  child: Text(
+                    event.name,
                     style: TextStyle(
                       fontSize: 18,
                       color: Color(0xFF002241),
@@ -411,7 +385,7 @@ class build_stack_map_card extends StatelessWidget {
                         child: Icon(Icons.access_time_outlined),
                       ),
                       Text(
-                        'Постійна зайнятість',
+                          employment_string,
                           style: TextStyle(
                             fontSize: 17,
                             color: Color(0xFF7C7C7C),
@@ -427,7 +401,8 @@ class build_stack_map_card extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0,0,6,0),
                       child: Icon(Icons.location_on),
                     ),
-                    Text('вул. Валова, 27',
+                    Text(
+                      event.location,
                       style: TextStyle(
                         fontSize: 17,
                         color: Color(0xFF7C7C7C),
@@ -441,14 +416,6 @@ class build_stack_map_card extends StatelessWidget {
             ),
           ],
         ),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-          ),
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(10))
-      ),
     );
   }
 }

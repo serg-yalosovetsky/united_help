@@ -19,6 +19,8 @@ class Event {
   final String image;
   final int city;
   final String location;
+  final double location_lat;
+  final double location_lon;
   final int employment;
   final int owner;
   final int to;
@@ -40,6 +42,8 @@ class Event {
     required this.image,
     required this.city,
     required this.location,
+    this.location_lat = 0,
+    this.location_lon = 0,
     required this.employment,
     required this.owner,
     required this.to,
@@ -64,6 +68,8 @@ class Event {
         image: json['image'],
         city: json['city'],
         location: json['location'],
+        location_lat: json['location_lat'],
+        location_lon: json['location_lon'],
         employment: json['employment'],
         owner: json['owner'],
         to: json['to'],
@@ -73,7 +79,6 @@ class Event {
         subscribed: json['subscribed'] ?? false,
         rating: double.tryParse(json['rating'].toString()) ?? 0,
         comments_count: json['comments_count'] ?? 0,
-
       );
   }
 
@@ -88,6 +93,8 @@ class Event {
       'image': this.image,
       'city': this.city,
       'location': this.location,
+      'location_lat': this.location_lat,
+      'location_lon': this.location_lon,
       'employment': this.employment,
       'to': this.to,
       'skills': this.skills,
