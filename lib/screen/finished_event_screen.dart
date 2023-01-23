@@ -9,7 +9,7 @@ import '../fragment/card_detail.dart';
 import '../fragment/no_actual_events.dart';
 import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
 import '../services/show_nice_time.dart';
@@ -273,7 +273,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 																);
 
 															} else if (snapshot.hasError) {
-																return build_no_internet();
+																return build_no_internet(error: snapshot.error.toString());
 															}
 															return const CircularProgressIndicator();
 

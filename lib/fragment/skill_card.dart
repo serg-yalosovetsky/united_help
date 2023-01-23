@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../screen/new_event_screen.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
+import '../providers/filters.dart';
 const TextStyle timerStyle = TextStyle(
   fontSize: 18,
 );
@@ -43,11 +44,14 @@ class buildCityCard extends StatefulWidget {
 }
 
 class buildCityCardState extends State<buildCityCard> {
-  late AppService _app_service;
+  // late AppService _app_service;
+  late Filters filters;
 
   @override
   void initState() {
-    _app_service = Provider.of<AppService>(context, listen: false);
+    // _app_service = Provider.of<AppService>(context, listen: false);
+    filters = Provider.of<Filters>(context, listen: false);
+
     super.initState();
   }
   @override
@@ -58,9 +62,9 @@ class buildCityCardState extends State<buildCityCard> {
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
-                color: _app_service.filter_city == widget.id ? active_color : inactive_color,
+                color: filters.filter_city == widget.id ? active_color : inactive_color,
               ),
-              color: _app_service.filter_city == widget.id ? active_color : inactive_color,
+              color: filters.filter_city == widget.id ? active_color : inactive_color,
               borderRadius: BorderRadius.all(Radius.circular(10))),
           // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
           padding: const EdgeInsets.all(15),
@@ -68,28 +72,26 @@ class buildCityCardState extends State<buildCityCard> {
             widget.title,
             style: TextStyle(
               fontSize: 18,
-              color: _app_service.filter_city == widget.id ? active_text_color : inactive_text_color,
+              color: filters.filter_city == widget.id ? active_text_color : inactive_text_color,
             ),
           ),
         ),
       ),
       onTap: () {
         setState(() {
-          print('citycard');
 
-          if (_app_service.filter_city != widget.id){
-            // is_active = true;
-            _app_service.filter_city = widget.id;
+          if (filters.filter_city != widget.id){
+            filters.filter_city = widget.id;
             if (widget.title == title_to_open_text_field) {
-              _app_service.open_text_field_choose_other_city = true;
+              filters.open_text_field_choose_other_city = true;
             } else {
-              _app_service.open_text_field_choose_other_city = false;
+              filters.open_text_field_choose_other_city = false;
 
             }
           } else {
-            _app_service.filter_city = -1;
+            filters.filter_city = -1;
             // if (widget.title == title_to_open_text_field) {
-            _app_service.open_text_field_choose_other_city = false;
+            filters.open_text_field_choose_other_city = false;
             // }
             // is_active = false;
           }
@@ -110,7 +112,6 @@ class buildSkillCard extends StatelessWidget {
     required this.id,
     this.active,
     this.fun,
-
   }) : super(key: key);
   final String title;
   final int id;
@@ -130,12 +131,23 @@ class buildSkillCard extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10))),
         // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(15),
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            color: active != null && active! ? active_text_color : inactive_text_color,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                color: active != null && active! ? active_text_color : inactive_text_color,
+              ),
+            ),
+            GestureDetector(
+                onTap: () {
+                  if (fun != null) fun(title);
+                },
+                child: Icon(Icons.clear),
+            ),
+          ],
         ),
       ),
     );
@@ -278,11 +290,13 @@ class buildEmploymentCard extends StatefulWidget {
 }
 
 class buildEmploymentCardState extends State<buildEmploymentCard> {
-  late AppService _app_service;
+  // late AppService _app_service;
+  late Filters filters;
 
   @override
   void initState() {
-    _app_service = Provider.of<AppService>(context, listen: false);
+    // _app_service = Provider.of<AppService>(context, listen: false);
+    filters = Provider.of<Filters>(context, listen: false);
     super.initState();
   }
   @override
@@ -293,16 +307,16 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
-                color: _app_service.filter_employment == widget.id ? active_color : inactive_color,
+                color: filters.filter_employment == widget.id ? active_color : inactive_color,
               ),
-              color: _app_service.filter_employment == widget.id ? active_color : inactive_color,
+              color: filters.filter_employment == widget.id ? active_color : inactive_color,
               borderRadius: BorderRadius.all(Radius.circular(10))),
           padding: const EdgeInsets.all(15),
           child: Text(
             widget.title,
             style: TextStyle(
               fontSize: 18,
-              color: _app_service.filter_employment == widget.id ? active_text_color : inactive_text_color,
+              color: filters.filter_employment == widget.id ? active_text_color : inactive_text_color,
             ),
           ),
         ),
@@ -311,10 +325,10 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
         setState(() {
           print('employmentcard');
 
-          if (_app_service.filter_employment != widget.id){
-            _app_service.filter_employment = widget.id;
+          if (filters.filter_employment != widget.id){
+            filters.filter_employment = widget.id;
           } else {
-            _app_service.filter_employment = -1;
+            filters.filter_employment = -1;
           }
         });
       },

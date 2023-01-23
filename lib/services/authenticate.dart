@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:united_help/services/urls.dart';
 
-import 'appservice.dart';
+import '../providers/appservice.dart';
 
 typedef FutureMap = Future<Map<String, dynamic>> ;
 

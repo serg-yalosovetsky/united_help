@@ -16,7 +16,8 @@ import 'dart:ui' as ui;
 import '../fragment/bottom_navbar.dart';
 import '../fragment/switch_app_bar.dart';
 import '../routes/routes.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
+import '../providers/filters.dart';
 import '../services/show_nice_time.dart';
 import 'filter_screen.dart';
 
@@ -166,6 +167,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
 
   late AppService _app_service;
+  late Filters filters;
 
   Location location = Location();
 
@@ -205,6 +207,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
+    filters = Provider.of<Filters>(context, listen: false);
     init_location().then(
         (result) {
           print("result: $result");
@@ -247,7 +250,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             }),
 
         body: FutureBuilder<Events>(
-          future: fetchEvents('', _app_service),
+          future: fetchEvents('', _app_service, filters),
           builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
             if (snapshot.hasData && snapshot.data != null) {
               markers = get_markers(snapshot.data!.list);
@@ -313,7 +316,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 ],
               );
             }
-            return build_no_internet();
+            return build_no_internet(error: snapshot.error.toString());
           },
         ),
         bottomNavigationBar: buildBottomNavigationBar(),

@@ -6,11 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:united_help/fragment/welcome_button.dart';
 import 'package:united_help/routes/routes.dart';
 import 'package:united_help/screen/card_screen.dart';
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
 import '../screen/contacts_screen.dart';
 import '../screen/new_event_choose_help_or_job.dart';
+import '../providers/filters.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -37,9 +38,12 @@ class EventListOrganizerScreen extends StatefulWidget {
 class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 	late Future<Events> futureEvents;
 	late AppService app_service;
+	late Filters filters;
+
 	@override
 	void initState() {
 		app_service = Provider.of<AppService>(context, listen: false);
+		filters = Provider.of<Filters>(context, listen: false);
 
 		super.initState();
 	}
@@ -47,7 +51,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 	@override
 	Widget build(BuildContext context) {
 		print('futureEvents');
-		futureEvents = fetchEvents(widget.event_query, app_service);
+		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {
@@ -76,7 +80,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 		  													MaterialPageRoute(
 		  														builder: (context) => EventScreen(
 																		event: snapshot.data!.list[index],
-																		skills_names: app_service.skills_names,
+																		skills_names: filters.skills_names,
 																	),
 		  													),
 		  												);
@@ -97,7 +101,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 																	MaterialPageRoute(
 																		builder: (context) => EventScreen(
 																			event: snapshot.data!.list[index],
-																			skills_names: app_service.skills_names,
+																			skills_names: filters.skills_names,
 																		),
 																	),
 																);
@@ -112,7 +116,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 										);
             }
           } else if (snapshot.hasError) {
-		  						return build_no_internet();
+		  						return build_no_internet(error: snapshot.error.toString());
 		  						// return Text('${snapshot.error}');
 		  					}
 		  					// return build_get_location_permission();

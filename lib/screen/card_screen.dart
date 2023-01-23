@@ -4,7 +4,7 @@ import 'package:united_help/constants.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
 import '../models/profile.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
 import '../services/urls.dart';

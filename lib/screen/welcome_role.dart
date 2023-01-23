@@ -6,7 +6,7 @@ import 'package:united_help/fragment/skill_card.dart';
 import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../fragment/welcome_button.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 class WelcomeRoleScreen extends StatelessWidget {
 	@override

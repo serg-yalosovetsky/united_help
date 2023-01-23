@@ -10,7 +10,7 @@ import '../fragment/events_list.dart';
 import '../fragment/events_list_history.dart';
 import '../fragment/events_list_organizer.dart';
 import '../fragment/switch_app_bar.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import 'my_events_organizer.dart';
 
 class MyEventsHistoryScreen extends StatefulWidget {

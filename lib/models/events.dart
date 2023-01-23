@@ -2,9 +2,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 
 import '../services/authenticate.dart';
+import '../providers/filters.dart';
 import '../services/urls.dart';
 import 'filter.dart';
 
@@ -56,7 +57,36 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    // print(json);
+
+    try {
+
+      return Event(
+        id: json['id'],
+        name: json['name'],
+        active: json['active'],
+        description: json['description'],
+        reg_date: json['reg_date'],
+        start_time: json['start_time'],
+        end_time: json['end_time'],
+        image: json['image'],
+        city: json['city'],
+        location: json['location'],
+        location_lat: double.tryParse(json['location_lat'].toString()) ?? 0,
+        location_lon: double.tryParse(json['location_lon'].toString()) ?? 0,
+        employment: json['employment'],
+        owner: json['owner'],
+        to: json['to'],
+        skills: json['skills'].cast<int>(),
+        required_members: json['required_members'],
+        subscribed_members: json['subscribed_members'] ?? 0,
+        subscribed: json['subscribed'] ?? false,
+        rating: double.tryParse(json['rating'].toString()) ?? 0,
+        comments_count: json['comments_count'] ?? 0,
+      );
+    }
+    catch (e) {print(e);}
+
+
     return Event(
         id: json['id'],
         name: json['name'],
@@ -119,6 +149,7 @@ class Events {
   });
 
   factory Events.fromJson(Map<String, dynamic> json) {
+    print(json);
     var results = <Event>[];
     for (var event in json['results']) {
       results.add(Event.fromJson(event));
@@ -147,7 +178,7 @@ Future<Event> fetchEvent(int event_id, AppService app_service) async {
 }
 
 
-Future<Events> fetchEvents(String event_query, AppService app_service) async {
+Future<Events> fetchEvents(String event_query, AppService app_service, Filters filters) async {
   var r = Requests();
   String url = '$server_url$all_events_url/';
   if (event_query != ''){
@@ -161,13 +192,13 @@ Future<Events> fetchEvents(String event_query, AppService app_service) async {
     Events events = Events.fromJson(res);
 
     bool update_skills_map = false;
-    if (app_service.skills_names.isEmpty) {
+    if (filters.skills_names.isEmpty) {
       update_skills_map = true;
     } else {
       events_loop:
       for (Event e in events.list) {
         for (int skill in e.skills){
-          if (app_service.skills_names[skill] == null || app_service.skills_names[skill]!.isEmpty){
+          if (filters.skills_names[skill] == null || filters.skills_names[skill]!.isEmpty){
             update_skills_map = true;
             break events_loop;
           }
@@ -175,7 +206,7 @@ Future<Events> fetchEvents(String event_query, AppService app_service) async {
       }
     }
     if (update_skills_map) {
-      app_service.skills_names = (await fetchSkills('', app_service)).to_dict();
+      filters.skills_names = (await fetchSkills('', app_service)).to_dict();
     }
     return events;
   } else {

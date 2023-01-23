@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../services/urls.dart';
 

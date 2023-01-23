@@ -57,35 +57,11 @@ class AppService with ChangeNotifier {
   String password = '';
   bool is_register_confirm = false;
   bool is_verificated = false;
-  int _filter_city = -1;
-  int _new_event_city = -1;
-  int _filter_employment = -1;
-  int _new_event_employment = -1;
-  Map<String, int> _card_state = {
-    'new_event_employment': -1,
-    'filters_employment': -1,
-    'new_event_cities': -1,
-    'filters_cities': -1,
-  };
 
-  Map<int, String> skills_names = {
-  };
-
-  bool _open_text_field_choose_other_city = false;
-  List<String> _city_hint = [];
   bool _user_image_expire = false;
   int _bottom_navbar_order = 0;
   bool _organizer_has_no_events = false;
-  List<String> _skills_hint = [];
-  List<String> _skills = [];
-  Employments employment = Employments.full;
-  TimeOfDay? time_start;
-  TimeOfDay? time_end;
-  DateTime? data_start;
-  DateTime? data_end;
   bool _account_actual_events = true;
-  bool? event_active = true;
-
 
   String init_key = 'init_key';
   String user_key = 'user_key';
@@ -182,41 +158,6 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
-  set filter_city (int value) {
-    _filter_city = value;
-    notifyListeners();
-  }
-  int get filter_city => _filter_city;
-
-  set new_event_city (int value) {
-    _new_event_city = value;
-    notifyListeners();
-  }
-  int get new_event_city => _new_event_city;
-
-  set filter_employment (int value) {
-    _filter_employment = value;
-    notifyListeners();
-  }
-  int get filter_employment => _filter_employment;
-
-  set new_event_employment (int value) {
-    _new_event_employment = value;
-    notifyListeners();
-  }
-  int get new_event_employment => _new_event_employment;
-
-  set new_event_cards (int value) {
-    _new_event_employment = value;
-    notifyListeners();
-  }
-  int get new_event_cards => _new_event_employment;
-
-  set city_hint (List<String> value) {
-    _city_hint = value;
-    notifyListeners();
-  }
-  List<String> get city_hint => _city_hint;
 
   set user_image_expire (bool value) {
     _user_image_expire = value;
@@ -236,24 +177,6 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
-
-  set skills_hint (List<String> value) {
-    _skills_hint = value;
-    notifyListeners();
-  }
-  List<String> get skills_hint => _skills_hint;
-
-  set skills (List<String> value) {
-    _skills = value;
-    notifyListeners();
-  }
-  List<String> get skills => _skills;
-
-  set open_text_field_choose_other_city (bool value) {
-    _open_text_field_choose_other_city = value;
-    notifyListeners();
-  }
-  bool get open_text_field_choose_other_city => _open_text_field_choose_other_city;
 
   set account_actual_events (bool value) {
     _account_actual_events = value;
@@ -325,6 +248,7 @@ class AppService with ChangeNotifier {
        shared_preferences.setString(volunteer_key, volunteer.encode());
     notifyListeners();
   }
+
   Profile? get organizer {
     var profile_str = shared_preferences.getString(organizer_key);
     return profile_str!=null ? Profile.decode(profile_str) : null;

@@ -16,7 +16,7 @@ import '../fragment/build_app_bar.dart';
 import '../fragment/no_push_messages.dart';
 import '../models/notify.dart';
 import '../models/profile.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/notifications.dart';
 
 

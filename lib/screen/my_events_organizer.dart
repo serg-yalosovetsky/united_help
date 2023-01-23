@@ -10,7 +10,7 @@ import '../fragment/build_app_bar.dart';
 import '../fragment/events_list.dart';
 import '../fragment/events_list_organizer.dart';
 import '../fragment/switch_app_bar.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 class MyEventsScreen extends StatefulWidget {
   const MyEventsScreen({super.key});

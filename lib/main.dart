@@ -14,8 +14,9 @@ import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/routes/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:united_help/services/appservice.dart';
-import 'package:united_help/services/auth_service.dart';
+import 'package:united_help/providers/appservice.dart';
+import 'package:united_help/providers/auth_service.dart';
+import 'package:united_help/providers/filters.dart';
 import 'package:united_help/services/notifications.dart';
 
 import 'models/notify.dart';
@@ -69,12 +70,16 @@ class UnitedHelp extends StatefulWidget {
 
 class _UnitedHelpState extends State<UnitedHelp> {
   late AppService app_service;
+  late Filters filters;
   late AuthService auth_service;
   late StreamSubscription<bool> auth_subscription;
   @override
   void initState() {
     app_service = AppService(
       widget.secure_storage,
+      widget.shared_preferences,
+    );
+    filters = Filters(
       widget.shared_preferences,
     );
     auth_service = AuthService();
@@ -96,7 +101,8 @@ class _UnitedHelpState extends State<UnitedHelp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AppService>(create: (_) => app_service),
-        Provider<AppRouter>(create: (_) => AppRouter(app_service)),
+        ChangeNotifierProvider<Filters>(create: (_) => filters),
+        Provider<AppRouter>(create: (_) => AppRouter(app_service, filters)),
         Provider<AuthService>(create: (_) => auth_service)
       ],
       child: Builder(

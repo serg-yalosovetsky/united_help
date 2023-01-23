@@ -26,7 +26,8 @@ import '../screen/register_email_confirmation.dart';
 import '../screen/register_screen.dart';
 import '../screen/settings_screen.dart';
 import '../screen/verification_main.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
+import '../providers/filters.dart';
 import '../services/login_state.dart';
 
 
@@ -47,7 +48,7 @@ enum APP_PAGE {
   my_events,
   my_events_history,
   contacts,
-  filters,
+  filters_screen,
   error,
   account,
   edit_account,
@@ -96,8 +97,8 @@ extension AppPageExtension on APP_PAGE {
         return "/welcome";
       case APP_PAGE.register:
         return "/register";
-      case APP_PAGE.filters:
-        return "/filters";
+      case APP_PAGE.filters_screen:
+        return "/filters_screen";
       case APP_PAGE.notifications:
         return "/notifications";
       case APP_PAGE.error:
@@ -132,8 +133,8 @@ extension AppPageExtension on APP_PAGE {
         return 'PASSWORD_RECOVERY';
       case APP_PAGE.register:
         return "REGISTER";
-      case APP_PAGE.filters:
-        return "FILTERS";
+      case APP_PAGE.filters_screen:
+        return "FILTERS_SCREEN";
       case APP_PAGE.register_confirmation:
         return "REGISTER_CONFIRMATION";
       case APP_PAGE.password_confirmation:
@@ -161,9 +162,10 @@ extension AppPageExtension on APP_PAGE {
 
 class AppRouter {
   late final AppService app_service;
+  late final Filters filters;
   GoRouter get router => _go_router;
 
-  AppRouter(this.app_service);
+  AppRouter(this.app_service, this.filters);
 
 
   late final GoRouter _go_router = GoRouter(
@@ -210,8 +212,8 @@ class AppRouter {
         builder: (context, state) => ContactsScreen(profiles_query: state.params['contacts_type'] ?? 'volunteers'),
       ),
       GoRoute(
-        path: APP_PAGE.filters.to_path,
-        name: APP_PAGE.filters.to_name,
+        path: APP_PAGE.filters_screen.to_path,
+        name: APP_PAGE.filters_screen.to_name,
         builder: (context, state) => const FiltersCard(),
       ),
       GoRoute(

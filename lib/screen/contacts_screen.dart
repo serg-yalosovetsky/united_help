@@ -15,7 +15,7 @@ import '../fragment/skill_card.dart';
 import '../fragment/switch_app_bar.dart';
 import '../models/profile.dart';
 import '../routes/routes.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
 import '../services/show_nice_time.dart';

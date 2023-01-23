@@ -7,7 +7,7 @@ import 'package:united_help/screen/filter_screen.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/events_list.dart';
 import '../fragment/switch_app_bar.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 class HomeScreen extends StatefulWidget {
   final String event_query;

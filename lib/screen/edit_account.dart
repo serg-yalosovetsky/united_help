@@ -22,7 +22,7 @@ import '../constants/images.dart';
 import '../fragment/build_app_bar.dart';
 import '../models/profile.dart';
 import '../routes/routes.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 
 class EditAccountScreen extends StatefulWidget {

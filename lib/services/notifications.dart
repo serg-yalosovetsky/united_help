@@ -15,7 +15,7 @@ import '../fragment/build_app_bar.dart';
 
 import '../models/notify.dart';
 import '../models/profile.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 
 late final FirebaseMessaging _messaging;

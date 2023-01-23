@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:united_help/fragment/filters.dart';
 import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/fragment/welcome_button.dart';
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
@@ -22,6 +24,7 @@ import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 
+import '../providers/filters.dart';
 import 'card_screen.dart';
 
 
@@ -74,58 +77,7 @@ Widget build_skills_columns({
 
 }
 
-Widget build_cities_columns({
-	required data,
-	// required BuildContext context,
-	required int width,
-	required AppService app_service,
-	required Function fun,
-	Widget? form_city}
-		) {
-	print('\n\n');
-	print('width= $width');
-	print('\n\n');
-	List<String> cities_list = [];
-	Map<int, String> cities_alias = {};
-	data.sublist(0, 5).forEach((element) {cities_list.add(element.city); });
-	data.sublist(0, 5).forEach((element) {cities_alias[element.alias]; });
-	if (form_city != null)
-		cities_list.add('Інше');
-	var cities_card_blueprint = calculate_cities_widgets(
-		// context: context,
-		width: width,
-		cities_list: cities_list,
-		max_columns: 2,
-	);
-	var cr = <Widget>[];
-	int index = 0;
-	for (var row in cities_card_blueprint){
-		var rc = <Widget>[];
-		for (var city in row){
-			rc.add(buildCityCard(title: city, id:index));
-			index++;
-		}
-		var r = Row(
-			children: rc,
-		);
-		cr.add(r);
-	}
 
-	var c = Column(
-		children: [
-			...cr,
-			(form_city != null) && app_service.open_text_field_choose_other_city ? form_city : Container(),
-			app_service.open_text_field_choose_other_city && app_service.city_hint.isNotEmpty
-					? build_helpers_text(app_service.city_hint, (String helper) {
-				fun(helper);
-			}) : Container(),
-		],
-	);
-
-
-	return c;
-
-}
 
 Widget build_employments_rows({
 	required data,
@@ -193,6 +145,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 	final String skills_query = '';
 	final String cities_query = '';
 	late AppService _app_service;
+	late Filters filters;
 	final _form_key_name = GlobalKey<FormState>();
 	final _form_key_bio = GlobalKey<FormState>();
 	final _form_key_location = GlobalKey<FormState>();
@@ -231,14 +184,15 @@ class NewEventScreenState extends State<NewEventScreen> {
 	void initState() {
 		one_time_counter = false;
 		_app_service = Provider.of<AppService>(context, listen: false);
+		filters = Provider.of<Filters>(context, listen: false);
 		start_date_controller.text = date_to_str(DateTime.now());
 		start_time_controller.text = time_to_str(TimeOfDay.now());
 		end_date_controller.text = date_to_str(DateTime.now());
 		end_time_controller.text = time_to_str(TimeOfDay.now());
-		_app_service.data_start = DateTime.now();
-		_app_service.data_end = DateTime.now();
-		_app_service.time_start = TimeOfDay.now();
-		_app_service.time_end = TimeOfDay.now();
+		filters.data_start = DateTime.now();
+		filters.data_end = DateTime.now();
+		filters.time_start = TimeOfDay.now();
+		filters.time_end = TimeOfDay.now();
 
 		futureSkills = fetchSkills(skills_query, _app_service);
 		futureCities = fetchCities(cities_query, _app_service);
@@ -248,7 +202,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	bool is_ready_to_submit() {
 		return button_states.every((element) => element==true) &&
-				(_app_service.filter_city>-1) && (_app_service.filter_employment>-1);
+				(filters.filter_city>-1) && (filters.filter_employment>-1);
 	}
 
 	submit() async {
@@ -258,38 +212,38 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 				id: is_edit_event ? int.tryParse(widget.event_for_or_edit)! : 0,
 				name: name_controller.text,
-				active: _app_service.event_active ?? true,
+				active: filters.event_active ?? true,
 				description: bio_controller.text,
 				reg_date: '',
 				start_time: DateTime(
-					_app_service.data_start?.year ?? 0,
-					_app_service.data_start?.month ?? 0,
-					_app_service.data_start?.day ?? 0,
-					_app_service.time_start?.hour ?? 0,
-					_app_service.time_start?.minute ?? 0,
+					filters.data_start?.year ?? 0,
+					filters.data_start?.month ?? 0,
+					filters.data_start?.day ?? 0,
+					filters.time_start?.hour ?? 0,
+					filters.time_start?.minute ?? 0,
 				).toString(),
 				end_time: DateTime(
-					_app_service.data_end?.year ?? 0,
-					_app_service.data_end?.month ?? 0,
-					_app_service.data_end?.day ?? 0,
-					_app_service.time_end?.hour ?? 0,
-					_app_service.time_end?.minute ?? 0,
+					filters.data_end?.year ?? 0,
+					filters.data_end?.month ?? 0,
+					filters.data_end?.day ?? 0,
+					filters.time_end?.hour ?? 0,
+					filters.time_end?.minute ?? 0,
 				).toString(),
 				image: image?.path ?? '',
-				city: _app_service.filter_city,
+				city: filters.filter_city,
 				location: location_controller.text,
-				employment: _app_service.filter_employment,
+				employment: filters.filter_employment,
 				owner: 0,
 				to: roles_2_int(event_for),
 				skills: List.generate(
-						_app_service.skills.length,
-						(index) => skill_map[_app_service.skills[index]],
+					filters.skills.length,
+						(index) => skill_map[filters.skills[index]],
 				),
 				required_members: int.parse(members_controller.text),
 				subscribed_members: 0,
 		);
 		Map<String, dynamic> event_dict = event.to_dict();
-		if (_app_service.event_active == null) {
+		if (filters.event_active == null) {
 		  event_dict.remove('active');
 		}
 		var res = await postEvents(event_dict, _app_service);
@@ -306,8 +260,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 				button_states = List<bool>.generate(5,
 								(index) => is_edit_event ? true : false
 				);
-				_app_service.filter_city = 0;
-				_app_service.filter_employment = 0;
+				filters.filter_city = 0;
+				filters.filter_employment = 0;
 			});
 
 		}
@@ -329,7 +283,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 									return 'Будь ласка, введіть назву локації';
 								}
 								else{
-									Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
+									Map<String, String> alias = filters.city_aliases;
 									bool is_finded = false;
 									for (var city in alias.keys){
 											for (var alia in alias[city]!.split(' ')){
@@ -340,7 +294,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 											}
 									}
 									if (!is_finded){
-										_app_service.city_hint = [];
+										filters.city_hint = [];
 										return 'Локацію не знайдено :(';
 									}
 								}
@@ -353,7 +307,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 											// _form_key_city.currentState!.validate();
 									} else {
                     print(text);
-										Map<String, String> alias = {'Кyiv' : 'Kyiv Kiev', 'Korostishev' : 'Korostishev', 'Odesa': 'Odesa'};
+										Map<String, String> alias = filters.city_aliases;
 
 										bool is_finded = false;
 										List<String> cities_hint = [];
@@ -365,10 +319,10 @@ class NewEventScreenState extends State<NewEventScreen> {
                         }
                       }
                     }
-										_app_service.city_hint = cities_hint;
+										filters.city_hint = cities_hint;
 
 										if (!is_finded) {
-													_app_service.city_hint = [];
+											filters.city_hint = [];
 										}
                   }
                 });
@@ -408,9 +362,9 @@ class NewEventScreenState extends State<NewEventScreen> {
 											skills_hint.add(skill.name);
 										}
 									}
-									_app_service.skills_hint = skills_hint;
+									filters.skills_hint = skills_hint;
 									if (!is_finded) {
-										_app_service.skills_hint = [];
+										filters.skills_hint = [];
 									}
 								}
 							});
@@ -590,22 +544,19 @@ class NewEventScreenState extends State<NewEventScreen> {
 			late Widget image_widget;
 			if (event != null && !one_time_counter) {
 				for (int i=0; i< button_states.length; i++) {
-					// setState(() {
 						button_states[i] = true;
-					// });
 				}
-				// setState(() {
-					_app_service.filter_city = event.city;
-					_app_service.filter_employment = event.employment;
-				// });
+				filters.filter_city = event.city;
+				filters.filter_employment = event.employment;
+
 				name_controller.text = event.name;
 				bio_controller.text = event.description;
 				location_controller.text = event.location;
 				members_controller.text = event.required_members.toString();
-				_app_service.data_start = DateTime.tryParse(event.end_time);
-				_app_service.data_end = DateTime.tryParse(event.end_time);
-				_app_service.time_start = TimeOfDay.fromDateTime(_app_service.data_start!);
-				_app_service.time_end = TimeOfDay.fromDateTime(_app_service.data_end!);
+				filters.data_start = DateTime.tryParse(event.end_time);
+				filters.data_end = DateTime.tryParse(event.end_time);
+				filters.time_start = TimeOfDay.fromDateTime(filters.data_start!);
+				filters.time_end = TimeOfDay.fromDateTime(filters.data_end!);
 
 				image_widget = Image(
 						image: CachedNetworkImageProvider(event.image),
@@ -676,10 +627,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 								if (!one_time_counter) {
 									one_time_counter = true;
-									_app_service.skills = [];
+									filters.skills = [];
 									snapshot.data?.list.forEach((element){
 										if (event != null && event.skills.contains(element.id)) {
-											_app_service.skills.add(element.name);
+											filters.skills.add(element.name);
 										}
 										skill_map[element.name] = element.id;
 									});
@@ -690,24 +641,24 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 										form_skills(snapshot.data!),
 
-										_app_service.skills_hint.isNotEmpty
-												? build_helpers_text(_app_service.skills_hint, (String helper) {
+										filters.skills_hint.isNotEmpty
+												? build_helpers_text(filters.skills_hint, (String helper) {
 											print('hint early ${helper}');
 
 											setState(() {
 												skills_controller.text = '';
-												_app_service.skills_hint = [];
-												if (!_app_service.skills.contains(helper))
-													_app_service.skills.add(helper);
+												filters.skills_hint = [];
+												if (!filters.skills.contains(helper))
+													filters.skills.add(helper);
 												print('skillcard hint ${helper}');
 
 											});
 										})
 												: Container(),
 
-										_app_service.skills.isNotEmpty
+										filters.skills.isNotEmpty
 												? build_skills_columns(
-											data: _app_service.skills,
+											data: filters.skills,
 											// context: context,
 											width: MediaQuery.of(context).size.width.floor() - 70,
 											app_service: _app_service,
@@ -715,10 +666,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 												print('skillcard early ${helper}');
 												setState(() {
 													// var index = _app_service.skills.indexOf(helper);
-													if (_app_service.skills.indexOf(helper) >= 0) {
-														_app_service.skills.removeAt(_app_service.skills.indexOf(helper));
+													if (filters.skills.indexOf(helper) >= 0) {
+														filters.skills.removeAt(filters.skills.indexOf(helper));
 													}
-													print('_app_service.skills ${_app_service.skills}');
+													print('_app_service.skills ${filters.skills}');
 												});
 											},
 										)
@@ -728,8 +679,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 								);
 
 							} else if (snapshot.hasError) {
-								// return Text('${snapshot.error}');
-								return build_no_internet();
+								return build_no_internet(error: snapshot.error.toString());
 
 							}
 
@@ -747,23 +697,36 @@ class NewEventScreenState extends State<NewEventScreen> {
 						future: futureCities,
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								return build_cities_columns(
-									data: snapshot.data!.list,
-									width: MediaQuery.of(context).size.width.floor() - 50,
-									// context: context,
-									app_service: _app_service,
-									fun: (String helper) {
-										setState(() {
-											city_controller.text = helper;
-											_app_service.city_hint = [];
-										});
-									},
-									form_city: form_city,
-								);
+								filters.set_city_aliases(snapshot.data!.list!);
+								return
+									Wrap(
+										children: List<Widget>.generate(
+											max(snapshot.data!.list.length, 5),
+													(index) =>  index < 5 ? buildCityCard(
+												id: snapshot.data!.list[index].id,
+												title: snapshot.data!.list[index].city,
+												fun: (String helper) {
+													setState(() {
+														city_controller.text = helper;
+														filters.city_hint = [];
+													});
+												},
+											) :
+											buildCityCard(
+												id: 6,
+												title: 'Інше',
+												fun: (String helper) {
+													setState(() {
+														city_controller.text = helper;
+														filters.city_hint = [];
+													});
+												},
+											),
+										),
+									);
 
 							} else if (snapshot.hasError) {
-								// return Text('${snapshot.error}');
-								return build_no_internet();
+								return build_no_internet(error: snapshot.error.toString());
 
 							}
 
@@ -849,7 +812,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						padding: [0, 19, 0, 14],
 						fun: is_ready_to_submit() ?
 								() async {
-							_app_service.event_active = true;
+							filters.event_active = true;
 							submit();
 						} : null,
 					),
@@ -857,7 +820,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						text: 'Відмінити івент',
 						padding: [0, 0, 0, 19],
 						fun: () async {
-							_app_service.event_active = false;
+							filters.event_active = false;
 							var res = await activate_deactivate_event(event?.id ?? 0, false, _app_service);
 						},
 					) : Container(),
@@ -878,7 +841,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						TextButton(
 							onPressed: is_ready_to_submit() ?
 									() async {
-								_app_service.event_active = null;
+										filters.event_active = null;
 								await submit();
 							}
 									: null,
@@ -900,12 +863,11 @@ class NewEventScreenState extends State<NewEventScreen> {
 						future: fetchEvent(int.tryParse(widget.event_for_or_edit)!, _app_service),
 						builder: (context, snapshot) {
 							if (snapshot.hasData) {
-								_app_service.event_active = snapshot.data?.active ?? true;
+								filters.event_active = snapshot.data?.active ?? true;
 								return edit_forms(event: snapshot.data);
 
 							} else if (snapshot.hasError) {
-								// return Text('${snapshot.error}');
-								return build_no_internet();
+								return build_no_internet(error: snapshot.error.toString());
 							}
 
 							return const CircularProgressIndicator();
@@ -965,9 +927,9 @@ class NewEventScreenState extends State<NewEventScreen> {
 						setState(() {
 							controller.text = formattedDate;
 							if (is_start)
-									app_service.data_start = pickedDate;
+								filters.data_start = pickedDate;
 							else
-									app_service.data_end = pickedDate;
+								filters.data_end = pickedDate;
 
 						});
 					}else{
@@ -1008,9 +970,9 @@ class NewEventScreenState extends State<NewEventScreen> {
 							setState(() {
 								controller.text = formattedTime;
 								if (is_start)
-									app_service.time_start = pickedTime;
+									filters.time_start = pickedTime;
 								else
-									app_service.time_end = pickedTime;
+									filters.time_end = pickedTime;
 							});
 						}else{
 							print("Time is not selected");

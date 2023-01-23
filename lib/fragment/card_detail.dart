@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:united_help/fragment/skill_card.dart';
 import 'package:united_help/fragment/welcome_button.dart';
 import 'package:united_help/screen/register_email_confirmation.dart';
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 import '../fragment/bottom_navbar.dart';
 import '../models/events.dart';
 import '../models/profile.dart';

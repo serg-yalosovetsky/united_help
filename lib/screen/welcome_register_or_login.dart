@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
 import '../fragment/welcome_button.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 	@override

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
 import '../fragment/welcome_button.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 const h1_text = 'UnitedHelp';
 const h2_text = 'Через наявність інформації, що може бути використана проти населення України, просимо Вас підтвердити особу';

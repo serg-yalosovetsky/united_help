@@ -1,5 +1,5 @@
 
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 
 import '../services/authenticate.dart';
 import '../services/urls.dart';
@@ -125,6 +125,11 @@ Map<Employments, String>  employments_text = {
   Employments.one_time: 'Івент',
 };
 
+Map<int, String>  employments_listmap =  {
+  0: 'Постійна',
+  1: 'Часткова',
+  2: 'Івент',
+};
 
 
 Future<Skills> fetchSkills(String skill_query, AppService app_service) async {

@@ -9,7 +9,7 @@ import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/welcome_button.dart';
-import '../services/appservice.dart';
+import '../providers/appservice.dart';
 
 class NewEventChooseHelpOrJobScreen extends StatelessWidget {
 	@override

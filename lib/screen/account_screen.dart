@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/screen/edit_account.dart';
 import 'package:united_help/screen/settings_screen.dart';
-import 'package:united_help/services/appservice.dart';
+import 'package:united_help/providers/appservice.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/card_list.dart';
 import '../fragment/events_list.dart';
