@@ -4,13 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import 'package:united_help/fragment/switch_app_bar.dart';
 import 'package:united_help/routes/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -18,12 +15,6 @@ import 'package:united_help/providers/appservice.dart';
 import 'package:united_help/providers/auth_service.dart';
 import 'package:united_help/providers/filters.dart';
 import 'package:united_help/services/notifications.dart';
-
-import 'models/notify.dart';
-
-// void main() => runApp( UnitedHelp());
-
-
 
 
 Future<void> main() async {
@@ -37,20 +28,16 @@ Future<void> main() async {
   checkForInitialMessage();
   openNotificationsMessageAsync();
   notificationsMessageAsync();
-
   await SentryFlutter.init(
         (options) {
-          options.dsn = 'https://4181e5ef62f3459da7f64e223ddd62f0@sentry.fyuzd.live/2';
-          // options.dsn = 'https://0b96c4fdf54841df9be550172c90f745@o4504272346480640.ingest.sentry.io/4504272372760576';
+          options.dsn = 'https://051d9e8c471f47a7a3a0b04e9469aae1@sentry.fyuzd.live/5';
           options.tracesSampleRate = 1.0;
-
     },
     appRunner: () => runApp(UnitedHelp(
       shared_preferences: shared_preferences,
       secure_storage: secure_storage,
     )),
   );
-
 }
 
 
@@ -82,6 +69,7 @@ class _UnitedHelpState extends State<UnitedHelp> {
     filters = Filters(
       widget.shared_preferences,
     );
+    filters.restore_filters(if_empty: true);
     auth_service = AuthService();
     auth_subscription = auth_service.onAuthStateChange.listen(on_auth_state_change);
     super.initState();

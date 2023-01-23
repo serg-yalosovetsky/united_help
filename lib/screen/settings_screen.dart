@@ -20,6 +20,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/toast_no_context.dart';
 import 'package:flutter/material.dart';
 
+import '../services/toast.dart';
+
 const TextStyle timerBoldStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
 class build_settings_screen extends StatelessWidget {
@@ -232,25 +234,6 @@ class build_settings_link extends StatelessWidget {
 		required this.on_tap,
   }) : super(key: key);
 
-	void _showToast(BuildContext context, String text) {
-		// final scaffold = ScaffoldMessenger.of(context);
-		// scaffold.showSnackBar(
-		// 	SnackBar(
-		// 		content: Text(text),
-		// 		// action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-		// 	),
-		// );
-
-		Fluttertoast.showToast(
-			msg: text,
-			toastLength: Toast.LENGTH_LONG,
-			timeInSecForIosWeb: 3,
-			backgroundColor: Colors.black,
-			textColor: Colors.white,
-			fontSize: 18.0,
-		);
-	}
-
   @override
   Widget build(BuildContext context) {
 		Color get_color(icon, active) {
@@ -293,7 +276,7 @@ class build_settings_link extends StatelessWidget {
       ),
     	onTap: () {
 				on_tap();
-				_showToast(context, 'Ви обрали профiль ${text.toLowerCase()}');
+				showContextToast(context, 'Ви обрали профiль ${text.toLowerCase()}');
 			},
     );
   }

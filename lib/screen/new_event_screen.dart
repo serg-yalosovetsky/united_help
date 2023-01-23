@@ -100,7 +100,7 @@ Widget build_employments_rows({
 	for (var row in cities_card_blueprint){
 		var rc = <Widget>[];
 		for (var city in row){
-			rc.add(buildEmploymentCard(title: city, id:index));
+			rc.add(buildEmploymentCard(title: city, ));
 			index++;
 		}
 		var r = Row(
@@ -201,8 +201,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 	XFile? image = null;
 
 	bool is_ready_to_submit() {
-		return button_states.every((element) => element==true) &&
-				(filters.filter_city>-1) && (filters.filter_employment>-1);
+		return button_states.every((element) => element == true) &&
+				(filters.filter_city >- 1) && (filters.employment != null);
 	}
 
 	submit() async {
@@ -232,12 +232,12 @@ class NewEventScreenState extends State<NewEventScreen> {
 				image: image?.path ?? '',
 				city: filters.filter_city,
 				location: location_controller.text,
-				employment: filters.filter_employment,
+				employment: employments_to_int(filters.employment) ?? 0,
 				owner: 0,
 				to: roles_2_int(event_for),
 				skills: List.generate(
-					filters.skills.length,
-						(index) => skill_map[filters.skills[index]],
+					filters.skills_list.length,
+						(index) => skill_map[filters.skills_list[index]],
 				),
 				required_members: int.parse(members_controller.text),
 				subscribed_members: 0,
@@ -261,7 +261,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 								(index) => is_edit_event ? true : false
 				);
 				filters.filter_city = 0;
-				filters.filter_employment = 0;
+				filters.employment = null;
 			});
 
 		}
@@ -547,8 +547,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 						button_states[i] = true;
 				}
 				filters.filter_city = event.city;
-				filters.filter_employment = event.employment;
-
+				filters.employment =  int_to_employments(event.employment);
 				name_controller.text = event.name;
 				bio_controller.text = event.description;
 				location_controller.text = event.location;
@@ -627,10 +626,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 								if (!one_time_counter) {
 									one_time_counter = true;
-									filters.skills = [];
+									filters.skills_list = [];
 									snapshot.data?.list.forEach((element){
 										if (event != null && event.skills.contains(element.id)) {
-											filters.skills.add(element.name);
+											filters.skills_list.add(element.name);
 										}
 										skill_map[element.name] = element.id;
 									});
@@ -648,17 +647,17 @@ class NewEventScreenState extends State<NewEventScreen> {
 											setState(() {
 												skills_controller.text = '';
 												filters.skills_hint = [];
-												if (!filters.skills.contains(helper))
-													filters.skills.add(helper);
+												if (!filters.skills_list.contains(helper))
+													filters.skills_list.add(helper);
 												print('skillcard hint ${helper}');
 
 											});
 										})
 												: Container(),
 
-										filters.skills.isNotEmpty
+										filters.skills_list.isNotEmpty
 												? build_skills_columns(
-											data: filters.skills,
+											data: filters.skills_list,
 											// context: context,
 											width: MediaQuery.of(context).size.width.floor() - 70,
 											app_service: _app_service,
@@ -666,10 +665,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 												print('skillcard early ${helper}');
 												setState(() {
 													// var index = _app_service.skills.indexOf(helper);
-													if (filters.skills.indexOf(helper) >= 0) {
-														filters.skills.removeAt(filters.skills.indexOf(helper));
+													if (filters.skills_list.indexOf(helper) >= 0) {
+														filters.skills_list.removeAt(filters.skills_list.indexOf(helper));
 													}
-													print('_app_service.skills ${filters.skills}');
+													print('_app_service.skills ${filters.skills_list}');
 												});
 											},
 										)

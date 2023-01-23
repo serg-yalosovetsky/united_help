@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/models/filter.dart';
 
 import '../screen/new_event_screen.dart';
 import '../providers/appservice.dart';
@@ -275,13 +276,11 @@ class buildEmploymentCard extends StatefulWidget {
   const buildEmploymentCard({
     Key? key,
     required this.title,
-    required this.id,
     this.active,
     this.fun,
 
   }) : super(key: key);
   final String title;
-  final int id;
   final bool? active;
   final fun;
 
@@ -301,34 +300,34 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
   }
   @override
   Widget build(BuildContext context) {
+    var color = filters.employment == str_to_employments(widget.title) ? active_color : inactive_color;
+    var text_color = filters.employment == str_to_employments(widget.title) ? active_text_color : inactive_text_color;
     return GestureDetector(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
-                color: filters.filter_employment == widget.id ? active_color : inactive_color,
+                color: color,
               ),
-              color: filters.filter_employment == widget.id ? active_color : inactive_color,
+              color: color,
               borderRadius: BorderRadius.all(Radius.circular(10))),
           padding: const EdgeInsets.all(15),
           child: Text(
             widget.title,
             style: TextStyle(
               fontSize: 18,
-              color: filters.filter_employment == widget.id ? active_text_color : inactive_text_color,
+              color: text_color,
             ),
           ),
         ),
       ),
       onTap: () {
         setState(() {
-          print('employmentcard');
-
-          if (filters.filter_employment != widget.id){
-            filters.filter_employment = widget.id;
+          if (filters.employment != str_to_employments(widget.title)){
+            filters.employment = str_to_employments(widget.title);
           } else {
-            filters.filter_employment = -1;
+            filters.employment = null;
           }
         });
       },

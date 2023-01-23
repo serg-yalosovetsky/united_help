@@ -301,6 +301,7 @@ class AppService with ChangeNotifier {
     print('initialized');
   }
 
+
   logout() {
     set_access_token(null);
     set_refresh_token(null);

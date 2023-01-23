@@ -119,17 +119,38 @@ enum Employments {
   one_time,
 }
 
+Map<int, Employments>  employments_listmap =  {
+  0: Employments.full,
+  1: Employments.part_time,
+  2: Employments.one_time,
+};
+
 Map<Employments, String>  employments_text = {
   Employments.full: 'Постійна',
   Employments.part_time: 'Часткова',
   Employments.one_time: 'Івент',
 };
 
-Map<int, String>  employments_listmap =  {
-  0: 'Постійна',
-  1: 'Часткова',
-  2: 'Івент',
-};
+Employments? str_to_employments (String employment){
+  for (Employments k in employments_text.keys){
+    if (employments_text[k] == employment) return k;
+  }
+}
+String? employments_to_str (Employments employment){
+  for (Employments k in employments_text.keys){
+    if (k == employment) return employments_text[k];
+  }
+}
+Employments? int_to_employments (int employment_id){
+  for (int k in employments_listmap.keys){
+    if (k == employment_id) return employments_listmap[k];
+  }
+}
+int? employments_to_int (Employments? employment){
+  for (int k in employments_listmap.keys){
+    if (employments_listmap[k] == employment) return k;
+  }
+}
 
 
 Future<Skills> fetchSkills(String skill_query, AppService app_service) async {

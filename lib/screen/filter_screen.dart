@@ -20,6 +20,7 @@ import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/filters.dart';
+import '../services/toast.dart';
 
 
 class FiltersCard extends StatefulWidget {
@@ -51,7 +52,7 @@ Widget build_employments_rows({
 	for (var row in cities_card_blueprint){
 		var rc = <Widget>[];
 		for (var city in row){
-			rc.add(buildEmploymentCard(title: city, id:index));
+			rc.add(buildEmploymentCard(title: city,));
 			index++;
 		}
 		var r = Row(
@@ -98,10 +99,7 @@ class _FiltersCardState extends State<FiltersCard> {
 
 	@override
 	void initState() {
-		start_date_controller.text = '';
-		start_time_controller.text = '';
-		end_date_controller.text = '';
-		end_time_controller.text = '';
+
 		start_date_controller.text = date_to_str(DateTime.now());
 		start_time_controller.text = time_to_str(TimeOfDay.now());
 		end_date_controller.text = date_to_str(DateTime.now());
@@ -269,7 +267,6 @@ class _FiltersCardState extends State<FiltersCard> {
 		);
 
 
-
 		return Scaffold(
 			appBar: buildAppBar(
 					() {
@@ -277,7 +274,11 @@ class _FiltersCardState extends State<FiltersCard> {
 					},
 					'Фільтри',
 					TextButton(
-						onPressed: () {},
+						onPressed: () {
+							_filters.save_filters();
+							// showToast('Ваші налаштування збережено');
+							showContextToast(context, 'Ваші налаштування збережено');
+						},
 						child: Text(
 							'Зберегти',
 							style: TextStyle(
@@ -330,8 +331,6 @@ class _FiltersCardState extends State<FiltersCard> {
 																				),
 														),
 										);
-
-
 			    				} else if (snapshot.hasError) {
 									return build_no_internet(error: snapshot.error.toString());
 								}
@@ -339,8 +338,7 @@ class _FiltersCardState extends State<FiltersCard> {
 			    				},
 			    			),
 
-
-						(form_city != null) && _filters.open_text_field_choose_other_city ? form_city : Container(),
+						_filters.open_text_field_choose_other_city ? form_city : Container(),
 						_filters.open_text_field_choose_other_city && _filters.city_hint.isNotEmpty
 								? build_helpers_text(_filters.city_hint, (String helper) {
 							setState(() {
@@ -362,12 +360,12 @@ class _FiltersCardState extends State<FiltersCard> {
 						    	children: List<Widget>.generate(
 						    		employments_text.values.length,
 						    		(index) => buildEmploymentCard(
-						    			id: index,
-						    			title: employments_listmap[index] ?? '',
+						    			title: employments_text[employments_listmap[index]] ?? '',
 						    			fun: (String helper) {
 						    					setState(() {
-						    						city_controller.text = helper;
-						    						_filters.city_hint = [];
+														employments_text.forEach((key, value) {
+															if (value==helper) _filters.employment = key;
+														});
 						    					});
 						    			},
 						    		)
@@ -388,25 +386,25 @@ class _FiltersCardState extends State<FiltersCard> {
 												setState(() {
 													skills_controller.clear;
 												_filters.skills_hint = [];
-												if (!_filters.skills.contains(helper))
-														_filters.skills.add(helper);
+												if (!_filters.skills_list.contains(helper))
+														_filters.skills_list.add(helper);
 												});
 											})
 									: Container(),
-						_filters.skills.isNotEmpty ?
+						_filters.skills_list.isNotEmpty ?
 								Padding(
 									padding: const EdgeInsets.fromLTRB(0, 0, 8, 20),
 									child: Align(
 										alignment: Alignment.centerLeft,
 										child: Wrap(
 											children: List<Widget>.generate(
-													_filters.skills.length,
+													_filters.skills_list.length,
 															(index) => buildSkillCard(
 																	id: index,
-																	title: _filters.skills[index],
+																	title: _filters.skills_list[index],
 																	fun: (String helper) {
 																		setState(() {
-																			_filters.skills.remove(helper);
+																			_filters.skills_list.remove(helper);
 
 																		});
 																	},
@@ -425,15 +423,12 @@ class _FiltersCardState extends State<FiltersCard> {
 						Row(
 						  children: [
 								build_left_text('Початок'),
-
 								build_date_picker(context: context,
 										controller: start_date_controller,
 										app_service_link: _filters.data_start),
-
 								build_time_picker(context: context,
 										controller: start_time_controller,
 										app_service_link: _filters.time_start),
-
 						  ],
 						),
 
@@ -441,25 +436,19 @@ class _FiltersCardState extends State<FiltersCard> {
 						Row(
 							children: [
 								build_left_text('Кінець   '),
-
 								build_date_picker(context: context,
 										controller: end_date_controller,
 										app_service_link: _filters.data_end),
-
 								build_time_picker(context: context,
 																	controller: end_time_controller,
 																	app_service_link: _filters.time_end),
-
 							],
 						),
-
-
 			    	],
 			    );
 					},
 			  ),
 			),
-
 		);
 	}
 
@@ -553,6 +542,4 @@ class _FiltersCardState extends State<FiltersCard> {
 				)
 		);
 	}
-
-
 }
