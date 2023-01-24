@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
 
 
@@ -86,12 +88,19 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
   @override
   HivePushNotification read(BinaryReader reader) {
     var map = reader.read();
+    Map<String, String> data = {};
+    if (map['_data'] != null) {
+      var decoded_data = json.decode(map['_data']);
+      for (String k in decoded_data.keys){
+        data[k] = decoded_data[k].toString();
+      }
+    }
     return HivePushNotification(
-      id: map['id'],
-      title: map['title'],
-      body: map['body'],
-      to_profile: map['to_profile'],
-      data: map['data'],
+      id: map['id'] ?? 0,
+      title: map['title'] ?? '',
+      body: map['body'] ?? '',
+      to_profile: map['to_profile'] ?? '',
+      data: data,
       is_read: map['is_read'] ?? false,
       image: map['image'] ?? '',
       notify_type: map['notify_type'] ?? '',

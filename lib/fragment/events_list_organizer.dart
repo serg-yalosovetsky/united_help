@@ -196,6 +196,7 @@ Widget card_builder(BuildContext context, Event event, AppService app_service) {
 													text: 'Редагувати',
 													padding: [0, 12, 0, 19],
 													fun: () {
+														app_service.current_location = '${APP_PAGE.new_events.to_path}/${event.id}';
 														context.go('${APP_PAGE.new_events.to_path}/${event.id}');
 													},
 											),

@@ -38,9 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 setState(() {
                 if (_app_service.list_or_map == SwitchEnum.first){
                   _app_service.list_or_map = SwitchEnum.second;
+                  _app_service.current_location = APP_PAGE.home_map.to_path;
                   context.go(APP_PAGE.home_map.to_path);
                 } else {
                   _app_service.list_or_map = SwitchEnum.first;
+                  _app_service.current_location = APP_PAGE.home_list.to_path;
                   context.go(APP_PAGE.home_list.to_path);
                 }
                 });

@@ -43,8 +43,10 @@ Widget build_no_contacts(BuildContext context, Roles events_for,
           text: 'Створити івенти',
           padding: const [0, 16, 0, 0],
           fun: () {
-            if (events_for == Roles.refugee || events_for == Roles.volunteer)
+            if (events_for == Roles.refugee || events_for == Roles.volunteer) {
+              // _app_service.current_location = '${APP_PAGE.new_events.to_path}/${events_for.toString().substring(6)}';
               context.go('${APP_PAGE.new_events.to_path}/${events_for.toString().substring(6)}');
+            }
           },
         ) : Container(),
 

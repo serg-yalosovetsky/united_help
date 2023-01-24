@@ -360,6 +360,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 								app_service.email = email_controller.text;
 								// bool result = await app_service.login();
 								app_service.is_register = true;
+								app_service.current_location = APP_PAGE.register_confirmation.to_path;
 								context.go(APP_PAGE.register_confirmation.to_path);
 							}
 							// post_request();

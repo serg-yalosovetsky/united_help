@@ -45,131 +45,135 @@ class build_settings_screen extends StatelessWidget {
 		  	  	// width: size.width,
 		  	  	child: SingleChildScrollView(
 		  	  		child: Center(
-		  	  		  child: Column(
-		  	  		  	// mainAxisSize: MainAxisSize.min,
-		  	  		  	crossAxisAlignment: CrossAxisAlignment.center,
-		  	  		  	mainAxisAlignment: MainAxisAlignment.center,
-		  	  		  	children: [
-										const build_settings_header(text: 'Головні налаштування',),
+		  	  		  child: Consumer<AppService>(
+													builder: (context, cart, child) {
+														return Column(
+														// mainAxisSize: MainAxisSize.min,
+														crossAxisAlignment: CrossAxisAlignment.center,
+														mainAxisAlignment: MainAxisAlignment.center,
+														children: [
+															const build_settings_header(text: 'Головні налаштування',),
 
-										build_settings_link(
-											text: 'Редагувати профіль',
-											on_tap: () {
-												Navigator.of(context).push(
-												MaterialPageRoute(
-													builder: (context) => const EditAccountScreen(),
-												),
-											);},
-										),
-										const left_padding_divider(),
-										build_settings_link(
-											text: 'Обранні організатори',
-											on_tap: () {print('tap2');},
-											up_padding: 11,
-										),
-										const left_padding_divider(),
+															build_settings_link(
+																text: 'Редагувати профіль',
+																on_tap: () {
+																	Navigator.of(context).push(
+																		MaterialPageRoute(
+																			builder: (context) => const EditAccountScreen(),
+																		),
+																	);},
+															),
+															const left_padding_divider(),
+															build_settings_link(
+																text: 'Обранні організатори',
+																on_tap: () {print('tap2');},
+																up_padding: 11,
+															),
+															const left_padding_divider(),
 
-										const build_settings_header(
-											text: 'Змінити акаунт',
-											up_padding: 22,
-										),
-										build_settings_link(
-											text: 'Волонтер',
-											on_tap: () {app_service.role = Roles.volunteer;},
-											up_padding: 14,
-											icon: Icons.check,
-											active: () => app_service.role == Roles.volunteer,
-										),
-										const left_padding_divider(up_padding: 0,),
-										build_settings_link(
-											text: 'Організатор',
-											on_tap: () {app_service.role = Roles.organizer;},
-											up_padding: 11,
-											icon: Icons.check,
-											active: () => app_service.role == Roles.organizer,
-										),
-										const left_padding_divider(up_padding: 0,),
-										build_settings_link(
-											text: 'Потребую допомогу',
-											on_tap: () {app_service.role = Roles.refugee;},
-											up_padding: 11,
-											icon: Icons.check,
-											active: () => app_service.role == Roles.refugee,
-										),
-										const left_padding_divider(up_padding: 0,),
+															const build_settings_header(
+																text: 'Змінити акаунт',
+																up_padding: 22,
+															),
+															build_settings_link(
+																text: 'Волонтер',
+																on_tap: () {app_service.role = Roles.volunteer;},
+																up_padding: 14,
+																icon: Icons.check,
+																active: () => app_service.role == Roles.volunteer,
+															),
+															const left_padding_divider(up_padding: 0,),
+															build_settings_link(
+																text: 'Організатор',
+																on_tap: () {app_service.role = Roles.organizer;},
+																up_padding: 11,
+																icon: Icons.check,
+																active: () => app_service.role == Roles.organizer,
+															),
+															const left_padding_divider(up_padding: 0,),
+															build_settings_link(
+																text: 'Потребую допомогу',
+																on_tap: () {app_service.role = Roles.refugee;},
+																up_padding: 11,
+																icon: Icons.check,
+																active: () => app_service.role == Roles.refugee,
+															),
+															const left_padding_divider(up_padding: 0,),
 
-										Padding(
-											padding: const EdgeInsets.fromLTRB(64, 34, 64, 0),
-											child: Text(
-												"Підтримайте UnitedHelp",
-												overflow: TextOverflow.ellipsis,
-												textAlign: TextAlign.left,
-												style: TextStyle(
-													color: ColorConstant.bluegray900,
-													fontSize:22,
-													fontFamily: 'SF Pro Text',
-													fontWeight: FontWeight.w600,
-													height: 1.00,
-												),
-											),
-										),
-										Padding(
-		  	  		  			padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
-		  	  		  			child: KeyboardVisibilityBuilder(
-													builder: (context, isKeyboardVisible) {
-														return Image.asset(
-															'images/img_15.png',
-															// height:	isKeyboardVisible ? 78.0 : 184.0,
-															width: 107,
-														);
-													}
-											),
-		  	  		  		),
-										Padding(
-											padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
-											child: Text(
-												"UnitedHelp",
-												overflow: TextOverflow.ellipsis,
-												textAlign: TextAlign.left,
-												style: TextStyle(
-													color: ColorConstant.bluegray900,
-													fontSize:22,
-													fontFamily: 'SF Pro Text',
-													fontWeight: FontWeight.w600,
-													height: 1.00,
-												),
-											),
-										),
-										Container(
-											// width: 222.00,
-											margin: const EdgeInsets.fromLTRB(25, 9, 25, 0),
-											child: const Text(
-												"Цей додаток створенно на волонтерській основі, ваші донати допомагають нам покращувати його",
-												maxLines: null,
-												textAlign: TextAlign.center,
-												style: TextStyle(
-													color: Color(0xFF547FA6),
-													fontSize: 17,
-													fontFamily: 'SF Pro Text',
-													fontWeight: FontWeight.w500,
-													height: 1.25,
-												),
-											),
-										),
+															Padding(
+																padding: const EdgeInsets.fromLTRB(64, 34, 64, 0),
+																child: Text(
+																	"Підтримайте UnitedHelp",
+																	overflow: TextOverflow.ellipsis,
+																	textAlign: TextAlign.left,
+																	style: TextStyle(
+																		color: ColorConstant.bluegray900,
+																		fontSize:22,
+																		fontFamily: 'SF Pro Text',
+																		fontWeight: FontWeight.w600,
+																		height: 1.00,
+																	),
+																),
+															),
+															Padding(
+																padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
+																child: KeyboardVisibilityBuilder(
+																		builder: (context, isKeyboardVisible) {
+																			return Image.asset(
+																				'images/img_15.png',
+																				// height:	isKeyboardVisible ? 78.0 : 184.0,
+																				width: 107,
+																			);
+																		}
+																),
+															),
+															Padding(
+																padding: const EdgeInsets.fromLTRB(64, 29, 64, 0),
+																child: Text(
+																	"UnitedHelp",
+																	overflow: TextOverflow.ellipsis,
+																	textAlign: TextAlign.left,
+																	style: TextStyle(
+																		color: ColorConstant.bluegray900,
+																		fontSize:22,
+																		fontFamily: 'SF Pro Text',
+																		fontWeight: FontWeight.w600,
+																		height: 1.00,
+																	),
+																),
+															),
+															Container(
+																// width: 222.00,
+																margin: const EdgeInsets.fromLTRB(25, 9, 25, 0),
+																child: const Text(
+																	"Цей додаток створенно на волонтерській основі, ваші донати допомагають нам покращувати його",
+																	maxLines: null,
+																	textAlign: TextAlign.center,
+																	style: TextStyle(
+																		color: Color(0xFF547FA6),
+																		fontSize: 17,
+																		fontFamily: 'SF Pro Text',
+																		fontWeight: FontWeight.w500,
+																		height: 1.25,
+																	),
+																),
+															),
 
-										welcome_button(
-											text_style: const TextStyle(
-												fontSize: 18,
-												color: Colors.white,
-												fontWeight: FontWeight.w600,
-											),
-											text: 'Задонатити',
-											padding: const [0, 33, 0, 0],
-											fun: () {},
-										),
+															welcome_button(
+																text_style: const TextStyle(
+																	fontSize: 18,
+																	color: Colors.white,
+																	fontWeight: FontWeight.w600,
+																),
+																text: 'Задонатити',
+																padding: const [0, 33, 0, 0],
+																fun: () {},
+															),
 
-									],
-		  	  		  ),
+														],
+													);
+												},
+											),
 		  	  		),
 		  	  	),
 		  	  ),

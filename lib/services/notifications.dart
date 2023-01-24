@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -48,64 +50,73 @@ Future store_message(RemoteMessage message) async {
 	print('STORED BOX start');
 
 	try {
-		var counter = await Hive.openBox<int>('counter');
+		if (!Hive.isBoxOpen('counter')) await Hive.openBox<int>('counter');
 	}
 	catch (e) {
 		print(e);
 		registerHive();
 	}
 
-	var counter = await Hive.openBox<int>('counter');
-	var volunteer_box = await Hive.openBox('volunteer_notifications');
-	var refugee_box = await Hive.openBox('refugee_notifications');
-	var organizer_box = await Hive.openBox('organizer_notifications');
-	late var spec_box;
-	int counter_value = 0;
+	if (!Hive.isBoxOpen('counter')) await Hive.openBox<int>('counter');
 
-	counter_value = counter.get('notify_counter', defaultValue: 0) ?? 0;
+	var counter = Hive.box<int>('counter');
+	late var spec_box;
+
+	int counter_value = counter.get('notify_counter', defaultValue: 0) ?? 0;
 
 	int __counter = 0;
 	bool new_notify = true;
-	Box<dynamic> box = volunteer_box;
-	if (message.data['to_profile'].toLowerCase() == Roles.organizer.name.toLowerCase()) box = organizer_box;
-	if (message.data['to_profile'].toLowerCase() == Roles.volunteer.name.toLowerCase()) box = volunteer_box;
-	if (message.data['to_profile'].toLowerCase() == Roles.refugee.name.toLowerCase()) box = refugee_box;
+	String notification_key = '${message.data["to_profile"].toLowerCase()}_notifications';
+
+	if (!Hive.isBoxOpen(notification_key)) await Hive.openBox<HivePushNotification>(notification_key);
+
+	Box<HivePushNotification> box = Hive.box(notification_key);
+
 
 	for (HivePushNotification item in box.values) {
-		if (item.event_id == int.parse(message.data['event_id']) &&
-				item.notify_type == message.data['notify_type']
-				) {
+		if (item.event_id == int.parse(message.data['event_id']) && item.notify_type == message.data['notify_type']) {
+
 			new_notify = false;
 			if (item.event_id != 0 && (item.notify_type == 'subscribe' ||
-																 item.notify_type == 'review'))
-					spec_box = await Hive.openBox('${message.data["to_profile"]}_notifications_${item.notify_type}_${item.event_id}');
-
+																 item.notify_type == 'review')) {
+			  spec_box = await Hive.openBox('${message.data["to_profile"]}_notifications_${item.notify_type}_${item.event_id}');
+			}
 			break;
 		}
 		__counter ++;
 	}
+
 	counter_value ++;
 	String image = message.data['image'] ?? '';
 	if (image.contains('127.0.0.1')) {
 		image = image.replaceAll('127.0.0.1', server_address);
 	}
-	var notify = HivePushNotification(
-		id: counter_value,
-		title: message.notification?.title ?? '',
-		body: message.notification?.body ?? '',
-		to_profile: message.data['notify_type'] ?? '',
-		data: message.data['_data'] ?? '',
-		image: image,
-		is_read: false,
-		notify_type: message.data['notify_type'] ?? '',
-		event_id: int.parse(message.data['event_id']),
-		event_to: message.data['event_to'] ?? '',
-		event_name: message.data['event_name'] ?? '',
-		actor_name: message.data['actor_name'] ?? '',
-		actor_profile_id: int.parse(message.data['actor_profile_id']),
-	);
+
+		Map<String, String> data = {};
+		if (message.data['_data'] != null) {
+			var decoded_data = json.decode(message.data['_data']);
+			for (String k in decoded_data.keys){
+				data[k] = decoded_data[k].toString();
+			}
+		}
+
+		var notify = HivePushNotification(
+			id: counter_value,
+			title: message.notification?.title ?? '',
+			body: message.notification?.body ?? '',
+			to_profile: message.data['notify_type'] ?? '',
+			data: data,
+			image: image,
+			is_read: false,
+			notify_type: message.data['notify_type'] ?? '',
+			event_id: int.parse(message.data['event_id']),
+			event_to: message.data['event_to'] ?? '',
+			event_name: message.data['event_name'] ?? '',
+			actor_name: message.data['actor_name'] ?? '',
+			actor_profile_id: int.parse(message.data['actor_profile_id']),
+		);
+
 	try{
-		print('$new_notify $__counter');
 			if (new_notify) {
 				await box.put(counter_value, notify);
 			}
@@ -120,20 +131,6 @@ Future store_message(RemoteMessage message) async {
 	catch (e) {print(e);}
 
 	counter.put('notify_counter', counter_value);
-	print('STORED BOX');
-	print('box.values ${box.values.length} ');
-	print('box.length  ${box.length}');
-	print('box.isOpen  ${box.isOpen}');
-	print('box.path  ${box.path}');
-	print('box.name  ${box.name}');
-	// print('box.getAt(0)  ${box.getAt(0)?.id}');
-	// print('box.getAt(${box.length-1})  ${box.getAt(box.length-1)?.id}');
-	print('box.keys  ${box.keys}');
-	// print('box.keyAt(0)  ${box.keyAt(0)}');
-	print("message.data['event_id'] ${message.data['event_id']}");
-	print("message.data['image'] ${message.data['image']}");
-	// box.close();
-
 	print('STORED BOX finish');
 }
 

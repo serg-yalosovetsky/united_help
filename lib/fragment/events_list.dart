@@ -59,7 +59,6 @@ class _EventListScreenState extends State<EventListScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		print('futureEvents');
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {

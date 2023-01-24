@@ -166,6 +166,15 @@ class AppService with ChangeNotifier {
   String get event_query => _event_query;
 
 
+  String previous_location = '';
+  String _current_location = '';
+  int current_index = 0;
+  set current_location (String value) {
+    previous_location = _current_location;
+    _current_location = value;
+  }
+  String get current_location => _current_location;
+
   set user_image_expire (bool value) {
     _user_image_expire = value;
     notifyListeners();

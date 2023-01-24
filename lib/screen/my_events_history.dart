@@ -45,10 +45,12 @@ class _MyEventsHistoryScreenState extends State<MyEventsHistoryScreen> {
                     setState(() {
                     if (_app_service.actual_or_history == SwitchEnum.first){
                       _app_service.actual_or_history = SwitchEnum.second;
+                      _app_service.current_location = APP_PAGE.my_events_history.to_path;
                       context.go(APP_PAGE.my_events_history.to_path);
 
                     } else {
                       _app_service.actual_or_history = SwitchEnum.first;
+                      _app_service.current_location = APP_PAGE.my_events.to_path;
                       context.go(APP_PAGE.my_events.to_path);
                     }
                     });

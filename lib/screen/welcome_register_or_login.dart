@@ -72,6 +72,7 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 								active: true,
 								fun: () {
 									app_service.is_try_register = true;
+									app_service.current_location = '/register';
 									context.go('/register');
 									},
 
@@ -82,6 +83,7 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 								  active: false,
 									fun: () {
 										app_service.is_try_login = true;
+										app_service.current_location = '/login';
 										context.go('/login');
 										},
 

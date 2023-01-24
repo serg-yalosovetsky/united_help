@@ -22,9 +22,11 @@ class _build_toggle_buttons extends State<build_toggle_buttons> {
 		setState(() {
 			selected_index = index;
 			if (selected_index == 0) {
+				// _app_service.current_location = '${APP_PAGE.new_events.to_path}/${event.id}';
 				context.go('/');
 			}
 			if (selected_index == 1) {
+				// app_service.current_location = '${APP_PAGE.new_events.to_path}/${event.id}';
 				context.go('/map');
 			}
 		});

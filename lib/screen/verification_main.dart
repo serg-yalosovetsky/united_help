@@ -145,6 +145,7 @@ class VerificationScreen extends StatelessWidget {
 								active: false,
 								fun: () {
 									app_service.is_verificated = true;
+									app_service.current_location = '/home';
 									context.go('/home');
 								},
 

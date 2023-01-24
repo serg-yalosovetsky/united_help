@@ -21,6 +21,7 @@ import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../providers/filters.dart';
 import '../services/show_nice_time.dart';
+import 'card_screen.dart';
 import 'filter_screen.dart';
 
 
@@ -384,6 +385,8 @@ class build_stack_map_card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Filters filters = Provider.of<Filters>(context, listen: false);
+
     String employment_string = '';
     if (event.employment == 0)
       employment_string = 'Постійна зайнятість';
@@ -393,6 +396,16 @@ class build_stack_map_card extends StatelessWidget {
       employment_string = show_nice_time(event.start_time);
     return GestureDetector(
       onTap: () {if (fun!=null) fun();},
+      onDoubleTap: () {Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => EventScreen(
+                event: event,
+                skills_names: filters.skills_names,
+                title: event.name,
+              ),
+            ),
+          );
+        },
       child: Container(
         width: MediaQuery.of(context).size.width - 16 - 40,
         margin: const EdgeInsets.fromLTRB(0, 0, 11, 18),

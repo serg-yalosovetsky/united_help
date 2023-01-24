@@ -180,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
 		  home: Scaffold(
 				appBar: buildAppBar(() {
 					app_service.is_try_login = false;
+					app_service.current_location = APP_PAGE.register_login.to_path;
 					context.go(APP_PAGE.register_login.to_path);
 				}, 'Вхід'),
 		  	backgroundColor: ColorConstant.whiteA700,
@@ -225,6 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
 														_form_key_email.currentState!.validate()) {
 												 	 app_service.email = email_controller.text;
 												}
+												app_service.current_location = APP_PAGE.password_recovery.to_path;
 												context.go(APP_PAGE.password_recovery.to_path);
 												},
 											child: const Text('Забули пароль?'),

@@ -36,7 +36,10 @@ class _ErrorPageState extends State<ErrorPage>{
                 text: 'Перезавантажити',
                 padding: [84, 16, 84, 0],
                 active: true,
-                fun: () {context.go(APP_PAGE.home_list.to_path);},
+                fun: () {
+                  // _app_service.current_location = APP_PAGE.register_confirmation.to_path;
+                  context.go(APP_PAGE.home_list.to_path);
+                  },
 
             ),
           ],

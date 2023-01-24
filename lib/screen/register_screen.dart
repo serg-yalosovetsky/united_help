@@ -191,6 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 		  home: Scaffold(
 				appBar: buildAppBar(() {
 					app_service.is_try_register = false;
+					app_service.current_location = APP_PAGE.register_login.to_path;
 					context.go(APP_PAGE.register_login.to_path);
 				}, 'Реєстрація'),
 		  	backgroundColor: ColorConstant.whiteA700,
@@ -243,6 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 													app_service.password = password_controller.text;
 													// bool result = await app_service.login();
 													app_service.is_register = true;
+													app_service.current_location = APP_PAGE.register_confirmation.to_path;
 													context.go(APP_PAGE.register_confirmation.to_path);
 												}
 												// post_request();

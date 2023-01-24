@@ -92,25 +92,34 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 			onTap: (int index) {
 				setState(() {
 					app_service.bottom_navbar_order = -1;
-					selected_index = index;
 					if (index==0) {
 						if(app_service.role == Roles.organizer)
-							if(app_service.actual_or_history == SwitchEnum.first)
+							if(app_service.actual_or_history == SwitchEnum.first) {
+								app_service.current_location = APP_PAGE.my_events.to_path;
 								context.go(APP_PAGE.my_events.to_path);
-							else
+							} else {
+								app_service.current_location = APP_PAGE.my_events_history.to_path;
 								context.go(APP_PAGE.my_events_history.to_path);
-						else
-							context.go('/');
+							}
+						else {
+							app_service.current_location = '/';
+						  context.go('/');
+						}
 					}
 					if (index==1) {
-							context.go('${APP_PAGE.contacts.to_path}/volunteers');
+						app_service.current_location = '${APP_PAGE.contacts.to_path}/volunteers';
+						context.go('${APP_PAGE.contacts.to_path}/volunteers');
 					}
 					if (index==2) {
+						app_service.current_location = APP_PAGE.notifications.to_path;
 						context.go(APP_PAGE.notifications.to_path);
 					}
 					if (index==3) {
+						app_service.current_index = selected_index;
+						app_service.current_location = '${APP_PAGE.account.to_path}/0';
 						context.go('${APP_PAGE.account.to_path}/0');
 					}
+					selected_index = index;
 
 				});
 			},

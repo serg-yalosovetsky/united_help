@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/screen/edit_account.dart';
 import 'package:united_help/screen/settings_screen.dart';
@@ -14,10 +15,11 @@ import '../models/profile.dart';
 
 class AccountScreen extends StatelessWidget {
 	final int user_id;
-	const AccountScreen({
+	AccountScreen({
 		super.key,
 		this.user_id = 0,
 	});
+	late AppService app_service;
 	void _showDialog(BuildContext context) {
 		showDialog(
 			context: context,
@@ -40,7 +42,7 @@ class AccountScreen extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		const TextStyle back_style = TextStyle(color: Colors.blue);
-		 AppService app_service = Provider.of<AppService>(context, listen: false);
+		 app_service = Provider.of<AppService>(context, listen: false);
 
 		return Scaffold(
 			appBar: AppBar(
@@ -49,7 +51,9 @@ class AccountScreen extends StatelessWidget {
 					children: [
 						GestureDetector(
 						  onTap: () {
-								Navigator.pop(context);
+								app_service.bottom_navbar_order = app_service.current_index;
+								context.go(app_service.previous_location);
+								// Navigator.pop(context);
 							},
 							child: Row(
 						  		children: const [
