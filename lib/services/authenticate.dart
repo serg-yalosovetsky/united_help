@@ -111,9 +111,9 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]'))){
-      if (!url.endsWith('/')) url += '/';
-    }
+    // if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]'))){
+    //   if (!url.endsWith('/')) url += '/';
+    // }
     await http.get(
       Uri.parse(url),
       headers: headers,
@@ -210,9 +210,9 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-      url += '/';
-    }
+    // if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+    //   url += '/';
+    // }
     await http.post(
       Uri.parse(url),
       body: json.encode(body),
@@ -242,9 +242,9 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-      url += '/';
-    }
+    // if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+    //   url += '/';
+    // }
     await http.patch(
       Uri.parse(url),
       body: json.encode(body),
@@ -264,9 +264,9 @@ class Requests {
 
   FutureMap image_send(String url, String image_path,
                   {Map<String, String>? body, String? access_token, String? image_name, String? method}) async {
-    if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-      url += '/';
-    }
+    // if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
+    //   url += '/';
+    // }
 
     method ??= 'patch';
     var request =  http.MultipartRequest(
@@ -289,38 +289,6 @@ class Requests {
     print('res=  ${res.reasonPhrase}');
     return {'result': res.body, 'status_code': response.statusCode, };
   }
-
-
-  // FutureMap image_send2(String url, String image_path,
-  //     {Map<String, String>? body, String? access_token, String? image_name, String? method}) async {
-  //   if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-  //     url += '/';
-  //   }
-  //   String base64file = base64Encode(File(image_path).readAsBytesSync());
-  //   body?.remove('image');
-  //
-  //   var request =  http.MultipartRequest(
-  //     method.toUpperCase(),
-  //     Uri.parse(url),
-  //   );
-  //   request.headers['Authorization'] = 'Bearer ${access_token}';
-  //
-  //   try {
-  //     var response = await http.post(endPoint,headers: yourRequestHeaders, body:convert.json.encode(data));
-  //   } catch (e) {
-  //     throw (e.toString());
-  //   }
-  //
-  //
-  //
-  //   var response = await request.send();
-  //   final res = await http.Response.fromStream(response);
-  //   print('res= ${res.body} ');
-  //   print(res.body);
-  //   print('res= ${res.statusCode} ');
-  //   print('res=  ${res.reasonPhrase}');
-  //   return {'result': res.body, 'status_code': response.statusCode, };
-  // }
 
 
 }

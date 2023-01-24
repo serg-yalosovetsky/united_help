@@ -189,8 +189,8 @@ class NewEventScreenState extends State<NewEventScreen> {
 		start_time_controller.text = time_to_str(TimeOfDay.now());
 		end_date_controller.text = date_to_str(DateTime.now());
 		end_time_controller.text = time_to_str(TimeOfDay.now());
-		filters.data_start = DateTime.now();
-		filters.data_end = DateTime.now();
+		filters.date_start = DateTime.now();
+		filters.date_end = DateTime.now();
 		filters.time_start = TimeOfDay.now();
 		filters.time_end = TimeOfDay.now();
 
@@ -202,7 +202,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 	bool is_ready_to_submit() {
 		return button_states.every((element) => element == true) &&
-				(filters.filter_city >- 1) && (filters.employment != null);
+				(filters.city >- 1) && (filters.employment != null);
 	}
 
 	submit() async {
@@ -216,21 +216,21 @@ class NewEventScreenState extends State<NewEventScreen> {
 				description: bio_controller.text,
 				reg_date: '',
 				start_time: DateTime(
-					filters.data_start?.year ?? 0,
-					filters.data_start?.month ?? 0,
-					filters.data_start?.day ?? 0,
+					filters.date_start?.year ?? 0,
+					filters.date_start?.month ?? 0,
+					filters.date_start?.day ?? 0,
 					filters.time_start?.hour ?? 0,
 					filters.time_start?.minute ?? 0,
 				).toString(),
 				end_time: DateTime(
-					filters.data_end?.year ?? 0,
-					filters.data_end?.month ?? 0,
-					filters.data_end?.day ?? 0,
+					filters.date_end?.year ?? 0,
+					filters.date_end?.month ?? 0,
+					filters.date_end?.day ?? 0,
 					filters.time_end?.hour ?? 0,
 					filters.time_end?.minute ?? 0,
 				).toString(),
 				image: image?.path ?? '',
-				city: filters.filter_city,
+				city: filters.city,
 				location: location_controller.text,
 				employment: employments_to_int(filters.employment) ?? 0,
 				owner: 0,
@@ -260,7 +260,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 				button_states = List<bool>.generate(5,
 								(index) => is_edit_event ? true : false
 				);
-				filters.filter_city = 0;
+				filters.city = 0;
 				filters.employment = null;
 			});
 
@@ -546,16 +546,16 @@ class NewEventScreenState extends State<NewEventScreen> {
 				for (int i=0; i< button_states.length; i++) {
 						button_states[i] = true;
 				}
-				filters.filter_city = event.city;
+				filters.city = event.city;
 				filters.employment =  int_to_employments(event.employment);
 				name_controller.text = event.name;
 				bio_controller.text = event.description;
 				location_controller.text = event.location;
 				members_controller.text = event.required_members.toString();
-				filters.data_start = DateTime.tryParse(event.end_time);
-				filters.data_end = DateTime.tryParse(event.end_time);
-				filters.time_start = TimeOfDay.fromDateTime(filters.data_start!);
-				filters.time_end = TimeOfDay.fromDateTime(filters.data_end!);
+				filters.date_start = DateTime.tryParse(event.end_time);
+				filters.date_end = DateTime.tryParse(event.end_time);
+				filters.time_start = TimeOfDay.fromDateTime(filters.date_start!);
+				filters.time_end = TimeOfDay.fromDateTime(filters.date_end!);
 
 				image_widget = Image(
 						image: CachedNetworkImageProvider(event.image),
@@ -847,7 +847,6 @@ class NewEventScreenState extends State<NewEventScreen> {
 							child: Text(
 								'Готово',
 								style: TextStyle(
-									// color: Color(0xFF0071D8),
 									fontSize: 18,
 									fontFamily: 'SF Pro Text',
 									fontWeight: FontWeight.w400,
@@ -926,9 +925,9 @@ class NewEventScreenState extends State<NewEventScreen> {
 						setState(() {
 							controller.text = formattedDate;
 							if (is_start)
-								filters.data_start = pickedDate;
+								filters.date_start = pickedDate;
 							else
-								filters.data_end = pickedDate;
+								filters.date_end = pickedDate;
 
 						});
 					}else{

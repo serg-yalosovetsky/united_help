@@ -8,6 +8,7 @@ import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/providers/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../constants/styles.dart';
 import '../providers/filters.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
@@ -59,29 +60,31 @@ class _EventListScreenState extends State<EventListScreen> {
 	@override
 	Widget build(BuildContext context) {
 		print('futureEvents');
-		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {
-				return Center(
-		  			child: FutureBuilder<Events>(
-		  				future: futureEvents,
-		  				builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
-		  					if (snapshot.hasData) {
+				String full_event_query = widget.event_query;
+				if (app_service.event_query.isNotEmpty) {
+				  full_event_query += '?${app_service.event_query}';
+				}
+				return FutureBuilder<Events>(
+					future: fetchEvents(full_event_query, app_service, filters),
+					builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
+						if (snapshot.hasData) {
 
 									if (snapshot.data!.count <= 0){
 										return build_no_actual_widgets();
 									}
 
-		  						if (widget.is_listview) {
-		  						  return ListView.builder(
-		  								scrollDirection: Axis.vertical,
-		  								shrinkWrap: true,
-		  								itemCount: snapshot.data!.count,
-		  								itemBuilder: (context, index) {
-		  									return GestureDetector(
-		  											child: card_builder(snapshot.data!.list[index]),
-		  											onTap: () {
+							if (widget.is_listview) {
+							  return ListView.builder(
+									scrollDirection: Axis.vertical,
+									shrinkWrap: true,
+									itemCount: snapshot.data!.count,
+									itemBuilder: (context, index) {
+										return GestureDetector(
+												child: card_builder(snapshot.data!.list[index]),
+												onTap: () {
 																Navigator.of(context).push(
 																	MaterialPageRoute(
 																		builder: (context) => EventScreen(
@@ -93,10 +96,10 @@ class _EventListScreenState extends State<EventListScreen> {
 																);
 														},
 
-		  									);
-		  								},
-		  							);
-		  						} else {
+										);
+									},
+								);
+							} else {
 										var widget_list = List<Widget>.generate(
 											snapshot.data!.count,
 											(index) {
@@ -121,15 +124,14 @@ class _EventListScreenState extends State<EventListScreen> {
 										);
             }
           } else if (snapshot.hasError) {
-		  						return build_no_internet(error: snapshot.error.toString());
-		  						// return Text('${snapshot.error}');
-		  					}
-		  					// return build_get_location_permission();
-		  					return const CircularProgressIndicator();
+							return build_no_internet(error: snapshot.error.toString());
+							// return Text('${snapshot.error}');
+						}
+						// return build_get_location_permission();
+						return const CircularProgressIndicator();
 
-		  				},
-		  			),
-		  		);
+					},
+				);
 				},
 		);
 	}
@@ -179,7 +181,7 @@ Widget card_builder(event) {
 										children: [
 											Container(
 												margin: const EdgeInsets.fromLTRB(20, 20, 10, 0),
-												child: Text(event.name, style: optionStyle,),
+												child: Text(event.name, style: StyleConstant.bold_header,),
 											),
 											const Spacer(),
 											Container(

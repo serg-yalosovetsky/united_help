@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../constants/colors.dart';
+
 
 void showToast(String text) {
 
@@ -22,13 +24,13 @@ showContextToast(BuildContext context, String text) {
     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25.0),
-      color: Color(0xFFF0F3FF),
+      color: ColorConstant.Background_for_chips,
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.check),
-        SizedBox(
+        const Icon(Icons.check),
+        const SizedBox(
           width: 12.0,
         ),
         Text(text),
@@ -40,7 +42,7 @@ showContextToast(BuildContext context, String text) {
   fToast.showToast(
     child: toast,
     gravity: ToastGravity.BOTTOM,
-    toastDuration: Duration(seconds: 2),
+    toastDuration: const Duration(seconds: 2),
   );
 
   // Custom Toast Position

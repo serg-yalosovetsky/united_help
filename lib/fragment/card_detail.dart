@@ -5,6 +5,8 @@ import 'package:united_help/fragment/skill_card.dart';
 import 'package:united_help/fragment/welcome_button.dart';
 import 'package:united_help/screen/register_email_confirmation.dart';
 import 'package:united_help/providers/appservice.dart';
+import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../fragment/bottom_navbar.dart';
 import '../models/events.dart';
 import '../models/profile.dart';
@@ -161,19 +163,11 @@ class _card_detailState extends State<card_detail> {
                                         children: [
                                           Text(
                                             widget.owner?.profile.organization ?? '',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color(0xFF002241),
-                                            ),
+                                            style: StyleConstant.bold,
                                           ),
                                           Text(
                                             widget.owner?.profile.url ?? '',
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w400,
-                                              color: Color(0xFF748B9F),
-                                            ),
+                                            style: StyleConstant.thin,
                                           ),
                                         ],
                                       ),
@@ -219,17 +213,13 @@ class _card_detailState extends State<card_detail> {
                                       padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                       child: Icon(
                                         Icons.phone_rounded,
-                                        color: Color(0xff002241),
+                                        color: ColorConstant.Black_volonterka,
                                         size: 26,
                                       ),
                                     ),
                                     Text(
                                       widget.owner?.user.phone! ?? '',
-                                      style: TextStyle(
-                                          color: Color(0xff002241),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400
-                                      ),
+                                      style: StyleConstant.thin_main,
                                     ),
                                   ],
                                 ),
@@ -252,11 +242,7 @@ class _card_detailState extends State<card_detail> {
                                     ),
                                     Text(
                                       widget.owner?.user.nickname ?? '',
-                                      style: TextStyle(
-                                          color: Color(0xff002241),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400
-                                      ),
+                                      style: StyleConstant.thin_main,
                                       // style: timerBoldStyle,
                                     ),
                                   ],
@@ -318,7 +304,7 @@ class active_subscribe extends StatelessWidget {
       ),
       decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Color(0xFF0071D8),
+          color: ColorConstant.Volonterka_theme_color,
       ),
     );
   }
@@ -333,7 +319,7 @@ class inactive_subscribe extends StatelessWidget {
   Widget build(BuildContext context) {
     return Icon(
       Icons.notifications,
-      color: Color(0xFF0071D8),
+      color: ColorConstant.Volonterka_theme_color,
       size: 28,
     );
   }

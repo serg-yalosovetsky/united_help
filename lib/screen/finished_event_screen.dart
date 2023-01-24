@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/constants/styles.dart';
 import 'package:united_help/models/comments.dart';
+import '../constants/colors.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/build_app_bar.dart';
 import '../fragment/card_detail.dart';
@@ -40,12 +42,9 @@ class FinishedEventScreen extends StatefulWidget {
 
 class _FinishedEventScreenState extends State<FinishedEventScreen> {
 
-	static const TextStyle optionStyle = 	TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 	static const TextStyle timerStyle = TextStyle(
 		fontSize: 18,
 	);
-	static const TextStyle timerBoldStyle =
-	TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
 	Widget return_skills_card(List skills, [int skill_in_row = 2]) {
 		List<Widget> columns = [];
@@ -157,7 +156,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 														build_location(
 															'Відбувся',
 															Icons.access_time_outlined,
-															text_color: Color(0xFF748B9F),
+															text_color: ColorConstant.help_text,
 														),
 
 														RatingBar.builder(
@@ -223,11 +222,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 																					  						  padding: const EdgeInsets.fromLTRB(11.0, 19, 3, 0),
 																					  						  child: Text(
 																														snapshot.data?.list[index].user.username ?? '',
-																														style: TextStyle(
-																															color: Color(0xFF002241),
-																															fontSize: 17,
-																															fontWeight: FontWeight.w500,
-																														),
+																														style: StyleConstant.norm_main,
 																													),
 																					  						),
 																					  						snapshot.data?.list[index].rating!=null ? RatingBar.builder(
@@ -255,11 +250,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 																					  		  padding: const EdgeInsets.fromLTRB(16.0, 6, 16, 0),
 																					  		  child: Text(
 																										snapshot.data?.list[index].text ?? '',
-																										style: TextStyle(
-																											color: Color(0xFF748B9F),
-																											fontSize: 17,
-																											fontWeight: FontWeight.w400,
-																										),
+																										style: StyleConstant.thin_help,
 																									),
 																					  		),
 																								Padding(padding: EdgeInsets.fromLTRB(16.0, 16, 0, 0)),

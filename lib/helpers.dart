@@ -36,10 +36,14 @@ List<List<String>> calculate_cities_widgets({
   return cities;
 }
 
-String time_to_str(TimeOfDay pickedTime){
+String time_to_str(TimeOfDay? pickedTime){
+  if (pickedTime == null)
+    return '';
   return '${pickedTime.hour}:${pickedTime.minute} ${pickedTime.period.name.toUpperCase()}';
 }
 
-String date_to_str(DateTime pickedDate){
+String date_to_str(DateTime? pickedDate){
+  if (pickedDate == null)
+    return '';
   return DateFormat('EEE, MMM dd').format(pickedDate);
 }

@@ -9,6 +9,7 @@ import 'package:united_help/screen/card_screen.dart';
 import 'package:united_help/providers/appservice.dart';
 import 'package:united_help/services/authenticate.dart';
 
+import '../constants/styles.dart';
 import '../screen/contacts_screen.dart';
 import '../screen/new_event_choose_help_or_job.dart';
 import '../providers/filters.dart';
@@ -170,7 +171,7 @@ Widget card_builder(BuildContext context, Event event, AppService app_service) {
 										children: [
 											Container(
 												margin: const EdgeInsets.fromLTRB(20, 20, 10, 0),
-												child: Text(event.name, style: optionStyle,),
+												child: Text(event.name, style: StyleConstant.bold_header,),
 											),
 
 											welcome_button_fun(

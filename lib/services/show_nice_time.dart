@@ -46,7 +46,6 @@ String show_nice_time(String time_start, [String? time_end]){
         }
         nice_time += '${event_time.month}.${event_time.day}';
       }
-      print(nice_time);
     } on FormatException {
       print('incorrect datetime $time_start');
       nice_time = time_start;
@@ -61,12 +60,10 @@ String show_nice_time(String time_start, [String? time_end]){
       }
       nice_time += '${event_time.month}.${event_time.day}';
 
-      print(nice_time);
     } on FormatException {
       print('incorrect datetime $time_start');
       nice_time = time_start;
     }
   }
-  print(nice_time);
   return nice_time;
 }

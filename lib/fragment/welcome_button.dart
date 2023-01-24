@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors.dart';
+
 class welcome_button extends StatelessWidget {
 	const welcome_button({
 		Key? key,
@@ -21,15 +23,11 @@ class welcome_button extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		const inactive_color = const Color(0xFFF0F3FF);
-		const active_color = const Color(0xFF0071d8);
-		const active_text_color = Colors.white;
-		const inactive_text_color = Colors.black;
-		var text_color = active_text_color;
-		var button_color = active_color;
+		var text_color = ColorConstant.active_text_color;
+		var button_color = ColorConstant.Volonterka_theme_color;
 		if (!active) {
-			text_color = inactive_text_color;
-			button_color = inactive_color;
+			text_color = ColorConstant.inactive_text_color;
+			button_color = ColorConstant.Background_for_chips;
 		}
 		Widget button_text = Text(
 			text,

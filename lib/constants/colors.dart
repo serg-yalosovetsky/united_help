@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+
 class ColorConstant {
 	static Color lightBlue300 = fromHex('#5ac8fa');
 
@@ -85,6 +86,16 @@ class ColorConstant {
 	static Color black90019 = fromHex('#19000000');
 
 	static Color whiteA700 = fromHex('#ffffff');
+
+	static Color Background_for_chips = fromHex('#F0F3FF');
+	static Color Volonterka_theme_color = fromHex('#0071D8');
+	static Color Black_volonterka = fromHex('#002241');
+	static Color Default_SystemGray_Light = fromHex('#8E8E93');
+	static Color Default_SystemBlue_Light = fromHex('#007AFF');
+	static Color help_text = fromHex('#748B9F');
+
+	static Color active_text_color = Colors.white;
+	static Color inactive_text_color = Colors.black;
 
 	static Color bluegray901 = fromHex('#333333');
 

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../constants/colors.dart';
+
 
 int selected_index = 0;
 var items = ['Актуальне', 'На мапі'];
@@ -15,7 +17,7 @@ class build_toggle_buttons extends StatefulWidget {
 
 
 class _build_toggle_buttons extends State<build_toggle_buttons> {
-	static const grey_shadow = Color(0xFFF0F3FF);
+	Color grey_shadow = ColorConstant.Background_for_chips;
 	void _onItemTapped(int index) {
 		setState(() {
 			selected_index = index;

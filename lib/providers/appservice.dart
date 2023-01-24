@@ -158,6 +158,13 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
+  String _event_query = '';
+  set event_query (String value) {
+    _event_query = value;
+    notifyListeners();
+  }
+  String get event_query => _event_query;
+
 
   set user_image_expire (bool value) {
     _user_image_expire = value;

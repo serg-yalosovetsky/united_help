@@ -109,8 +109,8 @@ class VerificationScreen extends StatelessWidget {
 									),
 								),
 							Row(
-							  children: const [
-								  Expanded(
+							  children: [
+								  const Expanded(
 									  flex: 3,
 									  child: Padding(
 									    padding: EdgeInsets.fromLTRB(25.0, 0, 0, 0),
@@ -122,7 +122,7 @@ class VerificationScreen extends StatelessWidget {
 								      child: Text(
 												divider_text,
 												style: TextStyle(
-													color: Color(0xFF748B9F),
+													color: ColorConstant.help_text,
 													fontSize: 16,
 													// height: 18,
 													fontFamily: 'SF Pro Text',
@@ -131,7 +131,7 @@ class VerificationScreen extends StatelessWidget {
 									  ),
 								    ),
 								  ),
-								  Expanded(
+								  const Expanded(
 									  flex: 3,
 									  child: Padding(
 									    padding: EdgeInsets.fromLTRB(0, 0, 25, 0),

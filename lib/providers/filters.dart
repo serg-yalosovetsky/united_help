@@ -19,13 +19,14 @@ class Filters with ChangeNotifier {
   Filters(this.shared_preferences);
 
 
-  int _filter_city = -1;
-  set filter_city (int value) {
-    _filter_city = value;
+  int _city = -1;
+  set city (int value) {
+    _city = value;
     notifyListeners();
   }
-  int get filter_city => _filter_city;
+  int get city => _city;
 
+  String name_or_description = '';
 
   int _new_event_city = -1;
   set new_event_city (int value) {
@@ -96,8 +97,9 @@ class Filters with ChangeNotifier {
 
   save_filters() {
       Map<String, dynamic> filters = {
+        'name_or_description': name_or_description,
         'skills': skills_list,
-        'city': filter_city,
+        'city': city,
         'employment': employment,
         'start_date': start_date,
         'end_date': end_date,
@@ -111,24 +113,65 @@ class Filters with ChangeNotifier {
     String? filters = shared_preferences.getString(filters_key);
     if (filters != null){
       var filters_json = json.decode(filters);
-      if (if_empty || (skills_list.isEmpty && filter_city == -1 && employment == null &&
-          start_date == null && time_end == null && data_start == null && data_end == null)){
 
-            skills_list = filters_json['skills'];
-            filter_city = filters_json['city'];
-            employment = filters_json['employment'];
-            start_date = filters_json['start_date'];
-            end_date = filters_json['end_date'];
-            start_time = filters_json['start_time'];
-            end_time = filters_json['end_time'];
-      }
+        if (if_empty ||
+            (skills_list.isEmpty && city == -1 && employment == null &&
+                start_date == null && time_end == null && date_start == null &&
+                date_end == null)) {
+          try {
+          name_or_description =
+              filters_json['name_or_description'] ?? name_or_description;
+
+          if (filters_json['skills'] != null) {
+            List<String> skills = [];
+            for (var item in filters_json['skills']) {
+              if (item.runtimeType == String) skills.add(item.cast(String));
+            }
+            skills_list = skills.isNotEmpty ? skills : skills_list;
+          }
+
+          city = filters_json['city'] ?? city;
+
+          employment =
+              str_to_employments(filters_json['employment']) ?? employment;
+
+          print(filters_json['start_date']);
+          start_date = filters_json['start_date']!=null ?
+                  DateTime.tryParse(filters_json['start_date']) :
+                  start_date;
+
+          end_date = filters_json['start_date']!=null ?
+                  DateTime.tryParse(filters_json['end_date']) :
+                  end_date;
+
+          var _start_time = filters_json['start_time']!=null ?
+                  DateTime.tryParse(filters_json['start_time']) :
+                  null;
+
+          start_time = _start_time != null
+              ? TimeOfDay.fromDateTime(_start_time)
+              : start_time;
+
+          var _end_time = filters_json['end_time']!=null ?
+                  DateTime.tryParse(filters_json['end_time']) :
+                  null;
+
+          end_time =
+            _end_time != null ? TimeOfDay.fromDateTime(_end_time) : end_time;
+
+          }
+          catch (e) {
+            print(e);
+          }
+        }
+
     }
   }
 
   TimeOfDay? time_start;
   TimeOfDay? time_end;
-  DateTime? data_start;
-  DateTime? data_end;
+  DateTime? date_start;
+  DateTime? date_end;
 
   bool? event_active = true;
 

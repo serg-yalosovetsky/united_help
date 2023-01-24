@@ -115,23 +115,23 @@ class Cities {
 
 enum Employments {
   full,
-  part_time,
+  part,
   one_time,
 }
 
 Map<int, Employments>  employments_listmap =  {
   0: Employments.full,
-  1: Employments.part_time,
+  1: Employments.part,
   2: Employments.one_time,
 };
 
 Map<Employments, String>  employments_text = {
   Employments.full: 'Постійна',
-  Employments.part_time: 'Часткова',
+  Employments.part: 'Часткова',
   Employments.one_time: 'Івент',
 };
 
-Employments? str_to_employments (String employment){
+Employments? str_to_employments (String? employment){
   for (Employments k in employments_text.keys){
     if (employments_text[k] == employment) return k;
   }

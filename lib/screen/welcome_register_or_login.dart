@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../fragment/welcome_button.dart';
 import '../providers/appservice.dart';
 
@@ -86,8 +87,8 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 
 								),
 							Row(
-							  children: const [
-								  Expanded(
+							  children: [
+								  const Expanded(
 									  flex: 3,
 									  child: Padding(
 									    padding: EdgeInsets.fromLTRB(25.0, 0, 0, 0),
@@ -98,17 +99,11 @@ class WelcomeRegisterOrLoginScreen extends StatelessWidget {
 								      padding: EdgeInsets.fromLTRB(18.0, 0, 18.0, 0),
 								      child: Text(
 										  'або',
-										  style: TextStyle(
-											  color: Color(0xFF748B9F),
-											  fontSize: 18,
-											  // height: 18,
-											  fontFamily: 'SF Pro Text',
-											  fontWeight: FontWeight.w600,
-										  ),
+										  style: StyleConstant.bold_help,
 									  ),
 								    ),
 								  ),
-								  Expanded(
+								  const Expanded(
 									  flex: 3,
 									  child: Padding(
 									    padding: EdgeInsets.fromLTRB(0, 0, 25, 0),

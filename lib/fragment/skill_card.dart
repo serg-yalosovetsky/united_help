@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:united_help/models/filter.dart';
 
+import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../screen/new_event_screen.dart';
 import '../providers/appservice.dart';
 import '../providers/filters.dart';
 const TextStyle timerStyle = TextStyle(
   fontSize: 18,
 );
-const optionStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
-const inactive_color = const Color(0xFFF0F3FF);
-const active_color = const Color(0xFF0071d8);
-const active_text_color = Colors.white;
-const inactive_text_color = Colors.black;
+
 const title_to_open_text_field = 'Інше';
 
 // Widget buildSkillCard(String title, {required int id, bool active = false, var fun}) {
@@ -63,9 +61,9 @@ class buildCityCardState extends State<buildCityCard> {
         child: Container(
           decoration: BoxDecoration(
               border: Border.all(
-                color: filters.filter_city == widget.id ? active_color : inactive_color,
+                color: filters.city == widget.id ? ColorConstant.Volonterka_theme_color : ColorConstant.Background_for_chips,
               ),
-              color: filters.filter_city == widget.id ? active_color : inactive_color,
+              color: filters.city == widget.id ? ColorConstant.Volonterka_theme_color : ColorConstant.Background_for_chips,
               borderRadius: BorderRadius.all(Radius.circular(10))),
           // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
           padding: const EdgeInsets.all(15),
@@ -73,7 +71,7 @@ class buildCityCardState extends State<buildCityCard> {
             widget.title,
             style: TextStyle(
               fontSize: 18,
-              color: filters.filter_city == widget.id ? active_text_color : inactive_text_color,
+              color: filters.city == widget.id ? ColorConstant.active_text_color : ColorConstant.inactive_text_color,
             ),
           ),
         ),
@@ -81,8 +79,8 @@ class buildCityCardState extends State<buildCityCard> {
       onTap: () {
         setState(() {
 
-          if (filters.filter_city != widget.id){
-            filters.filter_city = widget.id;
+          if (filters.city != widget.id){
+            filters.city = widget.id;
             if (widget.title == title_to_open_text_field) {
               filters.open_text_field_choose_other_city = true;
             } else {
@@ -90,7 +88,7 @@ class buildCityCardState extends State<buildCityCard> {
 
             }
           } else {
-            filters.filter_city = -1;
+            filters.city = -1;
             // if (widget.title == title_to_open_text_field) {
             filters.open_text_field_choose_other_city = false;
             // }
@@ -126,9 +124,9 @@ class buildSkillCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(
-              color: active != null && active! ? active_color : inactive_color,
+              color: active != null && active! ? ColorConstant.Volonterka_theme_color : ColorConstant.Background_for_chips,
             ),
-            color: active != null && active! ? active_color : inactive_color,
+            color: active != null && active! ? ColorConstant.Volonterka_theme_color : ColorConstant.Background_for_chips,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(15),
@@ -139,7 +137,7 @@ class buildSkillCard extends StatelessWidget {
               title,
               style: TextStyle(
                 fontSize: 18,
-                color: active != null && active! ? active_text_color : inactive_text_color,
+                color: active != null && active! ? ColorConstant.active_text_color : ColorConstant.inactive_text_color,
               ),
             ),
             GestureDetector(
@@ -168,9 +166,9 @@ Widget buildSkillCard3({
     child: Container(
       decoration: BoxDecoration(
           border: Border.all(
-            color: inactive_color,
+            color: ColorConstant.Background_for_chips,
           ),
-          color: inactive_color,
+          color: ColorConstant.Background_for_chips,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(15),
@@ -180,7 +178,7 @@ Widget buildSkillCard3({
             title,
             style: TextStyle(
               fontSize: 18,
-              color: inactive_text_color,
+              color: ColorConstant.inactive_text_color,
             ),
           ),
           GestureDetector(
@@ -229,9 +227,9 @@ class buildSkillCard2 extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(
-              color: inactive_color,
+              color: ColorConstant.Background_for_chips,
             ),
-            color: inactive_color,
+            color: ColorConstant.Background_for_chips,
             borderRadius: BorderRadius.all(Radius.circular(10))),
         // padding: const EdgeInsets.all(8),														padding: const EdgeInsets.all(8),
         padding: const EdgeInsets.all(15),
@@ -241,7 +239,7 @@ class buildSkillCard2 extends StatelessWidget {
               title,
               style: TextStyle(
                 fontSize: 18,
-                color: inactive_text_color,
+                color: ColorConstant.inactive_text_color,
               ),
             ),
             GestureDetector(
@@ -253,12 +251,7 @@ class buildSkillCard2 extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                  // print('skillcard ${title}');
-                  // var index = app_service.skills.indexOf(title);
-                  // print(index);
-                  // if (index >= 0)
-                  //   app_service.skills.removeAt(index);
-                  // print(app_service.skills);
+
                   fun(title);
               },
             ),
@@ -300,8 +293,8 @@ class buildEmploymentCardState extends State<buildEmploymentCard> {
   }
   @override
   Widget build(BuildContext context) {
-    var color = filters.employment == str_to_employments(widget.title) ? active_color : inactive_color;
-    var text_color = filters.employment == str_to_employments(widget.title) ? active_text_color : inactive_text_color;
+    var color = filters.employment == str_to_employments(widget.title) ? ColorConstant.Volonterka_theme_color : ColorConstant.Background_for_chips;
+    var text_color = filters.employment == str_to_employments(widget.title) ? ColorConstant.active_text_color : ColorConstant.inactive_text_color;
     return GestureDetector(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(13, 8, 0, 0),
@@ -344,7 +337,7 @@ Widget build_bold_left_text(String title, {padding}) {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: optionStyle,
+        style: StyleConstant.bold_header,
       ),
     ),
   );

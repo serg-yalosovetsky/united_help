@@ -367,7 +367,6 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 						child: Text(
 							'Зберегти',
 							style: TextStyle(
-								// color: Color(0xFF0071D8),
 								fontSize: 18,
 								fontFamily: 'SF Pro Text',
 								fontWeight: FontWeight.w400,
@@ -433,7 +432,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 										  	child: Text(
 										  		'Змінити фото акаунта',
 										  		style: TextStyle(
-										  				color: Color(0xFF0071D8),
+										  				color: ColorConstant.Volonterka_theme_color,
 										  				fontSize: 18,
 										  				fontWeight: FontWeight.w500
 										  		),

@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:united_help/screen/edit_account.dart';
 import 'package:united_help/screen/settings_screen.dart';
 import 'package:united_help/providers/appservice.dart';
+import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../fragment/bottom_navbar.dart';
-import '../fragment/card_list.dart';
 import '../fragment/events_list.dart';
 import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
@@ -22,11 +23,11 @@ class AccountScreen extends StatelessWidget {
 			context: context,
 			builder: (BuildContext context) {
 				return AlertDialog(
-					title: Text("Alert!!"),
-					content: Text("NotImplementedError"),
+					title: const Text("Alert!!"),
+					content: const Text("NotImplementedError"),
 					actions: [
 						MaterialButton(
-							child: Text("OK"),
+							child: const Text("OK"),
 							onPressed: () {
 								Navigator.of(context).pop();
 							},
@@ -51,9 +52,9 @@ class AccountScreen extends StatelessWidget {
 								Navigator.pop(context);
 							},
 							child: Row(
-						  		children: [
+						  		children: const [
 						  			Icon(Icons.arrow_back_ios, size: 23,),
-						  			const Text(
+						  			Text(
 						  				'Назад',
 						  				style: back_style,
 						  			),
@@ -61,10 +62,10 @@ class AccountScreen extends StatelessWidget {
 						  ),
 						),
 
-						Expanded(
+						const Expanded(
 							child: Padding(
-								padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-								child: const Text(
+								padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+								child: Text(
 									'Акаунт',
 									style: TextStyle(color: Colors.black),
 									textAlign: TextAlign.center,
@@ -88,27 +89,27 @@ class AccountScreen extends StatelessWidget {
 							borderRadius: BorderRadius.circular(10.0),
 						),
 						itemBuilder: (context) => [
-							PopupMenuItem(
+							const PopupMenuItem(
 								value: 1,
 								child: Text("Налаштування"),
 							),
-							PopupMenuItem(
+							const PopupMenuItem(
 								value: 2,
 								child: Text("Допомога"),
 							),
-							PopupMenuItem(
+							const PopupMenuItem(
 								value: 3,
 								child: Text("Вийти з акаунта"),
 							),
 						],
-						offset: Offset(0, 60),
+						offset: const Offset(0, 60),
 						color: Colors.white,
 						// elevation: 2,
 						onSelected: (value) {
 							if (value == 1) {
 								Navigator.of(context).push(
 									MaterialPageRoute(
-										builder: (context) => build_settings_screen(),
+										builder: (context) => const build_settings_screen(),
 									),
 								);
 							} else if (value == 2) {
@@ -124,7 +125,7 @@ class AccountScreen extends StatelessWidget {
 			body: SafeArea(
 				child: account_screen(user_id: user_id),
 			),
-			bottomNavigationBar: buildBottomNavigationBar(),
+			bottomNavigationBar: const buildBottomNavigationBar(),
 
 		);
 	}
@@ -255,7 +256,7 @@ class _build_account_screenState extends State<build_account_screen> {
 			}
 			image = NetworkImage(widget.userprofile.profile.image!);
 		 } else {
-			image = AssetImage('images/img_22.png');
+			image = const AssetImage('images/img_22.png');
 		}
 
     return SafeArea(
@@ -288,7 +289,7 @@ class _build_account_screenState extends State<build_account_screen> {
 											padding: const EdgeInsets.fromLTRB(73, 15, 73, 0),
 											child: Text(
 													widget.userprofile.user.username,
-												style: TextStyle(
+												style: const TextStyle(
 														color: Colors.black,
 														fontSize: 17,
 														fontWeight: FontWeight.w600
@@ -301,18 +302,14 @@ class _build_account_screenState extends State<build_account_screen> {
 											padding: const EdgeInsets.fromLTRB(73, 7, 73, 0),
 											child: Text(
 													widget.userprofile.profile.description ?? 'В вас немає біо',
-												style: TextStyle(
-														color: Color(0xff748B9F),
-														fontSize: 17,
-														fontWeight: FontWeight.w400
-												),
+												style: StyleConstant.thin,
 												textAlign: TextAlign.center,
 											),
 										),
 
 										Container(
 											margin: const EdgeInsets.fromLTRB(16, 30, 0, 0),
-											child: Align(
+											child: const Align(
 												alignment: Alignment.centerLeft,
 												child: Text(
 													'Контакти',
@@ -331,17 +328,13 @@ class _build_account_screenState extends State<build_account_screen> {
 														padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
 														child: Icon(
 															Icons.phone_rounded,
-															color: Color(0xff002241),
+															color: ColorConstant.Black_volonterka,
 															size: 26,
 														),
 													),
 													Text(
 															widget.userprofile.user.phone!,
-														style: TextStyle(
-																color: Color(0xff002241),
-																fontSize: 18,
-																fontWeight: FontWeight.w400
-														),
+														style: StyleConstant.thin_main,
 													),
 												],
 											),
@@ -354,8 +347,8 @@ class _build_account_screenState extends State<build_account_screen> {
 												alignment: Alignment.centerLeft,
 												child: Row(
 													children: [
-														Padding(
-															padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+														const Padding(
+															padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
 															child: Icon(
 																Icons.telegram_rounded,
 																color: Color(0xff29b6f6),
@@ -364,12 +357,9 @@ class _build_account_screenState extends State<build_account_screen> {
 														),
 														Text(
 																widget.userprofile.user.nickname!,
-															style: TextStyle(
-																	color: Color(0xff002241),
-																	fontSize: 18,
-																	fontWeight: FontWeight.w400
-															),
-															// style: timerBoldStyle,
+																style: TextStyle(
+																	color: ColorConstant.Black_volonterka,
+																),
 														),
 													],
 												),
@@ -388,7 +378,7 @@ class _build_account_screenState extends State<build_account_screen> {
 													child: GestureDetector(
 														child: Container(
 															margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-															child: Text(
+															child: const Text(
 																'Актуальне',
 																style: build_account_screen.timerBoldStyle,
 															),
@@ -408,7 +398,7 @@ class _build_account_screenState extends State<build_account_screen> {
 													child: GestureDetector(
 														child: Container(
 															margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-															child: Text(
+															child: const Text(
 																'Історія',
 																style: build_account_screen.timerBoldStyle,
 															),
@@ -428,14 +418,14 @@ class _build_account_screenState extends State<build_account_screen> {
     					    		Expanded(
     					    			child: Padding(
     					    				padding: const EdgeInsets.fromLTRB(15, 13, 0, 0),
-    					    				child: widget.app_service.account_actual_events ? ActiveDivider() : InactiveDivider(),
+    					    				child: widget.app_service.account_actual_events ? const ActiveDivider() : const InactiveDivider(),
     					    			),
     					    		),
 
     					    		Expanded(
     					    			child: Padding(
     					    				padding: const EdgeInsets.fromLTRB(0, 13, 15, 0),
-    					    				child: widget.app_service.account_actual_events ? InactiveDivider() : ActiveDivider(),
+    					    				child: widget.app_service.account_actual_events ? const InactiveDivider() : const ActiveDivider(),
     					    			),
     					    		),
     					    	],

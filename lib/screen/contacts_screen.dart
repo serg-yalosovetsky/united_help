@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:united_help/constants/colors.dart';
+import 'package:united_help/constants/styles.dart';
 import 'package:united_help/models/comments.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../fragment/bottom_navbar.dart';
@@ -188,7 +190,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														    						  		  child: Text(
 														  												user.user.username,
 														  												style: TextStyle(
-														  													color: Color(0xFF002241),
+														  													color: ColorConstant.Black_volonterka,
 														  													fontSize: 17,
 														  													fontWeight: FontWeight.w500,
 														  												),
@@ -210,11 +212,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														  											},
 														  											child: Text(
 														  											user.user.phone ?? user.user.email,
-														  											style: TextStyle(
-														  												color: Color(0xFF748B9F),
-														  												fontSize: 17,
-														  												fontWeight: FontWeight.w400,
-														  											),
+														  											style: StyleConstant.thin_help
 														  										),
 														    						  		),
 														    						  	],

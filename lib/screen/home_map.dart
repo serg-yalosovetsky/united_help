@@ -13,6 +13,8 @@ import 'package:united_help/fragment/no_internet.dart';
 import 'package:united_help/models/events.dart';
 import 'dart:ui' as ui;
 
+import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../fragment/bottom_navbar.dart';
 import '../fragment/switch_app_bar.dart';
 import '../routes/routes.dart';
@@ -223,6 +225,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String full_event_query = '';
+    if (_app_service.event_query.isNotEmpty)
+      full_event_query += '?${_app_service.event_query}';
 
     Widget map_screen = MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -250,7 +255,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             }),
 
         body: FutureBuilder<Events>(
-          future: fetchEvents('', _app_service, filters),
+          future: fetchEvents(full_event_query, _app_service, filters),
           builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
             if (snapshot.hasData && snapshot.data != null) {
               markers = get_markers(snapshot.data!.list);
@@ -424,11 +429,7 @@ class build_stack_map_card extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
                     child: Text(
                       trim_text(event.name),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Color(0xFF002241),
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: StyleConstant.bold_main,
                     ),
                   ),
                   Padding(

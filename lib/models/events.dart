@@ -182,7 +182,7 @@ Future<Events> fetchEvents(String event_query, AppService app_service, Filters f
   var r = Requests();
   String url = '$server_url$all_events_url/';
   if (event_query != ''){
-    url += '$event_query/';
+    url += '$event_query';
   }
   print('url= $url');
   final response = await r.get_wrapper(url, app_service);

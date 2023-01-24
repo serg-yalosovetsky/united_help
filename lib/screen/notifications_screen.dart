@@ -185,7 +185,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																								style: TextStyle(
 																									fontSize: 16,
 																									fontWeight: FontWeight.w600,
-																									color: Color(0xFF002241),
+																									color: ColorConstant.Black_volonterka,
 																								),
 																							),
 																							Padding(
@@ -195,7 +195,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																									style: TextStyle(
 																										fontSize: 14,
 																										fontWeight: FontWeight.w400,
-																										color: Color(0xFF748B9F),
+																										color: ColorConstant.help_text,
 																									),
 																								),
 																							),
