@@ -25,6 +25,7 @@ class PushNotification {
 @HiveType(typeId: 0)
 class HivePushNotification extends HiveObject {
   HivePushNotification({
+    this.private_id = 0.0,
     this.id = 0,
     this.title = '',
     this.body = '',
@@ -41,42 +42,45 @@ class HivePushNotification extends HiveObject {
 
   });
   @HiveField(0)
-  late int id;
+  late double private_id;
 
   @HiveField(1)
-  late String title;
+  late int id;
 
   @HiveField(2)
-  late String body;
+  late String title;
 
   @HiveField(3)
-  late String to_profile;
+  late String body;
 
   @HiveField(4)
-  late Map<String, String> data;
+  late String to_profile;
 
   @HiveField(5)
-  late bool is_read;
+  late Map<String, String> data;
 
   @HiveField(6)
-  late String image;
+  late bool is_read;
 
   @HiveField(7)
-  late String notify_type;
+  late String image;
 
   @HiveField(8)
-  late int event_id;
+  late String notify_type;
 
   @HiveField(9)
-  late String event_to;
+  late int event_id;
 
   @HiveField(10)
-  late String event_name;
+  late String event_to;
 
   @HiveField(11)
-  late String actor_name;
+  late String event_name;
 
   @HiveField(12)
+  late String actor_name;
+
+  @HiveField(13)
   late int actor_profile_id;
 
 }
@@ -96,6 +100,7 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
       }
     }
     return HivePushNotification(
+      private_id: map['private_id'] ?? 0.0,
       id: map['id'] ?? 0,
       title: map['title'] ?? '',
       body: map['body'] ?? '',
@@ -115,6 +120,7 @@ class HivePushNotificationAdapter extends TypeAdapter<HivePushNotification> {
   @override
   void write(BinaryWriter writer, HivePushNotification obj) {
     writer.write({
+      'private_id': obj.private_id,
       'id': obj.id,
       'title': obj.title,
       'body': obj.body,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -60,7 +61,7 @@ Future store_message(RemoteMessage message) async {
 	if (!Hive.isBoxOpen('counter')) await Hive.openBox<int>('counter');
 
 	var counter = Hive.box<int>('counter');
-	late var spec_box;
+	late Box<HivePushNotification> spec_box;
 
 	int counter_value = counter.get('notify_counter', defaultValue: 0) ?? 0;
 
@@ -74,12 +75,20 @@ Future store_message(RemoteMessage message) async {
 
 
 	for (HivePushNotification item in box.values) {
+		print('item.event_id = ${item.event_id}  item.notify_type = ${item.notify_type}');
+		print('int.parse(message.data["event_id"] = ${int.parse(message.data["event_id"])}');
+		print('int.parse(message.data["notify_type"] = ${message.data["notify_type"]}');
 		if (item.event_id == int.parse(message.data['event_id']) && item.notify_type == message.data['notify_type']) {
 
 			new_notify = false;
-			if (item.event_id != 0 && (item.notify_type == 'subscribe' ||
-																 item.notify_type == 'review')) {
-			  spec_box = await Hive.openBox('${message.data["to_profile"]}_notifications_${item.notify_type}_${item.event_id}');
+			print('new_notify = $new_notify');
+			if (item.event_id != 0 && (item.notify_type == 'subscribe'
+					|| item.notify_type == 'review' || item.notify_type == 'change')) {
+							String subnotification = '${message.data["to_profile"].toLowerCase()}_notifications_${item.notify_type}_${item.event_id}';
+							print(26443);
+							print(subnotification);
+							if (!Hive.isBoxOpen(subnotification)) await Hive.openBox<HivePushNotification>(subnotification);
+							spec_box = Hive.box<HivePushNotification>(subnotification);
 			}
 			break;
 		}
@@ -101,6 +110,7 @@ Future store_message(RemoteMessage message) async {
 		}
 
 		var notify = HivePushNotification(
+			private_id: Random().nextDouble(),
 			id: counter_value,
 			title: message.notification?.title ?? '',
 			body: message.notification?.body ?? '',
@@ -119,16 +129,35 @@ Future store_message(RemoteMessage message) async {
 	try{
 			if (new_notify) {
 				await box.put(counter_value, notify);
+
+				try{notify.save();}
+				catch (e) {print(e);}
 			}
 			else {
-				await box.put(__counter, notify);
-				await spec_box.put(spec_box.length, notify);
+				HivePushNotification? _notify = box.getAt(__counter);
+				print('_notify = $_notify');
+				await box.deleteAt(__counter);
+				await box.add(notify);
+				print('box.length ${box.length} counter_value  $__counter ');
+				try{notify.save();}
+				catch (e) {print(e);}
+				print('box.values ${box.values} ');
+
+				if (_notify != null) {
+
+					print('spec_box.length ${spec_box.length} $__counter');
+				  await spec_box.put(spec_box.length, _notify);
+					print('spec_box.length ${spec_box.length} $__counter');
+					try{_notify.save();}
+					catch (e) {print(e);}
+					print('spec_box.values ${spec_box.values} ');
+				}
+
+
 			}
 	}
 	catch (e) {print(e);}
 
-	try{notify.save();}
-	catch (e) {print(e);}
 
 	counter.put('notify_counter', counter_value);
 	print('STORED BOX finish');

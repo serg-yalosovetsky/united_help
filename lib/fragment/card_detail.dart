@@ -10,6 +10,7 @@ import '../constants/styles.dart';
 import '../fragment/bottom_navbar.dart';
 import '../models/events.dart';
 import '../models/profile.dart';
+import '../providers/filters.dart';
 import '../services/show_nice_time.dart';
 
 class card_detail extends StatefulWidget {
@@ -36,9 +37,99 @@ class card_detail extends StatefulWidget {
 }
 
 class _card_detailState extends State<card_detail> {
+  final _form_key_cancel_event = GlobalKey<FormState>();
+  final cancel_event_controller = TextEditingController();
+  late AppService app_service;
+  late Filters _filters;
+
+  void _showCancelDialog(BuildContext context, Event event) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return  AlertDialog(
+          title:  Center(
+              child: Text(
+                  'Повідомлення для волонтерів',
+                  style: StyleConstant.bold_main,
+              ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+                  child: Text(
+                    '''Будь ласка, поясніть причину відміни івента. Дане повідомлення буде надіслано всім волонтерам, що були записані на івент''',
+                    style: StyleConstant.thin_help,
+                  ),
+                ),
+                Form(
+                  key: _form_key_cancel_event,
+                  child: TextFormField(
+                    minLines: 5,
+                    maxLines: 15,
+                    controller: cancel_event_controller,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius : BorderRadius.all(Radius.circular(16.0)),
+                      ),
+                      hintText: 'Напишіть cancel event message',
+                      suffixIcon: IconButton(
+                        onPressed: cancel_event_controller.clear,
+                        icon: Icon(
+                          Icons.clear,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: ColorConstant.Volonterka_theme_color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22.0),
+                  ),
+                ),
+                onPressed: () {
+                  _filters.event_active = false;
+                  Navigator.of(context).pop();
+                  activate_deactivate_event(
+                      event?.id ?? 0,
+                      false,
+                      app_service,
+                      cancel_message: cancel_event_controller.text
+                  );
+                },
+                child: Text('Надіслати'),
+              ),
+            ),
+
+
+          ],
+        );
+      },
+    );
+  }
+
+
+  @override
+  void dispose() {
+    cancel_event_controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    AppService app_service = Provider.of<AppService>(context, listen: false);
+    app_service = Provider.of<AppService>(context, listen: false);
+    _filters = Provider.of<Filters>(context, listen: false);
+
     String employment_string = '';
     if (widget.event.employment == 0)
       employment_string = 'Постійна зайнятість';
@@ -274,7 +365,31 @@ class _card_detailState extends State<card_detail> {
                       padding: [0, 31, 0, 0],
 
                     ) : Container(),
-            ],
+
+
+                    app_service.role == Roles.organizer ? welcome_button_fun(
+                      text: 'Опублікувати',
+                      padding: [0, 19, 0, 14],
+                      fun:
+                          () {
+                        _filters.event_active = true;
+                        activate_deactivate_event(
+                          widget.event.id,
+                          true,
+                          app_service,
+                        );
+                      },
+                    ) : Container(),
+                    app_service.role == Roles.organizer ? social_button(
+                        text: 'Відмінити івент',
+                        padding: [0, 0, 0, 19],
+                        fun: () {
+                          _showCancelDialog(context, widget.event);
+                        }
+
+                    ) : Container(),
+
+                  ],
 
           ),
           ),

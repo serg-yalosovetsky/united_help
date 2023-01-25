@@ -55,18 +55,22 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 			for (int index = 0; index < box.length; index++) {
 				HivePushNotification? box_item = box.getAt(index);
 				if (box_item != null) {
-					String subnotifications = '${app_service.role.name}_notifications_${box_item.notify_type}_${box_item.event_id}';
+					String subnotifications = '${app_service.role.name.toLowerCase()}_notifications_${box_item.notify_type}_${box_item.event_id}';
+					print(subnotifications);
+					print(23847578);
 					if (await Hive.boxExists(subnotifications)){
 						if (!Hive.isBoxOpen(subnotifications)) await Hive.openBox<HivePushNotification>(subnotifications);
 
 						Box<HivePushNotification> subbox = Hive.box<HivePushNotification>(subnotifications);
-						if (subbox.isNotEmpty) is_notification_has_item[index] = true;
+						if (subbox.length > 0) is_notification_has_item[index] = true;
+						print('subbox.length ${subbox.length}');
 					}
 
 				}
 			}
 		}
 		catch (e){print('ERROR $e');}
+		print(is_notification_has_item);
 		return true;
 	}
 
@@ -148,9 +152,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																	box_item.is_read = true;
 																	box_item.save();
 																});
-																String subnotifications = '${app_service.role.name}_notifications_${box_item.notify_type}_${box_item.event_id}';
+																String subnotifications = '${app_service.role.name.toLowerCase()}_notifications_${box_item.notify_type}_${box_item.event_id}';
+																print(subnotifications);
+																print(54346456);
 																if (widget.box_name==null && (box_item.notify_type == 'subscribe' ||
-																		box_item.notify_type == 'review')) {
+																		box_item.notify_type == 'review' || box_item.notify_type == 'change')) {
 																	try {
 																		if (is_notification_has_item[index]) {
 																			print(subnotifications);

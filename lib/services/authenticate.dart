@@ -156,7 +156,6 @@ class Requests {
   FutureMap post_wrapper(String url, Map body, AppService app_service) async {
     var r = await post(url, body, await app_service.get_access_token());
     if (r['status_code'] == 403){
-      // await app_service.relogin();
       app_service.set_access_token(null);
 
       return post(url, body, await app_service.get_access_token());
@@ -210,17 +209,12 @@ class Requests {
     if (access_token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $access_token';
     }
-    // if (!url.substring(url.length - 1).contains(RegExp(r'[0-9]')) && !url.endsWith('/')){
-    //   url += '/';
-    // }
     await http.post(
       Uri.parse(url),
       body: json.encode(body),
       headers: headers,
     ).then((response) {
       status_code = response.statusCode;
-      // print("Response status: ${response.statusCode}");
-      // print("Response body: ${response.body}");
       result = jsonDecode(utf8.decode(response.bodyBytes));
     }).catchError((error){
       result = error;

@@ -152,12 +152,14 @@ class NewEventScreenState extends State<NewEventScreen> {
 	final _form_key_city = GlobalKey<FormState>();
 	final _form_key_skills = GlobalKey<FormState>();
 	final _form_key_members = GlobalKey<FormState>();
+	final _form_key_cancel_event = GlobalKey<FormState>();
 	final name_controller = TextEditingController();
 	final bio_controller = TextEditingController();
 	final location_controller = TextEditingController();
 	final city_controller = TextEditingController();
 	final skills_controller = TextEditingController();
 	final members_controller = TextEditingController();
+	final cancel_event_controller = TextEditingController();
 	Map skill_map = {};
 	TextEditingController start_date_controller = TextEditingController();
 	TextEditingController start_time_controller = TextEditingController();
@@ -177,6 +179,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 		start_time_controller.dispose();
 		end_date_controller.dispose();
 		end_time_controller.dispose();
+		cancel_event_controller.dispose();
 		super.dispose();
   }
 
@@ -250,6 +253,66 @@ class NewEventScreenState extends State<NewEventScreen> {
 		context.go(APP_PAGE.my_events.to_path);
 		// return res['success'] as bool;
 	}
+
+	void _showCancelDialog(BuildContext context, Event event) {
+		showDialog(
+			context: context,
+			builder: (BuildContext context) {
+				return  AlertDialog(
+					title: const Text("Alert!!"),
+					content: Form(
+						key: _form_key_cancel_event,
+						child: TextFormField(
+							controller: cancel_event_controller,
+							autovalidateMode: AutovalidateMode.onUserInteraction,
+							validator: (value) {
+								if (value == null || value.isEmpty) {
+									return 'cancel event message cannot be null or empty';
+								}
+								return null;
+							},
+							decoration: InputDecoration(
+								border: OutlineInputBorder(
+									borderRadius : BorderRadius.all(Radius.circular(16.0)),
+								),
+								hintText: 'Напишіть cancel event message',
+								suffixIcon: IconButton(
+									onPressed: cancel_event_controller.clear,
+									icon: Icon(
+										Icons.clear,
+									),
+								),
+							),
+						),
+					),
+					actions: [
+						MaterialButton(
+							child: const Text("Cancel event"),
+							onPressed:
+								cancel_event_controller.text.isNotEmpty ?
+										() async {
+									filters.event_active = false;
+									var res = await activate_deactivate_event(
+											event?.id ?? 0,
+											false,
+											_app_service,
+											cancel_message: cancel_event_controller.text);
+									Navigator.of(context).pop();
+								} : null,
+						),
+
+						MaterialButton(
+							child: const Text("Back"),
+							onPressed: () async {
+								Navigator.of(context).pop();
+							},
+						),
+					],
+				);
+			},
+		);
+	}
+
 
 	@override
 	Widget build(BuildContext context) {
@@ -540,6 +603,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 			),
 		);
 
+
 		Widget edit_forms({Event? event}){
 			late Widget image_widget;
 			if (event != null && !one_time_counter) {
@@ -818,10 +882,10 @@ class NewEventScreenState extends State<NewEventScreen> {
 					is_edit_event ? social_button(
 						text: 'Відмінити івент',
 						padding: [0, 0, 0, 19],
-						fun: () async {
-							filters.event_active = false;
-							var res = await activate_deactivate_event(event?.id ?? 0, false, _app_service);
-						},
+						fun: () {
+							if (event != null) _showCancelDialog(context, event);
+						}
+
 					) : Container(),
 
 				],

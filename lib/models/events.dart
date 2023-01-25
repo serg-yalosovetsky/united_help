@@ -166,7 +166,7 @@ class Events {
 
 Future<Event> fetchEvent(int event_id, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/$event_id';
+  String url = '$server_url$all_events_url/$event_id/';
   final response = await r.get(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
@@ -244,14 +244,17 @@ FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   }
 }
 
-FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_service) async {
+FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_service,
+    {String? cancel_message}) async {
   var r = Requests();
   print('activate_deactivate_Event');
 
   String url = '$server_url$all_events_url/$event_id/${activate ? 'activate' : 'cancel'}/';
-  var response = await r.post_wrapper(url, {}, app_service);
+  Map<String, dynamic> body = {};
+  if (!activate && cancel_message != null ) body = {'message': cancel_message};
+  var response = await r.post_wrapper(url, body, app_service);
 
-  if (response['status_code'] == 200 || response['status_code'] == 201) {
+  if (response['status_code'] >= 200 && response['status_code'] <= 300) {
     return response['result'];
   } else {
     app_service.set_access_token(null);
