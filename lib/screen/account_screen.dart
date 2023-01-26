@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../fragment/events_list.dart';
 import '../fragment/no_internet.dart';
 import '../fragment/skill_card.dart';
 import '../models/profile.dart';
+import '../services/urls.dart';
 
 
 class AccountScreen extends StatelessWidget {
@@ -20,17 +22,27 @@ class AccountScreen extends StatelessWidget {
 		this.user_id = 0,
 	});
 	late AppService app_service;
+	String textfield_value = '';
 	void _showDialog(BuildContext context) {
 		showDialog(
 			context: context,
 			builder: (BuildContext context) {
 				return AlertDialog(
-					title: const Text("Alert!!"),
-					content: const Text("NotImplementedError"),
+					title: Text("${app_service.server_url}"),
+					content: TextField(
+						onChanged: (String value) {
+							textfield_value = value;
+						},
+						decoration: InputDecoration(
+							border: OutlineInputBorder(),
+							labelText: 'server url',
+						),
+					),
 					actions: [
 						MaterialButton(
-							child: const Text("OK"),
+							child: const Text("Change server"),
 							onPressed: () {
+								app_service.server_url = textfield_value;
 								Navigator.of(context).pop();
 							},
 						),

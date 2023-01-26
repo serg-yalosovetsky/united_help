@@ -155,7 +155,7 @@ int? employments_to_int (Employments? employment){
 
 Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_skills_url/';
+  String url = '${app_service.server_url}$all_skills_url/';
   url += skill_query;
 
   final response = await r.get_wrapper(url, app_service);
@@ -174,7 +174,7 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
 
 Future<Cities> fetchCities(String city_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_cities_url/';
+  String url = '${app_service.server_url}$all_cities_url/';
   url += city_query;
 
   final response = await r.get_wrapper(url, app_service);

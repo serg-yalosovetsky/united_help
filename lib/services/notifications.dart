@@ -98,6 +98,7 @@ Future store_message(RemoteMessage message) async {
 	counter_value ++;
 	String image = message.data['image'] ?? '';
 	if (image.contains('127.0.0.1')) {
+
 		image = image.replaceAll('127.0.0.1', server_address);
 	}
 

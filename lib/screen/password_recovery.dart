@@ -149,7 +149,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 												var r = Requests();
 												print(email_controller.text);
 												var result = await r.post(
-														'$server_url$authenticate_url',
+														'${app_service.server_url}$authenticate_url',
 														{
 															'username': email_controller.text,
 														}

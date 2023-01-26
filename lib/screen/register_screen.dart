@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 												print(email_controller.text);
 												print(password_controller.text);
 												var result = await r.post(
-														'$server_url$register_url',
+														'${app_service.server_url}$register_url',
 														{
 															'username': name_controller.text,
 															'email': email_controller.text,

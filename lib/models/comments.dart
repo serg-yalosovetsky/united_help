@@ -76,7 +76,7 @@ class Comments {
 Future<Comments> fetchComments(String event_query, AppService app_service) async {
   var r = Requests();
   print(1);
-  String url = '$server_url$all_events_url/$event_query$user_comments_url/';
+  String url = '${app_service.server_url}$all_events_url/$event_query$user_comments_url/';
   print(url);
   final response = await r.get_wrapper(url, app_service);
   print(3);

@@ -1,6 +1,6 @@
 // String server_address = '192.168.1.26';
 String server_address = '10.80.40.8';
-String server_url = 'http://$server_address:8000';
+// String server_url = 'http://$server_address:8000';
 String authenticate_url = '/api/token';
 String register_url = '/users';
 String refresh_token_url = '/api/token/refresh';

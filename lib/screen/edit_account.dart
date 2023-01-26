@@ -348,7 +348,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 							print(name_controller.text);
 							print(email_controller.text);
 							var result = await r.post(
-									'$server_url$register_url',
+									'${app_service.server_url}$register_url',
 									{
 										'username': name_controller.text,
 										'email': email_controller.text,
@@ -448,7 +448,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
 														app_service.user_image_expire = true;
 
-														String url = '$server_url$all_profiles_url/${app_service.current_profile?.id}/';
+														String url = '${app_service.server_url}$all_profiles_url/${app_service.current_profile?.id}/';
 														Requests().image_send(
 																	url, image.path,
 																	access_token: await app_service.get_access_token(),

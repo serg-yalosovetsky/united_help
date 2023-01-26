@@ -11,11 +11,11 @@ typedef FutureMap = Future<Map<String, dynamic>> ;
 
 class Requests {
 
-  FutureMap refreshing_token(String refresh_token) async {
+  FutureMap refreshing_token(String refresh_token, String server_url) async {
     Map response_map = {};
 
     await http.post(
-      Uri.parse('$server_url$refresh_token_url/'),
+      Uri.parse('${server_url}$refresh_token_url/'),
       body: json.encode({
         "refresh": refresh_token,
       }),
@@ -50,7 +50,7 @@ class Requests {
     return {'success': false,};
   }
 
-  FutureMap authenticate(String username, String password) async {
+  FutureMap authenticate(String username, String password, String server_url) async {
     Map response_map = {};
     await http.post(
         Uri.parse('$server_url$authenticate_url/'),

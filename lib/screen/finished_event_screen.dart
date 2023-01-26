@@ -21,7 +21,7 @@ import '../services/urls.dart';
 
 Future<Event> fetchEvent(int event_id, AppService app_service) async {
 	var r = Requests();
-	String url = '$server_url$all_events_url/$event_id';
+	String url = '${app_service.server_url}$all_events_url/$event_id';
 	final response = await r.get(url, await app_service.get_access_token());
 
 	if (response['status_code'] == 200) {

@@ -236,7 +236,7 @@ class Contacts {
 
 Future<Profiles> fetchProfiles(String profile_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_profiles_url/$profile_query';
+  String url = '${app_service.server_url}$all_profiles_url/$profile_query';
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -253,7 +253,7 @@ Future<Profiles> fetchProfiles(String profile_query, AppService app_service) asy
 Future<Profile> fetchProfile(String profile_query, AppService app_service) async {
   print(235235);
   var r = Requests();
-  String url = '$server_url$all_profiles_url/$profile_query';
+  String url = '${app_service.server_url}$all_profiles_url/$profile_query';
   final response = await r.get_wrapper(url, app_service);
   print('response[status_code]');
   print(response['status_code']);
@@ -272,7 +272,7 @@ Future<Profile> fetchProfile(String profile_query, AppService app_service) async
 
 Future<String> fetchProfileImage(AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_profiles_url/me/image/';
+  String url = '${app_service.server_url}$all_profiles_url/me/image/';
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -287,7 +287,7 @@ Future<String> fetchProfileImage(AppService app_service) async {
 
 Future<Users> fetchUsers(String user_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_users_url/$user_query';
+  String url = '${app_service.server_url}$all_users_url/$user_query';
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -302,7 +302,7 @@ Future<Users> fetchUsers(String user_query, AppService app_service) async {
 
 Future<User> fetchUser(String user_query, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_users_url/$user_query';
+  String url = '${app_service.server_url}$all_users_url/$user_query';
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -319,7 +319,7 @@ Future<User> fetchUser(String user_query, AppService app_service) async {
 Future<UserProfile> fetchUserProfile(String profile_query, AppService app_service) async {
   var r = Requests();
 
-  String url = '$server_url$userprofile_url/';
+  String url = '${app_service.server_url}$userprofile_url/';
   if (profile_query.isEmpty || profile_query == '0') {
     url += '${app_service.user?.id}';
   } else {
@@ -343,7 +343,7 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
 Future<dynamic> fetchContacts(String profile_query, AppService app_service) async {
   var r = Requests();
   print('profile_query $profile_query');
-  String url = '$server_url$all_profiles_url$all_contacts_url/';
+  String url = '${app_service.server_url}$all_profiles_url$all_contacts_url/';
   if (profile_query.isNotEmpty && (profile_query == 'refugees' ||
       profile_query == 'volunteers' ))
     url = '$url?$profile_query';
@@ -374,7 +374,7 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
 
 FutureMap postFirebaseToken(String token, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$add_fb_token';
+  String url = '${app_service.server_url}$add_fb_token';
   // print('url: $url');
   var token_map = {'token': token};
   // print('token_map: $token_map');
@@ -390,7 +390,7 @@ FutureMap postFirebaseToken(String token, AppService app_service) async {
 
 FutureMap subscribe_unsubscribe_organizer(int organizer, bool subscribe, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_profiles_url/$organizer/';
+  String url = '${app_service.server_url}$all_profiles_url/$organizer/';
 
   String action = '';
   if (subscribe) action = 'subscribe/';

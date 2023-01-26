@@ -46,6 +46,17 @@ Roles isRole(String value){
 class AppService with ChangeNotifier {
   late final SharedPreferences shared_preferences;
   late final FlutterSecureStorage secure_storage;
+
+
+  String _server_url = 'http://10.80.40.8:8000';
+  set server_url (String value) {
+    _server_url = value;
+    shared_preferences.setString('server_url', value);
+    notifyListeners();
+  }
+  String get server_url => shared_preferences.getString('server_url') ?? _server_url;
+
+
   bool _roleState = false;
   bool _loginState = false;
   bool _initialized = false;
@@ -91,7 +102,7 @@ class AppService with ChangeNotifier {
     String? username = await secure_storage.read(key: username_key);
     late Map<String, dynamic> result;
     if (username != null && password != null) {
-      result = await r.authenticate(username, password);
+      result = await r.authenticate(username, password, server_url);
     }
     else return false;
 
@@ -110,7 +121,7 @@ class AppService with ChangeNotifier {
     String? refresh_token = await secure_storage.read(key: refresh_key);
     late Map<String, dynamic> result;
     if (refresh_token != null) {
-      result = await r.refreshing_token(refresh_token);
+      result = await r.refreshing_token(refresh_token, server_url);
     }
     else return false;
 
@@ -144,7 +155,7 @@ class AppService with ChangeNotifier {
     if (access_token == null){
       // TODO вместо логина пароля нужно передавать рефреш ключ, при ошибке
       // TODO сбросить параметр инит, чтобы юзера выкинуло на главный экран
-      var result = await Requests().authenticate('serg', 'sergey104781');
+      var result = await Requests().authenticate('serg', 'sergey104781', server_url);
         if (result['success']){
           access_token = result['access_token'];
           secure_storage.write(key: access_key, value: access_token);

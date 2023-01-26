@@ -166,7 +166,7 @@ class Events {
 
 Future<Event> fetchEvent(int event_id, AppService app_service) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/$event_id/';
+  String url = '${app_service.server_url}$all_events_url/$event_id/';
   final response = await r.get(url, await app_service.get_access_token());
 
   if (response['status_code'] == 200) {
@@ -180,7 +180,7 @@ Future<Event> fetchEvent(int event_id, AppService app_service) async {
 
 Future<Events> fetchEvents(String event_query, AppService app_service, Filters filters) async {
   var r = Requests();
-  String url = '$server_url$all_events_url/';
+  String url = '${app_service.server_url}$all_events_url/';
   if (event_query != ''){
     url += '$event_query';
   }
@@ -221,7 +221,7 @@ FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   print('postEvents');
   print(body);
 
-  String url = '$server_url$all_events_url';
+  String url = '${app_service.server_url}$all_events_url';
   if (body['id'] != 0){
     url = '$url/${body["id"]}/';
   }
@@ -249,7 +249,7 @@ FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_
   var r = Requests();
   print('activate_deactivate_Event');
 
-  String url = '$server_url$all_events_url/$event_id/${activate ? 'activate' : 'cancel'}/';
+  String url = '${app_service.server_url}$all_events_url/$event_id/${activate ? 'activate' : 'cancel'}/';
   Map<String, dynamic> body = {};
   if (!activate && cancel_message != null ) body = {'message': cancel_message};
   var response = await r.post_wrapper(url, body, app_service);
@@ -267,7 +267,7 @@ FutureMap subscribe_unsubscribe_event(int event_id, bool activate, AppService ap
   var r = Requests();
   print('subscribe_unsubscribe_event');
 
-  String url = '$server_url$all_events_url/$event_id/${activate ? 'subscribe' : 'unsubscribe'}/';
+  String url = '${app_service.server_url}$all_events_url/$event_id/${activate ? 'subscribe' : 'unsubscribe'}/';
   var response = await r.post_wrapper(url, {}, app_service);
 
   if (response['status_code'] == 200 || response['status_code'] == 204) {
