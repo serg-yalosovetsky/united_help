@@ -28,7 +28,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
   @override
   Widget build(BuildContext context) {
     _app_service = Provider.of<AppService>(context, listen: false);
-
+    bool is_organizer = _app_service.role == Roles.organizer;
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -50,13 +50,14 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
                     map_or_history: 'history',
                 ),
         body: SafeArea(
-          child: EventListOrganizerScreen(event_query: 'created',),
+          child: is_organizer ? EventListOrganizerScreen(event_query: 'created',):
+                                EventListScreen(event_query: 'subscribed'),
         ),
         bottomNavigationBar: buildBottomNavigationBar(),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: is_organizer ? FloatingActionButton(
           onPressed: () { context.go(APP_PAGE.new_events_choose_help_or_job.to_path); },
           child: Icon(Icons.add),
-        ),
+        ) : Container(),
       ),
     );
   }

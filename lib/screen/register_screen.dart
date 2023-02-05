@@ -13,6 +13,7 @@ import '../fragment/welcome_button.dart';
 import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 
 class RegisterScreen extends StatefulWidget {
 	const RegisterScreen({super.key});
@@ -78,6 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 							else
 								button_states[name_index] = false;
 						});
+						dPrint(button_states);
 					},
 					decoration: InputDecoration(
 						border: OutlineInputBorder(
@@ -118,7 +120,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 									button_states[email_index] = true;
 							else
 									button_states[email_index] = false;
+
 						});
+						dPrint(button_states);
+
 					},
 					decoration: InputDecoration(
 						border: OutlineInputBorder(
@@ -161,6 +166,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 							else
 									button_states[password_index] = false;
 						});
+						dPrint(button_states);
+
 					},
 					decoration: InputDecoration(
 						border: OutlineInputBorder(
@@ -185,7 +192,73 @@ class _RegisterScreenState extends State<RegisterScreen> {
 				),
 			),
 		);
+		Widget body = Column(
+			mainAxisSize: MainAxisSize.min,
+			crossAxisAlignment: CrossAxisAlignment.center,
+			mainAxisAlignment: MainAxisAlignment.start,
+			children: [
+				Padding(
+					padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
+					child: KeyboardVisibilityBuilder(
+							builder: (context, isKeyboardVisible) {
+								return Image.asset(
+									'images/img.png',
+									height:	isKeyboardVisible ? 78.0 : 184.0,
+								);
+							}
+					),
+				),
+				form_name,
+				form_email,
+				form_password,
+				welcome_button(
+					text_style: SFProTextSemibold18,
+					text: 'Зареєструватись',
+					padding: const [0, 47, 0, 0],
+					active: button_states.every((element) => element),
+					fun: button_states.every((element) => element) ? () async {
+						var r = Requests();
+						dPrint(name_controller.text);
+						dPrint(email_controller.text);
+						dPrint(password_controller.text);
+						var result = await r.post(
+								'${app_service.server_url}$register_url/',
+								{
+									'username': name_controller.text,
+									'email': email_controller.text,
+									'password': password_controller.text,
+								}
+						);
+						if (result['status_code'] == 201){
+							dPrint('success register');
+							app_service.set_username(email_controller.text);
+							app_service.set_password(password_controller.text);
+							app_service.username = name_controller.text;
+							app_service.password = password_controller.text;
+							// bool result = await app_service.login();
+							app_service.is_register = true;
+							app_service.current_location = APP_PAGE.register_confirmation.to_path;
+							context.go(APP_PAGE.register_confirmation.to_path);
+						}
 
+						if (result['status_code'] == 400){
+							dPrint('password too weak');
+
+							//TODO handle weak password
+							app_service.set_username(email_controller.text);
+							app_service.set_password(password_controller.text);
+							app_service.username = name_controller.text;
+							app_service.password = password_controller.text;
+							// bool result = await app_service.login();
+							app_service.is_register = true;
+							app_service.current_location = APP_PAGE.register_confirmation.to_path;
+							context.go(APP_PAGE.register_confirmation.to_path);
+						}
+						// post_request();
+					} : null,
+				),
+			],
+		);
 		return MaterialApp(
 			debugShowCheckedModeBanner: false,
 		  home: Scaffold(
@@ -196,63 +269,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 				}, 'Реєстрація'),
 		  	backgroundColor: ColorConstant.whiteA700,
 		  	body: SafeArea(
-		  	  child: Container(
-		  	  	// width: size.width,
-		  	  	child: SingleChildScrollView(
-		  	  		child: Center(
-		  	  		  child: Column(
-		  	  		  	mainAxisSize: MainAxisSize.min,
-		  	  		  	crossAxisAlignment: CrossAxisAlignment.center,
-		  	  		  	mainAxisAlignment: MainAxisAlignment.start,
-		  	  		  	children: [
-		  	  		  		Padding(
-		  	  		  			padding: EdgeInsets.fromLTRB(64, 10, 64, 0),
-		  	  		  			child: KeyboardVisibilityBuilder(
-													builder: (context, isKeyboardVisible) {
-														return Image.asset(
-															'images/img.png',
-															height:	isKeyboardVisible ? 78.0 : 184.0,
-														);
-													}
-											),
-		  	  		  		),
-										form_name,
-										form_email,
-										form_password,
-										welcome_button(
-											text_style: SFProTextSemibold18,
-											text: 'Зареєструватись',
-											padding: const [72, 47, 72, 0],
-											fun: button_states.every((element) => element) ? () async {
-												var r = Requests();
-												print(name_controller.text);
-												print(email_controller.text);
-												print(password_controller.text);
-												var result = await r.post(
-														'${app_service.server_url}$register_url',
-														{
-															'username': name_controller.text,
-															'email': email_controller.text,
-															'password': password_controller.text,
-														}
-												);
-												if (result['status_code'] == 201){
-													print('success register');
-													app_service.set_username(email_controller.text);
-													app_service.set_password(password_controller.text);
-													app_service.email = email_controller.text;
-													app_service.password = password_controller.text;
-													// bool result = await app_service.login();
-													app_service.is_register = true;
-													app_service.current_location = APP_PAGE.register_confirmation.to_path;
-													context.go(APP_PAGE.register_confirmation.to_path);
-												}
-												// post_request();
-											} : null,
-										),
-		  	  		  	],
-		  	  		  ),
-		  	  		),
+		  	  child: SingleChildScrollView(
+		  	  	child: Center(
+		  	  	  child: body,
 		  	  	),
 		  	  ),
 		  	),

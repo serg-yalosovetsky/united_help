@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:united_help/fragment/skill_card.dart';
 import '../fragment/bottom_navbar.dart';
 import '../main.dart';
+import '../services/debug_print.dart';
 
 
 var locations_state;
@@ -49,15 +50,15 @@ class _filtersState extends State<filters> {
           }) {
     List<Widget> columns = [];
     int i = 0;
-    print('skills.length ${skills.length}');
-    print('skill_in_row ${skill_in_row}');
-    print('skills.length/skill_in_row ${skills.length/skill_in_row}');
-    print('(skills.length/skill_in_row).ceil() ${(skills.length/skill_in_row).ceil()}');
+    dPrint('skills.length ${skills.length}');
+    dPrint('skill_in_row ${skill_in_row}');
+    dPrint('skills.length/skill_in_row ${skills.length/skill_in_row}');
+    dPrint('(skills.length/skill_in_row).ceil() ${(skills.length/skill_in_row).ceil()}');
     while (i < (skills.length/skill_in_row).ceil()) {
       List<Widget> rows = [];
       if (start_widget != null) rows.add(start_widget);
       for (int j=0; j < skill_in_row; j++ ){
-        print('i= $i     j= $j');
+        dPrint('i= $i     j= $j');
         int index = i * skill_in_row + j;
         if (index < skills.length) {
           if (fun != null) {
@@ -66,7 +67,7 @@ class _filtersState extends State<filters> {
                 child: buildCityCard(title: skills[index], id: 0,
                     active: active?[index] ?? false),
                 onTap: () {
-                  print('click');
+                  dPrint('click');
                   setState(() {
                     if (active![index] != null && active[index] == true)
                       active[index] = false;
@@ -119,7 +120,7 @@ class _filtersState extends State<filters> {
   Widget build(BuildContext context) {
 
     void on_item_tap(bool active){
-      print('click2 $active');
+      dPrint('click2 $active');
       setState(() {
         if (active)
           active = false;

@@ -20,6 +20,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/toast_no_context.dart';
 import 'package:flutter/material.dart';
 
+import '../services/debug_print.dart';
 import '../services/toast.dart';
 
 const TextStyle timerBoldStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
@@ -66,7 +67,7 @@ class build_settings_screen extends StatelessWidget {
 															const left_padding_divider(),
 															build_settings_link(
 																text: 'Обранні організатори',
-																on_tap: () {print('tap2');},
+																on_tap: () {dPrint('tap2');},
 																up_padding: 11,
 															),
 															const left_padding_divider(),

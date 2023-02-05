@@ -9,10 +9,12 @@ import 'package:united_help/services/urls.dart';
 import '../constants/colors.dart';
 import '../constants/images.dart';
 import '../fragment/build_app_bar.dart';
+import '../fragment/switch_app_bar.dart';
 import '../fragment/welcome_button.dart';
 import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 
 class LoginScreen extends StatefulWidget {
 	const LoginScreen({super.key});
@@ -21,12 +23,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-	final _form_key_email = GlobalKey<FormState>();
+	final _form_key_username = GlobalKey<FormState>();
 	final _form_key_password = GlobalKey<FormState>();
 	List<bool> button_states = [false, false];
 	final int email_index = 0;
 	final int password_index = 1;
-	final email_controller = TextEditingController();
+	final username_controller = TextEditingController();
 	final password_controller = TextEditingController();
 	late bool _password_visible;
 	late AppService app_service;
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 	@override
 	void dispose() {
 		// Clean up the controller when the widget is disposed.
-		email_controller.dispose();
+		username_controller.dispose();
 		password_controller.dispose();
 		super.dispose();
 	}
@@ -44,32 +46,43 @@ class _LoginScreenState extends State<LoginScreen> {
 		_password_visible = false;
 		app_service = Provider.of<AppService>(context, listen: false);
 		if (app_service.is_register) {
-			if (app_service.email.isNotEmpty) {
-				email_controller.text = app_service.email;
-				app_service.email = '';
+			if (app_service.username.isNotEmpty) {
+				username_controller.text = app_service.username;
+				app_service.username = '';
+				button_states[email_index] = true;
 			}
 			if (app_service.password.isNotEmpty) {
 				password_controller.text = app_service.password;
 				app_service.password = '';
+				button_states[password_index] = true;
 			}
 		}
 	}
 
 	on_submit ([var args]) async {
-		// Requests.password = password_controller.text;
-		// Requests.username = email_controller.text;
-		var r = Requests();
-		print(email_controller.text);
-		print(password_controller.text);
-		app_service.set_username(email_controller.text);
+		dPrint(username_controller.text);
+		dPrint(password_controller.text);
+		app_service.set_username(username_controller.text);
 		app_service.set_password(password_controller.text);
 		bool result = await app_service.login();
-		if (result){
-			setState(() {
-				is_wrong_password = true;
-			});
-		}
-		print('result = $result');
+		setState(() {
+			is_wrong_password = !result;
+			if (result){
+				if(app_service.role == Roles.organizer)
+					if(app_service.actual_or_history == SwitchEnum.first) {
+						app_service.current_location = APP_PAGE.my_events.to_path;
+						context.go(APP_PAGE.my_events.to_path);
+					} else {
+						app_service.current_location = APP_PAGE.my_events_history.to_path;
+						context.go(APP_PAGE.my_events_history.to_path);
+					}
+				else {
+					app_service.current_location = APP_PAGE.home_list.to_path;
+					context.go(APP_PAGE.home_list.to_path);
+				}
+			}
+		});
+		dPrint('result = $result');
 		// _form_key_password.currentState.
 	}
 
@@ -84,39 +97,36 @@ class _LoginScreenState extends State<LoginScreen> {
 			fontFamily: 'SF Pro Text',
 			fontWeight: FontWeight.w600,
 		);
-		Widget form_email = Form(
-			key: _form_key_email,
+		Widget form_username = Form(
+			key: _form_key_username,
 			child: Padding(
 				padding: const EdgeInsets.fromLTRB(31, 13, 31, 0),
 				child: TextFormField(
-					keyboardType: TextInputType.emailAddress,
-					controller: email_controller,
+					keyboardType: TextInputType.text,
+					controller: username_controller,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					validator: (value) {
 						if (value == null || value.isEmpty) {
-							return 'Email не може бути пустим';
+							return 'username не може бути пустим';
 						}
-						String validate_msg = email_validator(value);
-						if (validate_msg.isEmpty){
-							return null;
-						}
-						return validate_msg;
+						else return null;
 					},
 					onChanged: (text) {
 						setState(() {
-							if (_form_key_email.currentState!.validate())
+							if (_form_key_username.currentState!.validate())
 									button_states[email_index] = true;
 							else
 									button_states[email_index] = false;
 						});
+						dPrint(button_states);
 					},
 					decoration: InputDecoration(
 						border: OutlineInputBorder(
 							borderRadius : BorderRadius.all(Radius.circular(16.0)),
 						),
-						hintText: 'Email',
+						hintText: 'username',
 						suffixIcon: IconButton(
-							onPressed: email_controller.clear,
+							onPressed: username_controller.clear,
 							icon: Icon(
 								Icons.clear,
 							),
@@ -152,6 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
 							else
 									button_states[password_index] = false;
 						});
+						dPrint(button_states);
 					},
 					decoration: InputDecoration(
 						border: OutlineInputBorder(
@@ -206,12 +217,13 @@ class _LoginScreenState extends State<LoginScreen> {
 													),
 		  	  		  		),
 										// form_name,
-										form_email,
+										form_username,
 										form_password,
 										welcome_button(
 											text_style: SFProTextSemibold18,
 											text: 'Увійти в акаунт',
-											padding: const [72, 24, 72, 0],
+											padding: const [0, 24, 0, 0],
+											active: button_states.every((element) => element),
 											fun: button_states.every((element) => element) ? on_submit : null,
 										),
 										TextButton(
@@ -222,9 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
 											),
 											onPressed: () {
 												// app_service.is_try_login = false;
-												if (email_controller.text.isNotEmpty &&
-														_form_key_email.currentState!.validate()) {
-												 	 app_service.email = email_controller.text;
+												if (username_controller.text.isNotEmpty &&
+														_form_key_username.currentState!.validate()) {
+												 	 // app_service.username = username_controller.text;
 												}
 												app_service.current_location = APP_PAGE.password_recovery.to_path;
 												context.go(APP_PAGE.password_recovery.to_path);

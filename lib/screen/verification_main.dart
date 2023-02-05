@@ -4,8 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/colors.dart';
+import '../constants/styles.dart';
 import '../fragment/welcome_button.dart';
 import '../providers/appservice.dart';
+import '../routes/routes.dart';
+import '../services/debug_print.dart';
 
 const h1_text = 'UnitedHelp';
 const h2_text = 'Через наявність інформації, що може бути використана проти населення України, просимо Вас підтвердити особу';
@@ -97,6 +100,11 @@ class VerificationScreen extends StatelessWidget {
 												height: 22.0,
 												semanticLabel: 'Verification via Diia',
 											),
+										fun: () {
+												dPrint('to webview');
+												app_service.is_try_verificated = true;
+												context.go(APP_PAGE.webview_diia.to_path);
+										},
 								),
 								social_button(
 									text: bank_id_button_text,
@@ -108,47 +116,43 @@ class VerificationScreen extends StatelessWidget {
 										semanticLabel: 'Verification via Bank Id',
 									),
 								),
-							Row(
-							  children: [
-								  const Expanded(
-									  flex: 3,
-									  child: Padding(
-									    padding: EdgeInsets.fromLTRB(25.0, 0, 0, 0),
-									    child: Divider(height: 20, color: Color(0xFFBDD2E4),  thickness: 2,),
-									  )),
-								  Expanded(
-								    child: Padding(
-								      padding: EdgeInsets.fromLTRB(18.0, 0, 18.0, 0),
-								      child: Text(
-												divider_text,
-												style: TextStyle(
-													color: ColorConstant.help_text,
-													fontSize: 16,
-													// height: 18,
-													fontFamily: 'SF Pro Text',
-													fontWeight: FontWeight.w600,
-												),
-									  ),
-								    ),
+								Padding(
+								  padding: const EdgeInsets.only(top: 8.0),
+								  child: Row(
+								  	children: [
+								  		const Expanded(
+								  				flex: 3,
+								  				child: Padding(
+								  					padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+								  					child: Divider(height: 16, color: Color(0xFFBDD2E4),  thickness: 2,),
+								  				)),
+								  		Expanded(
+								  			child: Padding(
+								  				padding: EdgeInsets.fromLTRB(10, 0, 7, 0),
+								  				child: Text(
+								  					'або',
+								  					style: StyleConstant.bold_help,
+								  				),
+								  			),
+								  		),
+								  		const Expanded(
+								  				flex: 3,
+								  				child: Padding(
+								  					padding: EdgeInsets.fromLTRB(0, 0, 16, 0),
+								  					child: Divider(height: 16, color: Color(0xFFBDD2E4),  thickness: 2,),
+								  				)),
+								  	],
 								  ),
-								  const Expanded(
-									  flex: 3,
-									  child: Padding(
-									    padding: EdgeInsets.fromLTRB(0, 0, 25, 0),
-									    child: Divider(height: 20, color: Color(0xFFBDD2E4),  thickness: 2,),
-									  )),
-							  ],
-							),
+								),
 							welcome_button(
-								text: 'verifacate_persona_button_text',
+								text: verifacate_persona_button_text,
 								padding: const [72, 14, 72, 28],
 								active: false,
 								fun: () {
 									app_service.is_verificated = true;
-									app_service.current_location = '/home';
-									context.go('/home');
+									app_service.is_try_verificated = false;
+									context.go(APP_PAGE.home_list.to_path);
 								},
-
 							),
 
 		  	  		  	],

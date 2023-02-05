@@ -14,6 +14,7 @@ import '../fragment/skill_card.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import '../services/urls.dart';
 
@@ -173,7 +174,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 															itemSize: 14,
 															ignoreGestures: true,
 															onRatingUpdate: (rating) {
-																print(rating);
+																dPrint(rating);
 															},
 														),
 													],
@@ -239,7 +240,7 @@ class _FinishedEventScreenState extends State<FinishedEventScreen> {
 																					  							itemSize: 14,
 																					  							ignoreGestures: true,
 																					  							onRatingUpdate: (rating) {
-																					  								print(rating);
+																					  								dPrint(rating);
 																					  							},
 																					  						) : Container(),
 																					  					],

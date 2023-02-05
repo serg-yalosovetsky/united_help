@@ -2,6 +2,7 @@
 import 'package:united_help/providers/appservice.dart';
 
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 import '../services/urls.dart';
 
 class Skill {
@@ -162,7 +163,7 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print(response['result']);
+    dPrint(response['result']);
     var r = Skills.fromJson(res);
     return r;
   } else {
@@ -181,7 +182,7 @@ Future<Cities> fetchCities(String city_query, AppService app_service) async {
 
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print(response['result']);
+    dPrint(response['result']);
     var r = Cities.fromJson(res);
     return r;
   } else {

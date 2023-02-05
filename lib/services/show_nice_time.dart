@@ -9,6 +9,8 @@
 // если нужно отобразить только начало евента, и год текущий, то мы печатаем строку вида "время месяц.день"
 // если нужно отобразить только начало евента, и год не текущий, то мы печатаем строку вида "время год.месяц.день"
 
+import 'debug_print.dart';
+
 String show_nice_time(String time_start, [String? time_end]){
   final now = DateTime.now();
   String nice_time = '';
@@ -47,7 +49,7 @@ String show_nice_time(String time_start, [String? time_end]){
         nice_time += '${event_time.month}.${event_time.day}';
       }
     } on FormatException {
-      print('incorrect datetime $time_start');
+      dPrint('incorrect datetime $time_start');
       nice_time = time_start;
     }
   } else  {
@@ -61,7 +63,7 @@ String show_nice_time(String time_start, [String? time_end]){
       nice_time += '${event_time.month}.${event_time.day}';
 
     } on FormatException {
-      print('incorrect datetime $time_start');
+      dPrint('incorrect datetime $time_start');
       nice_time = time_start;
     }
   }

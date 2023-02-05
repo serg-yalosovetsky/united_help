@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../routes/routes.dart';
 import '../providers/appservice.dart';
+import '../services/debug_print.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({ Key? key }) : super(key: key);
@@ -22,12 +24,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void onStartUp() async {
+    dPrint('before onStartUp');
     await _app_service.onAppStart();
-    print('_app_service.initialized ${_app_service.initialized}');
-    print('_app_service.onboard ${_app_service.onboarding}');
-    print(!_app_service.initialized);
-    print('${_app_service.initialized && !_app_service.onboarding}');
+    dPrint('_app_service.initialized ${_app_service.initialized}');
+    dPrint('_app_service.onboard ${_app_service.onboarding}');
     _app_service.initialized = true;
+    context.go(APP_PAGE.welcome.to_path);
   }
 
   @override

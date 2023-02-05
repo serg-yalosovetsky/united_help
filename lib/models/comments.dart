@@ -5,6 +5,7 @@ import 'package:united_help/models/profile.dart';
 
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 import '../services/urls.dart';
 
 
@@ -60,7 +61,7 @@ class Comments {
   factory Comments.fromJson(Map<String, dynamic> json) {
     var results = <Comment>[];
     for (var comment in json['results']) {
-      print(comment);
+      dPrint(comment);
       results.add(Comment.fromJson(comment));
     }
     return Comments(
@@ -75,20 +76,16 @@ class Comments {
 
 Future<Comments> fetchComments(String event_query, AppService app_service) async {
   var r = Requests();
-  print(1);
   String url = '${app_service.server_url}$all_events_url/$event_query$user_comments_url/';
-  print(url);
+  dPrint(url);
   final response = await r.get_wrapper(url, app_service);
-  print(3);
 
   if (response['status_code'] == 200) {
-    print(4);
-    print(response['result']);
+    dPrint(response['result']);
     var c = Comments.fromJson(response['result']);
-    print(c);
+    dPrint(c);
     return c;
   } else {
-    print(6);
     app_service.set_access_token(null);
     throw Exception('Failed to load Comments');
   }

@@ -17,6 +17,7 @@ import '../fragment/no_push_messages.dart';
 import '../models/notify.dart';
 import '../models/profile.dart';
 import '../providers/appservice.dart';
+import '../services/debug_print.dart';
 import '../services/notifications.dart';
 
 
@@ -56,21 +57,21 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 				HivePushNotification? box_item = box.getAt(index);
 				if (box_item != null) {
 					String subnotifications = '${app_service.role.name.toLowerCase()}_notifications_${box_item.notify_type}_${box_item.event_id}';
-					print(subnotifications);
-					print(23847578);
+					dPrint(subnotifications);
+					dPrint(23847578);
 					if (await Hive.boxExists(subnotifications)){
 						if (!Hive.isBoxOpen(subnotifications)) await Hive.openBox<HivePushNotification>(subnotifications);
 
 						Box<HivePushNotification> subbox = Hive.box<HivePushNotification>(subnotifications);
 						if (subbox.length > 0) is_notification_has_item[index] = true;
-						print('subbox.length ${subbox.length}');
+						dPrint('subbox.length ${subbox.length}');
 					}
 
 				}
 			}
 		}
-		catch (e){print('ERROR $e');}
-		print(is_notification_has_item);
+		catch (e){dPrint('ERROR $e');}
+		dPrint(is_notification_has_item);
 		return true;
 	}
 
@@ -153,13 +154,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																	box_item.save();
 																});
 																String subnotifications = '${app_service.role.name.toLowerCase()}_notifications_${box_item.notify_type}_${box_item.event_id}';
-																print(subnotifications);
-																print(54346456);
+																dPrint(subnotifications);
+																dPrint(54346456);
 																if (widget.box_name==null && (box_item.notify_type == 'subscribe' ||
 																		box_item.notify_type == 'review' || box_item.notify_type == 'change')) {
 																	try {
 																		if (is_notification_has_item[index]) {
-																			print(subnotifications);
+																			dPrint(subnotifications);
 																			Navigator.push(
 																				context,
 																				MaterialPageRoute(
@@ -171,7 +172,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 																		}
 																	}
 																	catch (e) {
-																		print(e);
+																		dPrint(e);
 																	}
 																}
 															},
@@ -292,23 +293,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 // 	}
 //
 // 	waiting_box_open (String box_name) async {
-// 		print('waiting_box_open');
-// 		print(box_name);
+// 		dPrint('waiting_box_open');
+// 		dPrint(box_name);
 // 		try {
 // 			if (!Hive.isBoxOpen(box_name)) await Hive.openBox<HivePushNotification>(box_name);
 // 		}
-// 		catch (e){print(e);}
-// 		print('waiting_box_open finish');
+// 		catch (e){dPrint(e);}
+// 		dPrint('waiting_box_open finish');
 // 		return true;
 // 	}
 //
 // 	@override
 // 	Widget build(BuildContext context) {
-// 		print(2398752);
+// 		dPrint(2398752);
 // 		app_service = Provider.of<AppService>(context);
-// 		print(2398752);
+// 		dPrint(2398752);
 // 		String box_name = widget.box_name ?? '${app_service.role.name.toLowerCase()}_notifications';
-// 		print(2398752);
+// 		dPrint(2398752);
 // 		Widget app = MaterialApp(
 // 			debugShowCheckedModeBanner: false,
 // 			home: Scaffold(
@@ -401,11 +402,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 //
 // 																}
 // 																catch (e) {
-// 																	print(e);
+// 																	dPrint(e);
 // 																}
 //
 // 															}
-// 															print("box.getAt(index).is_read = ${box_item.is_read};");
+// 															dPrint("box.getAt(index).is_read = ${box_item.is_read};");
 // 														},
 // 														onHorizontalDragStart: (e) {box.deleteAt(index);},
 // 														child: Card(

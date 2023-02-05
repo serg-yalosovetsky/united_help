@@ -20,6 +20,7 @@ import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import '../services/urls.dart';
 import 'account_screen.dart';
@@ -96,7 +97,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 	late Future<dynamic> future_contacts;
 	@override
   void initState() {
-		print('profiles_query ${widget.profiles_query}');
+		dPrint('profiles_query ${widget.profiles_query}');
 		app_service = Provider.of<AppService>(context, listen: false);
 		future_contacts = fetchContacts(widget.profiles_query, app_service);
 		super.initState();
@@ -237,7 +238,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														  											phone = phone.substring(1);
 														  									  url = 'viber://chat?number=$phone';
 														  									}
-														  									print(url);
+														  									dPrint(url);
 
 														  									if (await canLaunchUrl(Uri.parse(url))) {
 														  										await launchUrl(Uri.parse(url));
@@ -256,7 +257,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														    						user.user.telegram_phone!=null || user.user.nickname!=null ?
 														    						GestureDetector(
 														  								onTap: () async {
-														  									print('telegram');
+														  									dPrint('telegram');
 
 														  									late String url;
 														  									if (user.user.nickname != null && user.user.nickname!.isNotEmpty)
@@ -265,7 +266,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
 														  										url = 't.me/${user.user.telegram_phone}';
 														  									else
 														  										url = 't.me/${user.user.phone}';
-														  									print(url);
+														  									dPrint(url);
 
 														  									if (await canLaunchUrl(Uri.parse(url))) {
 														  										await launchUrl(Uri.parse(url));

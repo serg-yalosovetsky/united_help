@@ -2,10 +2,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:united_help/providers/appservice.dart';
 
 import '../services/authenticate.dart';
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/urls.dart';
 import 'filter.dart';
 
@@ -84,7 +86,7 @@ class Event {
         comments_count: json['comments_count'] ?? 0,
       );
     }
-    catch (e) {print(e);}
+    catch (e) {dPrint(e);}
 
 
     return Event(
@@ -149,7 +151,7 @@ class Events {
   });
 
   factory Events.fromJson(Map<String, dynamic> json) {
-    print(json);
+    dPrint(json);
     var results = <Event>[];
     for (var event in json['results']) {
       results.add(Event.fromJson(event));
@@ -184,7 +186,9 @@ Future<Events> fetchEvents(String event_query, AppService app_service, Filters f
   if (event_query != ''){
     url += '$event_query';
   }
-  print('url= $url');
+  if (kDebugMode) {
+    dPrint('url= $url');
+  }
   final response = await r.get_wrapper(url, app_service);
 
   if (response['status_code'] == 200) {
@@ -218,8 +222,8 @@ Future<Events> fetchEvents(String event_query, AppService app_service, Filters f
 
 FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   var r = Requests();
-  print('postEvents');
-  print(body);
+  dPrint('postEvents');
+  dPrint(body);
 
   String url = '${app_service.server_url}$all_events_url';
   if (body['id'] != 0){
@@ -247,7 +251,7 @@ FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
 FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_service,
     {String? cancel_message}) async {
   var r = Requests();
-  print('activate_deactivate_Event');
+  dPrint('activate_deactivate_Event');
 
   String url = '${app_service.server_url}$all_events_url/$event_id/${activate ? 'activate' : 'cancel'}/';
   Map<String, dynamic> body = {};
@@ -265,7 +269,7 @@ FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_
 
 FutureMap subscribe_unsubscribe_event(int event_id, bool activate, AppService app_service) async {
   var r = Requests();
-  print('subscribe_unsubscribe_event');
+  dPrint('subscribe_unsubscribe_event');
 
   String url = '${app_service.server_url}$all_events_url/$event_id/${activate ? 'subscribe' : 'unsubscribe'}/';
   var response = await r.post_wrapper(url, {}, app_service);

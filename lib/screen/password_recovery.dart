@@ -13,6 +13,7 @@ import '../fragment/build_app_bar.dart';
 import '../fragment/welcome_button.dart';
 import '../routes/routes.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 
 class PasswordRecoveryScreen extends StatefulWidget {
 	const PasswordRecoveryScreen({super.key});
@@ -29,11 +30,11 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 
 	void initState() {
 		app_service = Provider.of<AppService>(context, listen: false);
-		if (app_service.email.isNotEmpty) {
-			email_controller.text = app_service.email;
-			button_states[0] = true;
-		}
-		app_service.email = '';
+		// if (app_service.username.isNotEmpty) {
+		// 	email_controller.text = app_service.username;
+		// 	button_states[0] = true;
+		// }
+		app_service.username = '';
 	}
 
 	@override
@@ -145,17 +146,18 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
 											text_style: SFProTextSemibold18,
 											text: 'Надіслати Email',
 											padding: const [72, 24, 72, 0],
+											active: button_states.every((element) => element),
 											fun: button_states.every((element) => element) ? () async {
 												var r = Requests();
-												print(email_controller.text);
+												dPrint(email_controller.text);
 												var result = await r.post(
-														'${app_service.server_url}$authenticate_url',
+														'${app_service.server_url}$authenticate_url/',
 														{
 															'username': email_controller.text,
 														}
 												);
-												print(result['result']);
-												print(result['status_code']);
+												dPrint(result['result']);
+												dPrint(result['status_code']);
 											} : null,
 										),
 

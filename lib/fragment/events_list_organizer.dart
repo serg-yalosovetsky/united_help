@@ -13,6 +13,7 @@ import '../constants/styles.dart';
 import '../screen/contacts_screen.dart';
 import '../screen/new_event_choose_help_or_job.dart';
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -51,7 +52,7 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		print('futureEvents');
+		dPrint('futureEvents');
 		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 
 		return Consumer<AppService>(

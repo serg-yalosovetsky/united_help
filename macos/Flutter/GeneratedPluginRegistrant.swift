@@ -10,7 +10,7 @@ import firebase_messaging
 import flutter_secure_storage_macos
 import location
 import package_info_plus
-import path_provider_macos
+import path_provider_foundation
 import sentry_flutter
 import shared_preferences_foundation
 import sqflite

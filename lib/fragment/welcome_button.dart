@@ -47,7 +47,6 @@ class welcome_button extends StatelessWidget {
 		],);
 		Widget button = SizedBox(
 			height: 44,
-			width: 230,
 			child: ElevatedButton(
 				style: ElevatedButton.styleFrom(
 					primary: button_color,
@@ -151,7 +150,6 @@ class social_button extends StatelessWidget {
 			padding: EdgeInsets.fromLTRB(padding[0], padding[1], padding[2], padding[3]),
 			child: SizedBox(
 				height: 44,
-				width: 230,
 				child: ElevatedButton(
 					style: ElevatedButton.styleFrom(
 						primary: background_color,

@@ -20,6 +20,7 @@ import '../fragment/switch_app_bar.dart';
 import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import 'card_screen.dart';
 import 'filter_screen.dart';
@@ -74,8 +75,8 @@ dynamic get_markers(List<Event> events)  {
 
   Set<Marker> markers = Set();
   for (Event event in events) {
-    print(239845);
-    print('${event.location_lat}, ${event.location_lon}');
+    dPrint(239845);
+    dPrint('${event.location_lat}, ${event.location_lon}');
     markers.add(
         Marker( //add first marker
           markerId: MarkerId('first'),
@@ -213,7 +214,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     filters = Provider.of<Filters>(context, listen: false);
     init_location().then(
         (result) {
-          print("result: $result");
+          dPrint("result: $result");
           setState(() {});
         }
       );

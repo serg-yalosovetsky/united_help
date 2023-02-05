@@ -25,6 +25,7 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import 'card_screen.dart';
 
 
@@ -49,7 +50,7 @@ Widget build_skills_columns({
 }) {
 	List<String> skills_list = [];
 	data.forEach((element) {skills_list.add(element); });
-	var skills_card_blueprint = calculate_cities_widgets(
+	var skills_card_bluedPrint = calculate_cities_widgets(
 		// context: context,
 		width: width,
 		cities_list: skills_list,
@@ -57,7 +58,7 @@ Widget build_skills_columns({
 	);
 	var cr = <Widget>[];
 	int index = 0;
-	for (var row in skills_card_blueprint){
+	for (var row in skills_card_bluedPrint){
 		var rc = <Widget>[];
 		for (var city in row){
 			rc.add(buildSkillCard2(title: city, id:index, app_service: app_service, fun: fun,));
@@ -89,7 +90,7 @@ Widget build_employments_rows({
 		) {
 	List<String> cities_list = [];
 	data.forEach((element) {cities_list.add(element); });
-	var cities_card_blueprint = calculate_cities_widgets(
+	var cities_card_bluedPrint = calculate_cities_widgets(
 		// context: context,
 		width: width,
 		cities_list: cities_list,
@@ -97,7 +98,7 @@ Widget build_employments_rows({
 	);
 	var cr = <Widget>[];
 	int index = 0;
-	for (var row in cities_card_blueprint){
+	for (var row in cities_card_bluedPrint){
 		var rc = <Widget>[];
 		for (var city in row){
 			rc.add(buildEmploymentCard(title: city, ));
@@ -369,7 +370,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 									if (text.isEmpty){
 											// _form_key_city.currentState!.validate();
 									} else {
-                    print(text);
+                    dPrint(text);
 										Map<String, String> alias = filters.city_aliases;
 
 										bool is_finded = false;
@@ -706,14 +707,14 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 										filters.skills_hint.isNotEmpty
 												? build_helpers_text(filters.skills_hint, (String helper) {
-											print('hint early ${helper}');
+											dPrint('hint early ${helper}');
 
 											setState(() {
 												skills_controller.text = '';
 												filters.skills_hint = [];
 												if (!filters.skills_list.contains(helper))
 													filters.skills_list.add(helper);
-												print('skillcard hint ${helper}');
+												dPrint('skillcard hint ${helper}');
 
 											});
 										})
@@ -726,13 +727,13 @@ class NewEventScreenState extends State<NewEventScreen> {
 											width: MediaQuery.of(context).size.width.floor() - 70,
 											app_service: _app_service,
 											fun: (String helper) {
-												print('skillcard early ${helper}');
+												dPrint('skillcard early ${helper}');
 												setState(() {
 													// var index = _app_service.skills.indexOf(helper);
 													if (filters.skills_list.indexOf(helper) >= 0) {
 														filters.skills_list.removeAt(filters.skills_list.indexOf(helper));
 													}
-													print('_app_service.skills ${filters.skills_list}');
+													dPrint('_app_service.skills ${filters.skills_list}');
 												});
 											},
 										)
@@ -995,7 +996,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 
 						});
 					}else{
-						print("Date is not selected");
+						dPrint("Date is not selected");
 					}
 				},
 			)
@@ -1037,7 +1038,7 @@ class NewEventScreenState extends State<NewEventScreen> {
 									filters.time_end = pickedTime;
 							});
 						}else{
-							print("Time is not selected");
+							dPrint("Time is not selected");
 						}
 					},
 				)

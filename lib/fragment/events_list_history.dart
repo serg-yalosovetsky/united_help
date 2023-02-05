@@ -13,6 +13,7 @@ import '../constants/styles.dart';
 import '../screen/finished_event_screen.dart';
 import '../screen/new_event_choose_help_or_job.dart';
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -136,7 +137,7 @@ Widget card_builder(Event event, AppService app_service) {
 					color: Colors.amber,
 				),
 				onRatingUpdate: (rating) {
-					print(rating);
+					dPrint(rating);
 				},
 			),
 
@@ -169,7 +170,7 @@ Widget card_builder(Event event, AppService app_service) {
 	  			itemSize: 14,
 					ignoreGestures: true,
 					onRatingUpdate: (rating) {
-	  				print(rating);
+	  				dPrint(rating);
 	  			},
 	  		),
 

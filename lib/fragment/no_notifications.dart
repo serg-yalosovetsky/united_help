@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 import '../screen/email_password_confirmation.dart';
+import '../services/debug_print.dart';
 
 
 
@@ -11,15 +12,10 @@ Future<LocationData?> check_location() async {
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
 
-  print(0);
   _serviceEnabled = await location.serviceEnabled();
-  print(1);
   if (!_serviceEnabled) {
-    print(2);
     _serviceEnabled = await location.requestService();
-    print(3);
     if (!_serviceEnabled) {
-      print(4);
       return null;
     }
   }

@@ -24,6 +24,7 @@ import '../models/profile.dart';
 import '../routes/routes.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 
 class EditAccountScreen extends StatefulWidget {
 	const EditAccountScreen({super.key});
@@ -130,7 +131,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 								controller: phone_controller,
 		      			autovalidateMode: AutovalidateMode.onUserInteraction,
 		      			validator: (value) {
-									print(value);
+									dPrint(value);
 									if (value == '123')
 										return '123';
 		      				if (!(value == null || value.isEmpty)) {
@@ -181,7 +182,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 								controller: telegram_controller,
 								autovalidateMode: AutovalidateMode.onUserInteraction,
 								validator: (value) {
-									print(value);
+									dPrint(value);
 									if (value == '123')
 										return '123';
 									if (!(value == null || value.isEmpty)) {
@@ -234,7 +235,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 								controller: viber_controller,
 								autovalidateMode: AutovalidateMode.onUserInteraction,
 								validator: (value) {
-									print(value);
+									dPrint(value);
 									if (!(value == null || value.isEmpty)) {
 										final is_phone = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
 										if (is_phone.hasMatch(value))
@@ -345,8 +346,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 					TextButton(
 						onPressed: button_states.every((element) => element) ? () async {
 							var r = Requests();
-							print(name_controller.text);
-							print(email_controller.text);
+							dPrint(name_controller.text);
+							dPrint(email_controller.text);
 							var result = await r.post(
 									'${app_service.server_url}$register_url',
 									{
@@ -355,9 +356,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 									}
 							);
 							if (result['status_code'] == 201){
-								print('success register');
+								dPrint('success register');
 								app_service.set_username(email_controller.text);
-								app_service.email = email_controller.text;
+								app_service.username = name_controller.text;
 								// bool result = await app_service.login();
 								app_service.is_register = true;
 								app_service.current_location = APP_PAGE.register_confirmation.to_path;
@@ -455,12 +456,12 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 																	image_name: 'user_id${app_service.user?.id}_profile_id${app_service.current_profile?.id}_user_avatar',
 																);
 														String image_url = await fetchProfileImage(app_service);
-														print(image_url);
+														dPrint(image_url);
 														app_service.current_profile = null;
-														print('app_service.current_profile?.image');
-														print(app_service.current_profile?.image);
-														print('app_service.current_profile');
-														print(app_service.current_profile);
+														dPrint('app_service.current_profile?.image');
+														dPrint(app_service.current_profile?.image);
+														dPrint('app_service.current_profile');
+														dPrint(app_service.current_profile);
 
 
 													}

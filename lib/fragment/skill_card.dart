@@ -18,7 +18,7 @@ const title_to_open_text_field = 'Інше';
 //   // if (fun != null)
 //   //     return GestureDetector(
 //   //            child: padding,
-//   //            onTap: () {fun(active); print('click');},
+//   //            onTap: () {fun(active); dPrint('click');},
 //   //     );
 //   // else
 //       return padding;
@@ -192,7 +192,7 @@ Widget buildSkillCard3({
             onTap: () {
 
               // var index = app_service.skills.indexOf(title);
-              // print(index);
+              // dPrint(index);
               // if (index >= 0)
               //   app_service.skills.removeAt(index);
               fun();

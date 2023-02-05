@@ -16,3 +16,9 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
+keytool -exportcert -alias androiddebugkey -keystore "/mnt/c/Users/****/.android/debug.keystore" | /usr/bin/openssl sha1 -binary | /usr/bin/openssl base64
+for facebook 
+
+
+keytool -list -v -alias androiddebugkey -keystore "/mnt/c/Users/****/.android/debug.keystore" 
+for firebase console

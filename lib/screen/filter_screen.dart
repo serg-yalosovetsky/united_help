@@ -22,6 +22,7 @@ import '../fragment/skill_card.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/toast.dart';
 
 
@@ -43,7 +44,7 @@ Widget build_employments_rows({
 		) {
 	List<String> cities_list = [];
 	data.forEach((element) {cities_list.add(element); });
-	var cities_card_blueprint = calculate_cities_widgets(
+	var cities_card_bluedPrint = calculate_cities_widgets(
 		// context: context,
 		width: width,
 		cities_list: cities_list,
@@ -51,7 +52,7 @@ Widget build_employments_rows({
 	);
 	var cr = <Widget>[];
 	int index = 0;
-	for (var row in cities_card_blueprint){
+	for (var row in cities_card_bluedPrint){
 		var rc = <Widget>[];
 		for (var city in row){
 			rc.add(buildEmploymentCard(title: city,));
@@ -241,7 +242,7 @@ class _FiltersCardState extends State<FiltersCard> {
 								setState(() {
 									if (text.isEmpty){
 									}else {
-                    print(text);
+                    dPrint(text);
 										Map<String, String> alias = _filters.city_aliases;
 
 										bool is_finded = false;
@@ -313,7 +314,7 @@ class _FiltersCardState extends State<FiltersCard> {
 								setState(() {
 									if (text.isEmpty){
 									}else {
-										print(text);
+										dPrint(text);
 										List<String> skills = ['reading', 'writing допомога', 'restling', 'remembering'];
 
 										bool is_finded = false;
@@ -584,7 +585,7 @@ class _FiltersCardState extends State<FiltersCard> {
 							app_service_link = pickedDate;
 						});
 					}else{
-						print("Date is not selected");
+						dPrint("Date is not selected");
 					}
 				},
 			)
@@ -621,7 +622,7 @@ class _FiltersCardState extends State<FiltersCard> {
 								app_service_link = pickedTime;
 							});
 						}else{
-							print("Time is not selected");
+							dPrint("Time is not selected");
 						}
 					},
 				)

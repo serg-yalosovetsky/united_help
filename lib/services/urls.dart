@@ -1,7 +1,8 @@
 // String server_address = '192.168.1.26';
-String server_address = '10.80.40.8';
+String server_address = 'united-help.pp.ua';
 // String server_url = 'http://$server_address:8000';
 String authenticate_url = '/api/token';
+String verify_token_url = '/api/token/verify';
 String register_url = '/users';
 String refresh_token_url = '/api/token/refresh';
 String all_events_url = '/events';

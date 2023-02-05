@@ -102,13 +102,23 @@ class _buildBottomNavigationBar extends State<buildBottomNavigationBar> {
 								context.go(APP_PAGE.my_events_history.to_path);
 							}
 						else {
-							app_service.current_location = '/';
-						  context.go('/');
+							app_service.current_location = APP_PAGE.home_list.to_path;
+						  context.go(APP_PAGE.home_list.to_path);
 						}
 					}
 					if (index==1) {
-						app_service.current_location = '${APP_PAGE.contacts.to_path}/volunteers';
-						context.go('${APP_PAGE.contacts.to_path}/volunteers');
+						if(app_service.role == Roles.organizer)
+							if(app_service.actual_or_history == SwitchEnum.first) {
+								app_service.current_location = '${APP_PAGE.contacts.to_path}/volunteers';
+								context.go('${APP_PAGE.contacts.to_path}/volunteers');
+							} else {
+								app_service.current_location = '${APP_PAGE.contacts.to_path}/refugees';
+								context.go('${APP_PAGE.contacts.to_path}/refugees');
+							}
+						else {
+							app_service.current_location = APP_PAGE.home_list.to_path;
+							context.go(APP_PAGE.my_events.to_path);
+						}
 					}
 					if (index==2) {
 						app_service.current_location = APP_PAGE.notifications.to_path;

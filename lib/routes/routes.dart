@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:united_help/screen/contacts_screen.dart';
 import 'package:united_help/screen/filter_screen.dart';
@@ -10,13 +9,13 @@ import 'package:united_help/screen/splash_screen.dart';
 import 'package:united_help/screen/welcome_register_or_login.dart';
 import 'package:united_help/screen/welcome_role.dart';
 
-import '../constants.dart';
+import '../fragment/switch_app_bar.dart';
 import '../screen/account_screen.dart';
 import '../fragment/events_list.dart';
+import '../screen/diia_sign_screen.dart';
 import '../screen/edit_account.dart';
 import '../screen/email_password_confirmation.dart';
 import '../screen/errror_screen.dart';
-import '../fragment/switch_app_bar.dart';
 import '../screen/home_map.dart';
 import '../screen/my_events_history.dart';
 import '../screen/my_events_organizer.dart';
@@ -28,7 +27,7 @@ import '../screen/settings_screen.dart';
 import '../screen/verification_main.dart';
 import '../providers/appservice.dart';
 import '../providers/filters.dart';
-import '../services/login_state.dart';
+import '../services/debug_print.dart';
 
 
 enum APP_PAGE {
@@ -54,6 +53,7 @@ enum APP_PAGE {
   edit_account,
   settings,
   notifications,
+  webview_diia,
 }
 
 extension AppPageExtension on APP_PAGE {
@@ -63,6 +63,8 @@ extension AppPageExtension on APP_PAGE {
         return "/";
       case APP_PAGE.new_events:
         return "/new_events";
+      case APP_PAGE.webview_diia:
+        return "/webview_diia";
       case APP_PAGE.new_events_choose_help_or_job:
         return "/new_events_choose_help_or_job";
       case APP_PAGE.my_events:
@@ -115,6 +117,8 @@ extension AppPageExtension on APP_PAGE {
         return "HOME_MAP";
       case APP_PAGE.new_events:
         return "NEW_EVENTS";
+      case APP_PAGE.webview_diia:
+        return "WEBVIEW_DIIA";
       case APP_PAGE.my_events:
         return "MY_EVENTS";
       case APP_PAGE.my_events_history:
@@ -183,6 +187,11 @@ class AppRouter {
         path: APP_PAGE.home_map.to_path,
         name: APP_PAGE.home_map.to_name,
         builder: (context, state) => const GoogleMapScreen(),
+      ),
+      GoRoute(
+        path: APP_PAGE.webview_diia.to_path,
+        name: APP_PAGE.webview_diia.to_name,
+        builder: (context, state) => const WebViewDiia(),
       ),
       GoRoute(
         path: '${APP_PAGE.new_events.to_path}/:event_for_or_edit',
@@ -298,59 +307,59 @@ class AppRouter {
     errorBuilder: (context, state) => ErrorPage(error_message: state.error.toString()),
     redirect: (state) {
 
-      bool is_test = true;
-
       final login_location = APP_PAGE.login.to_path;
       final register_login_location = APP_PAGE.register_login.to_path;
-      final home_location = APP_PAGE.home_list.to_path;
+      var _home = '';
+      if(app_service.role == Roles.organizer)
+        if(app_service.actual_or_history == SwitchEnum.first) {
+          _home = APP_PAGE.my_events.to_path;
+        } else {
+          _home = APP_PAGE.my_events_history.to_path;
+        }
+      else {
+        _home = APP_PAGE.home_list.to_path;
+      }
+      final home_location = _home;
       final splash_location = APP_PAGE.splash.to_path;
       final welcome_location = APP_PAGE.welcome.to_path;
       final verification_location = APP_PAGE.verification.to_path;
 
-      final is_login = app_service.loginState;
-      final is_init = app_service.initialized;
-      final is_onboarded = app_service.onboarding;
-      final is_try_login = app_service.is_try_login;
-      final is_try_register = app_service.is_try_register;
-      final is_verificated = app_service.is_verificated;
+      var is_going_to_login = state.subloc == login_location;
+      var is_going_to_register_login = state.subloc == register_login_location;
+      var is_going_to_init = state.subloc == splash_location;
+      var is_going_to_onboard = state.subloc == welcome_location;
+      var is_going_to_verfication = state.subloc == verification_location;
+      var is_need_to_home = (state.subloc == verification_location ||
+          state.subloc == welcome_location || state.subloc == splash_location ||
+          state.subloc == register_login_location || state.subloc == login_location);
 
-      final is_going_to_login = state.subloc == login_location;
-      final is_going_to_register_login = state.subloc == register_login_location;
-      final is_going_to_init = state.subloc == splash_location;
-      final is_going_to_onboard = state.subloc == welcome_location;
-      final is_going_to_verfication = state.subloc == verification_location;
-      final is_going_to_home = state.subloc == home_location;
-
-      //
       // if (is_test && !is_going_to_home) return home_location;
-      //
-      //
-      // // If not Initialized and not going to Initialized redirect to Splash
-      // if (!is_init && !is_going_to_init) {
-      //     return splash_location;
-      //   // If not onboard and not going to onboard redirect to OnBoarding
-      // } else  if (is_init && !is_onboarded && !is_going_to_onboard ) {
-      //     return welcome_location;
-      //   // If not logedin and not going to login redirect to Login
-      // } else if (is_init && is_onboarded && !is_login && !is_try_login
-      //           && !is_going_to_register_login && !is_try_register) {
-      //     return register_login_location;
-      //
-      // } else if (is_init && is_onboarded && is_login
-      //           && !is_going_to_verfication && !is_verificated) {
-      //     return verification_location;
-      //
-      //
-      //   // If all the scenarios are cleared but still going to any of that screen redirect to Home
-      // } else if (is_login && is_init && is_onboarded && is_verificated
-      //        // (is_login && is_going_to_login) || (is_init && is_going_to_init) ||
-      //        // (is_onboarded && is_going_to_onboard)
-      //           ) {
-      //   return home_location;
-      // } else {
-      //   // Else Don't do anything
+
+
+      // If not Initialized and not going to Initialized redirect to Splash
+      if (!app_service.initialized && !is_going_to_init) {
+          return splash_location;
+        // If not onboard and not going to onboard redirect to OnBoarding
+      } else  if (app_service.initialized && !app_service.onboarding && !is_going_to_onboard ) {
+          return welcome_location;
+        // If not logedin and not going to login redirect to Login
+      } else if (app_service.initialized && app_service.onboarding && !app_service.loginState && !app_service.is_try_login
+                && !is_going_to_register_login && !app_service.is_try_register) {
+          return register_login_location;
+
+      } else if (app_service.initialized && app_service.onboarding && app_service.loginState && !app_service.is_verificated &&
+                !is_going_to_verfication  && !app_service.is_try_verificated) {
+          dPrint('return verification_location');
+          return verification_location;
+
+        // If all the scenarios are cleared but still going to any of that screen redirect to Home
+      } else if (app_service.loginState && app_service.initialized &&
+          app_service.onboarding && app_service.is_verificated && is_need_to_home) {
+        dPrint('return home location');
+        return home_location;
+      } else {
         return null;
-      // }
+      }
     },
   );
 

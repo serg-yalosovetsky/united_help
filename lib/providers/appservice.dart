@@ -10,6 +10,8 @@ import 'package:united_help/services/authenticate.dart';
 import '../fragment/switch_app_bar.dart';
 import '../models/filter.dart';
 import '../models/profile.dart';
+import '../services/debug_print.dart';
+import '../services/urls.dart';
 
 enum Roles  {
   admin,
@@ -48,7 +50,8 @@ class AppService with ChangeNotifier {
   late final FlutterSecureStorage secure_storage;
 
 
-  String _server_url = 'http://10.80.40.8:8000';
+  String _server_url = 'https://united-help.pp.ua';
+
   set server_url (String value) {
     _server_url = value;
     shared_preferences.setString('server_url', value);
@@ -60,21 +63,20 @@ class AppService with ChangeNotifier {
   bool _roleState = false;
   bool _loginState = false;
   bool _initialized = false;
-  bool _onboarding = false;
   bool is_try_login = false;
   bool is_try_register = false;
+  bool _is_try_verificated = false;
   bool is_register = false;
-  String email = '';
+  String username = '';
   String password = '';
   bool is_register_confirm = false;
-  bool is_verificated = false;
 
   bool _user_image_expire = false;
   int _bottom_navbar_order = 0;
   bool _organizer_has_no_events = false;
   bool _account_actual_events = true;
 
-  String init_key = 'init_key';
+  String user_init_role_key = 'init_key';
   String user_key = 'user_key';
   String access_key = 'access_token';
   String refresh_key = 'refresh_token';
@@ -91,49 +93,17 @@ class AppService with ChangeNotifier {
   bool get roleState => _roleState;
   bool get loginState => _loginState;
   bool get initialized => _initialized;
-  bool get onboarding => _onboarding;
+
+  bool get onboarding => shared_preferences.getBool(user_init_role_key) ?? false;
+  set onboarding(bool value) {
+    shared_preferences.setBool(user_init_role_key, value);
+    notifyListeners();
+  }
+
   SwitchEnum _list_or_map = SwitchEnum.first;
   SwitchEnum _actual_or_history = SwitchEnum.first;
   SwitchEnum _org_volunteers_or_refugees = SwitchEnum.first;
 
-  Future<bool> login() async {
-    var r = Requests();
-    String? password = await secure_storage.read(key: password_key);
-    String? username = await secure_storage.read(key: username_key);
-    late Map<String, dynamic> result;
-    if (username != null && password != null) {
-      result = await r.authenticate(username, password, server_url);
-    }
-    else return false;
-
-    if (result['success']){
-      await secure_storage.write(key: access_key, value: result[access_key]);
-      await secure_storage.write(key: refresh_key, value: result[refresh_key]);
-      notifyListeners();
-      return true;
-    }
-
-    return false;
-  }
-
-  Future<bool> relogin() async {
-    var r = Requests();
-    String? refresh_token = await secure_storage.read(key: refresh_key);
-    late Map<String, dynamic> result;
-    if (refresh_token != null) {
-      result = await r.refreshing_token(refresh_token, server_url);
-    }
-    else return false;
-
-    if (result['success']){
-      await secure_storage.write(key: access_key, value: result[access_key]);
-      _loginState = true;
-      notifyListeners();
-      return true;
-    }
-
-    return false;
-  }
 
   set_password(String? str) async {
     await secure_storage.write(key: password_key, value: str);
@@ -150,24 +120,7 @@ class AppService with ChangeNotifier {
     await secure_storage.write(key: access_key, value: str);
   }
 
-  Future<String?> get_access_token() async {
-    String? access_token = await secure_storage.read(key: access_key);
-    if (access_token == null){
-      // TODO вместо логина пароля нужно передавать рефреш ключ, при ошибке
-      // TODO сбросить параметр инит, чтобы юзера выкинуло на главный экран
-      var result = await Requests().authenticate('serg', 'sergey104781', server_url);
-        if (result['success']){
-          access_token = result['access_token'];
-          secure_storage.write(key: access_key, value: access_token);
-        }
-    }
-    return access_token;
-  }
 
-  set loginState(bool state) {
-    _loginState = state;
-    notifyListeners();
-  }
 
   String _event_query = '';
   set event_query (String value) {
@@ -204,6 +157,17 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get is_try_verificated => _is_try_verificated;
+  set is_try_verificated(bool __is_try_verificated) {
+    _is_try_verificated = __is_try_verificated;
+    notifyListeners();
+  }
+
+  bool get is_verificated => shared_preferences.getBool('is_verificated') ?? false;
+  set is_verificated(bool __is_verificated) {
+    shared_preferences.setBool('is_verificated', __is_verificated);
+    notifyListeners();
+  }
 
   set account_actual_events (bool value) {
     _account_actual_events = value;
@@ -233,11 +197,6 @@ class AppService with ChangeNotifier {
     notifyListeners();
   }
   SwitchEnum get org_volunteers_or_refugees => _org_volunteers_or_refugees;
-
-  set onboarding(bool value) {
-    _onboarding = value;
-    notifyListeners();
-  }
 
   bool get is_sent_firebase_token => shared_preferences.getBool('is_sent_firebase_token') ?? false;
   set is_sent_firebase_token(bool value) {
@@ -319,13 +278,146 @@ class AppService with ChangeNotifier {
         this.refugee = profile;
   }
 
-  Future<void> onAppStart() async {
-    _onboarding = shared_preferences.getBool(init_key) ?? false;
-    _loginState = shared_preferences.getBool(access_key) ?? false;
-    await Future.delayed(const Duration(microseconds: 2));
-    _initialized = true;
+
+  Future<String?> get_access_token() async {
+    String? access_token = await secure_storage.read(key: access_key);
+    if (access_token == null){
+        bool is_login = await relogin();
+        dPrint('token valid on relogin =$is_login');
+        if (!is_login) {
+          is_login = await login();
+          dPrint('token valid on login =$is_login');
+          if (is_login) return await secure_storage.read(key: access_key);
+        }
+
+      loginState = false;
+      return null;
+    }
+    return access_token;
+  }
+
+  set loginState(bool state) {
+    _loginState = state;
     notifyListeners();
-    print('initialized');
+  }
+
+
+  Future<bool> login() async {
+    dPrint('method login');
+
+    var r = Requests();
+    String? password = await secure_storage.read(key: password_key);
+    String? username = await secure_storage.read(key: username_key);
+    late Map<String, dynamic> result;
+    if (username != null && password != null) {
+      result = await r.authenticate(username, password, server_url);
+      dPrint(result);
+    }
+
+    if (result['success'] != null && result['success']){
+      await secure_storage.write(key: access_key, value: result[access_key]);
+      await secure_storage.write(key: refresh_key, value: result[refresh_key]);
+      dPrint('success login');
+      loginState = true;
+      initialized = true;
+      notifyListeners();
+      return true;
+    }
+    dPrint('FAIL login');
+    loginState = false;
+    return false;
+  }
+
+  Future<bool> relogin() async {
+    dPrint('TRY TO RELOGIN');
+    late Map<String, dynamic> result;
+    var r = Requests();
+    String? refresh_token = await secure_storage.read(key: refresh_key);
+    dPrint('refresh_token= $refresh_token');
+    if (refresh_token != null) {
+      result = await r.refreshing_token(refresh_token, server_url);
+      dPrint('result= $result');
+    }
+    else return false;
+
+    if (result['success']){
+      await secure_storage.write(key: access_key, value: result[access_key]);
+      _loginState = true;
+      notifyListeners();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> verify_token() async {
+    dPrint('method verify_token');
+    var r = Requests();
+    String? access_token = await secure_storage.read(key: access_key);
+    late Map<String, dynamic> result;
+    if (access_token != null) {
+      String url = '$server_url$verify_token_url/';
+      dPrint(url);
+      dPrint({'token':access_token});
+      result = await r.post(url, {'token':access_token}, );
+      dPrint(result);
+    }
+    else {
+      print(7);
+
+      return false;
+    }
+
+    if (result['status_code'] != null && result['status_code'] >= 200 && result['status_code'] < 300){
+      _loginState = true;
+      notifyListeners();
+      dPrint('token is valid');
+      return true;
+    }
+    dPrint('token is invalid');
+    return false;
+  }
+
+  Future<void> onAppStart() async {
+
+    dPrint('try verify verify_token');
+
+    bool is_login = await verify_token();
+
+    dPrint('token valid on verify_token =$is_login');
+    if (!is_login) {
+      is_login = await relogin();
+      dPrint('token valid on relogin =$is_login');
+      if (!is_login) {
+        is_login = await login();
+        dPrint('token valid on login =$is_login');
+      }
+    }
+
+    if (is_login) {
+      loginState = true;
+    }
+    else {
+      _loginState = false;
+      String? refresh_token = await secure_storage.read(key: refresh_key);
+      if (refresh_token != null && refresh_token.isNotEmpty) {
+        is_try_login = true;
+        is_try_register = false;
+        is_register = true;
+        loginState = true;
+      }
+      else {
+        is_try_login = false;
+        is_try_register = true;
+        is_register = false;
+        loginState = false;
+      }
+    }
+
+    _initialized = true;
+
+    notifyListeners();
+    dPrint('initialized');
   }
 
 
@@ -335,7 +427,7 @@ class AppService with ChangeNotifier {
     set_password(null);
     set_username(null);
     password = '';
-    email = '';
+    username = '';
     _initialized = false;
     loginState = false;
     _roleState = false;

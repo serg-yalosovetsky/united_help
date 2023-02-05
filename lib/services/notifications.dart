@@ -19,6 +19,7 @@ import '../fragment/build_app_bar.dart';
 import '../models/notify.dart';
 import '../models/profile.dart';
 import '../providers/appservice.dart';
+import 'debug_print.dart';
 
 
 late final FirebaseMessaging _messaging;
@@ -27,7 +28,7 @@ late NotificationSettings settings;
 
 // https://blog.logrocket.com/add-flutter-push-notifications-firebase-cloud-messaging/
 void registerHive() async {
-	print('registerHive');
+	dPrint('registerHive');
 	final appDocumentDirectory = await getApplicationDocumentsDirectory();
 	await Hive.initFlutter(appDocumentDirectory.path);
 	Hive.registerAdapter(HivePushNotificationAdapter());
@@ -48,13 +49,13 @@ send_firebase_token_to_server(AppService app_service) async {
 
 
 Future store_message(RemoteMessage message) async {
-	print('STORED BOX start');
+	dPrint('STORED BOX start');
 
 	try {
 		if (!Hive.isBoxOpen('counter')) await Hive.openBox<int>('counter');
 	}
 	catch (e) {
-		print(e);
+		dPrint(e);
 		registerHive();
 	}
 
@@ -75,18 +76,18 @@ Future store_message(RemoteMessage message) async {
 
 
 	for (HivePushNotification item in box.values) {
-		print('item.event_id = ${item.event_id}  item.notify_type = ${item.notify_type}');
-		print('int.parse(message.data["event_id"] = ${int.parse(message.data["event_id"])}');
-		print('int.parse(message.data["notify_type"] = ${message.data["notify_type"]}');
+		dPrint('item.event_id = ${item.event_id}  item.notify_type = ${item.notify_type}');
+		dPrint('int.parse(message.data["event_id"] = ${int.parse(message.data["event_id"])}');
+		dPrint('int.parse(message.data["notify_type"] = ${message.data["notify_type"]}');
 		if (item.event_id == int.parse(message.data['event_id']) && item.notify_type == message.data['notify_type']) {
 
 			new_notify = false;
-			print('new_notify = $new_notify');
+			dPrint('new_notify = $new_notify');
 			if (item.event_id != 0 && (item.notify_type == 'subscribe'
 					|| item.notify_type == 'review' || item.notify_type == 'change')) {
 							String subnotification = '${message.data["to_profile"].toLowerCase()}_notifications_${item.notify_type}_${item.event_id}';
-							print(26443);
-							print(subnotification);
+							dPrint(26443);
+							dPrint(subnotification);
 							if (!Hive.isBoxOpen(subnotification)) await Hive.openBox<HivePushNotification>(subnotification);
 							spec_box = Hive.box<HivePushNotification>(subnotification);
 			}
@@ -132,50 +133,50 @@ Future store_message(RemoteMessage message) async {
 				await box.put(counter_value, notify);
 
 				try{notify.save();}
-				catch (e) {print(e);}
+				catch (e) {dPrint(e);}
 			}
 			else {
 				HivePushNotification? _notify = box.getAt(__counter);
-				print('_notify = $_notify');
+				dPrint('_notify = $_notify');
 				await box.deleteAt(__counter);
 				await box.add(notify);
-				print('box.length ${box.length} counter_value  $__counter ');
+				dPrint('box.length ${box.length} counter_value  $__counter ');
 				try{notify.save();}
-				catch (e) {print(e);}
-				print('box.values ${box.values} ');
+				catch (e) {dPrint(e);}
+				dPrint('box.values ${box.values} ');
 
 				if (_notify != null) {
 
-					print('spec_box.length ${spec_box.length} $__counter');
+					dPrint('spec_box.length ${spec_box.length} $__counter');
 				  await spec_box.put(spec_box.length, _notify);
-					print('spec_box.length ${spec_box.length} $__counter');
+					dPrint('spec_box.length ${spec_box.length} $__counter');
 					try{_notify.save();}
-					catch (e) {print(e);}
-					print('spec_box.values ${spec_box.values} ');
+					catch (e) {dPrint(e);}
+					dPrint('spec_box.values ${spec_box.values} ');
 				}
 
 
 			}
 	}
-	catch (e) {print(e);}
+	catch (e) {dPrint(e);}
 
 
 	counter.put('notify_counter', counter_value);
-	print('STORED BOX finish');
+	dPrint('STORED BOX finish');
 }
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-	print('_firebaseMessagingBackgroundHandler');
+	dPrint('_firebaseMessagingBackgroundHandler');
 
 	store_message(message);
 
-	print("Handling a background message: ${message.messageId}");
+	dPrint("Handling a background message: ${message.messageId}");
 }
 
 
 	checkForInitialMessage() async {
-		print('checkForInitialMessage');
+		dPrint('checkForInitialMessage');
 
 		RemoteMessage? initialMessage =	await FirebaseMessaging.instance.getInitialMessage();
 
@@ -186,7 +187,7 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 	void registerNotification() async {
-		print('registerNotification');
+		dPrint('registerNotification');
 
 		// 1. Initialize the Firebase app
 		// await Firebase.initializeApp();
@@ -208,29 +209,29 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 	void initNotifications() {
-		print('initNotifications');
+		dPrint('initNotifications');
 
 		registerNotification();
 		checkForInitialMessage();
 
 		// if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-		// 	print('User accepted permission');
+		// 	dPrint('User accepted permission');
 		// } else {
-		// 	print('User declined or has not accepted permission');
+		// 	dPrint('User declined or has not accepted permission');
 		// }
 
 		FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 			store_message(message);
-			print("Handling a init message: ${message.messageId}");
+			dPrint("Handling a init message: ${message.messageId}");
 
 		});
 
 		FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-			print('FirebaseMessaging.onMessage.listen');
-			print("Start Handling a message: ${message.messageId}");
+			dPrint('FirebaseMessaging.onMessage.listen');
+			dPrint("Start Handling a message: ${message.messageId}");
 
 			store_message(message);
-			print("Handling a message: ${message.messageId}");
+			dPrint("Handling a message: ${message.messageId}");
 
 		});
 
@@ -238,23 +239,23 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 void openNotificationsMessageAsync() async {
-	print('openNotificationsMessageAsync');
+	dPrint('openNotificationsMessageAsync');
 
 	FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 		store_message(message);
-		print("Handling a init message: ${message.messageId}");
+		dPrint("Handling a init message: ${message.messageId}");
 	});
 }
 
 void notificationsMessageAsync() async {
-	print('notificationsMessageAsync');
+	dPrint('notificationsMessageAsync');
 
 	FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-		print('FirebaseMessaging.onMessage.listen');
-		print("Start Handling a message: ${message.messageId}");
+		dPrint('FirebaseMessaging.onMessage.listen');
+		dPrint("Start Handling a message: ${message.messageId}");
 
 		store_message(message);
-		print("Handling a message: ${message.messageId}");
+		dPrint("Handling a message: ${message.messageId}");
 
 	});
 

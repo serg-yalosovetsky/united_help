@@ -11,6 +11,7 @@ import 'package:united_help/services/authenticate.dart';
 import '../fragment/switch_app_bar.dart';
 import '../models/filter.dart';
 import '../models/profile.dart';
+import '../services/debug_print.dart';
 
 
 
@@ -135,7 +136,7 @@ class Filters with ChangeNotifier {
           employment =
               str_to_employments(filters_json['employment']) ?? employment;
 
-          print(filters_json['start_date']);
+          dPrint(filters_json['start_date']);
           start_date = filters_json['start_date']!=null ?
                   DateTime.tryParse(filters_json['start_date']) :
                   start_date;
@@ -161,7 +162,7 @@ class Filters with ChangeNotifier {
 
           }
           catch (e) {
-            print(e);
+            dPrint(e);
           }
         }
 

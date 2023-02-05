@@ -30,9 +30,9 @@ List<List<String>> calculate_cities_widgets({
     }
     cities[columns].add(i);
   }
-  // print(widget_width);
-  // print(cities);
-  // print(width);
+  // dPrint(widget_width);
+  // dPrint(cities);
+  // dPrint(width);
   return cities;
 }
 

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../providers/appservice.dart';
+import 'debug_print.dart';
 
 typedef FutureMap = Future<Map<String, dynamic>> ;
 
@@ -37,9 +38,9 @@ class Requests {
         };
       }
     }).catchError((error){
-      print("Type: refreshing_token");
+      dPrint("Type: refreshing_token");
 
-      print("Error: $error");
+      dPrint("Error: $error");
       response_map['error'] = error;
       return {
         'success': false,
@@ -51,7 +52,7 @@ class Requests {
   }
 
   FutureMap authenticate(String username, String password, String server_url) async {
-    Map response_map = {};
+    Map<String, dynamic> response_map = {'success': false,};
     await http.post(
         Uri.parse('$server_url$authenticate_url/'),
         body: json.encode({"username": username, "password": password}),
@@ -63,41 +64,33 @@ class Requests {
 
       response_map = jsonDecode(response.body);
       response_map = jsonDecode(utf8.decode(response.bodyBytes));
+      dPrint('response_map = $response_map');
+      dPrint('response.statusCode = ${response.statusCode}');
         if (response.statusCode == 200) {
-          print(response_map);
-
-          return {
+          response_map = {
             'success': true,
             'access_token': response_map['access'],
             'refresh_token': response_map['refresh'],
           };
         }
-        return {
+        else {
+          response_map = {
           'success': false,
           'status_code': response.statusCode,
           'error': response.body,
               };
+        }
     }).catchError((error) async{
-      print("Type: check_authenticate");
-
-      print("Error: $error");
+      dPrint("Type: check_authenticate");
+      dPrint("Error: $error");
       response_map['error'] = error;
-      return {
+      response_map = {
             'success': false,
             'error': error,
             };
 
     });
-    if (response_map['access'].toString().isNotEmpty &&
-        response_map['refresh'].toString().isNotEmpty ) {
-        return {
-        'success': true,
-        'access_token': response_map['access'],
-        'refresh_token': response_map['refresh'],
-        };
-    }
-
-    return {'success': false,};
+    return response_map;
   }
 
 
@@ -119,16 +112,16 @@ class Requests {
       headers: headers,
     ).then((response) {
       status_code = response.statusCode;
+      dPrint("Response status: ${response.statusCode}");
+      dPrint("Response body: ${response.body}");
       result = jsonDecode(utf8.decode(response.bodyBytes));
-      // print("Response status: ${response.statusCode}");
-      // print("Response body: ${response.body}");
     }).catchError((error){
       result = error;
-      print("Method: GET");
+      dPrint("Method: GET");
 
-      print("Error: $error");
-      print("Url: $url");
-      print("Headers: $headers");
+      dPrint("Error: $error");
+      dPrint("Url: $url");
+      dPrint("Headers: $headers");
     });
     return {'result': result, 'status_code': status_code, };
   }
@@ -144,7 +137,7 @@ class Requests {
 
   FutureMap get_wrapper(String url, AppService app_service) async {
     var r = await get(url, await app_service.get_access_token());
-    if (r['status_code'] == 403){
+    if (r == null || r['status_code'] == 403){
       // await app_service.relogin();
       app_service.set_access_token(null);
       return get(url, await app_service.get_access_token());
@@ -155,7 +148,7 @@ class Requests {
 
   FutureMap post_wrapper(String url, Map body, AppService app_service) async {
     var r = await post(url, body, await app_service.get_access_token());
-    if (r['status_code'] == 403){
+    if (r == null || r['status_code'] == 403){
       app_service.set_access_token(null);
 
       return post(url, body, await app_service.get_access_token());
@@ -165,7 +158,7 @@ class Requests {
 
   FutureMap patch_wrapper(String url, Map body, AppService app_service) async {
     var r = await patch(url, body, await app_service.get_access_token());
-    if (r['status_code'] == 403){
+    if (r == null || r['status_code'] == 403){
       // await app_service.relogin();
       app_service.set_access_token(null);
 
@@ -215,11 +208,14 @@ class Requests {
       headers: headers,
     ).then((response) {
       status_code = response.statusCode;
+      dPrint(status_code);
+      dPrint(response.body);
+      dPrint(utf8.decode(response.bodyBytes));
       result = jsonDecode(utf8.decode(response.bodyBytes));
     }).catchError((error){
       result = error;
-      print("Type: post");
-      print("Error: $error");
+      dPrint("Type: post");
+      dPrint("Error: $error");
     });
     return {'result': result, 'status_code': status_code, };
   }
@@ -245,13 +241,13 @@ class Requests {
       headers: headers,
     ).then((response) {
       status_code = response.statusCode;
-      // print("Response status: ${response.statusCode}");
-      // print("Response body: ${response.body}");
+      // dPrint("Response status: ${response.statusCode}");
+      // dPrint("Response body: ${response.body}");
       result = jsonDecode(utf8.decode(response.bodyBytes));
     }).catchError((error){
       result = error;
-      print("Type: post");
-      print("Error: $error");
+      dPrint("Type: post");
+      dPrint("Error: $error");
     });
     return {'result': result, 'status_code': status_code, };
   }
@@ -277,10 +273,10 @@ class Requests {
     body?.forEach((key, value) {request.fields[key] = value;});
     var response = await request.send();
     final res = await http.Response.fromStream(response);
-    print('res= ${res.body} ');
-    print(res.body);
-    print('res= ${res.statusCode} ');
-    print('res=  ${res.reasonPhrase}');
+    dPrint('res= ${res.body} ');
+    dPrint(res.body);
+    dPrint('res= ${res.statusCode} ');
+    dPrint('res=  ${res.reasonPhrase}');
     return {'result': res.body, 'status_code': response.statusCode, };
   }
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
+import '../services/debug_print.dart';
 import '../services/urls.dart';
 
 class User {
@@ -33,7 +34,7 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    // print('json= $json');
+    // dPrint('json= $json');
 
     return User(
       id: json['id'],
@@ -47,7 +48,7 @@ class User {
       reg_date: json['reg_date'],
       is_online: json['is_online'] ?? false,
     );
-    // print(e);
+    // dPrint(e);
     // return e;
   }
   String encode () {
@@ -108,7 +109,7 @@ class Profile {
       rating: double.tryParse(json['rating'].toString()) ?? 0,
       skills: json['skills']?.cast<int>() ?? [],
     );
-    // print(e);
+    // dPrint(e);
     // return e;
   }
   String encode () {
@@ -144,8 +145,8 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
 
-    // print(User.fromJson(json['user']));
-    // print(Profile.fromJson(json));
+    // dPrint(User.fromJson(json['user']));
+    // dPrint(Profile.fromJson(json));
 
     return UserProfile(
       user: User.fromJson(json['user']),
@@ -251,16 +252,16 @@ Future<Profiles> fetchProfiles(String profile_query, AppService app_service) asy
 
 
 Future<Profile> fetchProfile(String profile_query, AppService app_service) async {
-  print(235235);
+  dPrint(235235);
   var r = Requests();
   String url = '${app_service.server_url}$all_profiles_url/$profile_query';
   final response = await r.get_wrapper(url, app_service);
-  print('response[status_code]');
-  print(response['status_code']);
+  dPrint('response[status_code]');
+  dPrint(response['status_code']);
   if (response['status_code'] == 200) {
     var res  = response['result'];
-    print('\n\n');
-    print(res);
+    dPrint('\n\n');
+    dPrint(res);
 
     var r = Profile.fromJson(res);
     return r;
@@ -342,7 +343,7 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
 
 Future<dynamic> fetchContacts(String profile_query, AppService app_service) async {
   var r = Requests();
-  print('profile_query $profile_query');
+  dPrint('profile_query $profile_query');
   String url = '${app_service.server_url}$all_profiles_url$all_contacts_url/';
   if (profile_query.isNotEmpty && (profile_query == 'refugees' ||
       profile_query == 'volunteers' ))
@@ -359,7 +360,7 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
       return r;
 
     } else{
-      print(res);
+      dPrint(res);
       return {
         'volunteers': res['volunteers'] != null ? Contacts.fromJson(res['volunteers']) : [],
         'refugees': res['refugees'] != null ? Contacts.fromJson(res['refugees']) : [],
@@ -374,10 +375,10 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
 
 FutureMap postFirebaseToken(String token, AppService app_service) async {
   var r = Requests();
-  String url = '${app_service.server_url}$add_fb_token';
-  // print('url: $url');
+  String url = '${app_service.server_url}$add_fb_token/';
+  // dPrint('url: $url');
   var token_map = {'token': token};
-  // print('token_map: $token_map');
+  // dPrint('token_map: $token_map');
   final response = await r.post_wrapper(url, token_map, app_service);
 
   if (response['status_code'] == 200) {

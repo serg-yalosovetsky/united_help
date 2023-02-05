@@ -7,6 +7,7 @@ import '../models/profile.dart';
 import '../providers/appservice.dart';
 import '../services/authenticate.dart';
 import '../models/events.dart';
+import '../services/debug_print.dart';
 import '../services/urls.dart';
 
 
@@ -46,8 +47,8 @@ class _EventScreenState extends State<EventScreen> {
 					child: FutureBuilder<UserProfile>(
 						future: fetchUserProfile('${widget.event.owner}/', app_service),
 					  builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
-							print('snapshot.hasError ${snapshot.hasError}');
-							print('snapshot.hasData ${snapshot.hasData}');
+							dPrint('snapshot.hasError ${snapshot.hasError}');
+							dPrint('snapshot.hasData ${snapshot.hasData}');
 							return card_detail(
 									event: widget.event,
 									skills_names: widget.skills_names,
