@@ -173,32 +173,38 @@ Future<Event> fetchEvent(int event_id, AppService app_service) async {
 
   if (response['status_code'] == 200) {
     return Event.fromJson(response['result']);
-  } else {
-    app_service.set_access_token(null);
+  }
+  else {
     throw Exception('Failed to load Event');
   }
 }
 
 
-Future<Events> fetchEvents(String event_query, AppService app_service, Filters filters) async {
+Future<Events?> fetchEvents(String event_query, AppService app_service, Filters filters) async {
+  dPrint('fetchEvents');
   var r = Requests();
   String url = '${app_service.server_url}$all_events_url/';
   if (event_query != ''){
     url += '$event_query';
   }
-  if (kDebugMode) {
-    dPrint('url= $url');
-  }
+  dPrint('url= $url');
   final response = await r.get_wrapper(url, app_service);
+  dPrint(response);
 
   if (response['status_code'] == 200) {
+    dPrint(response);
+
     var res  = response['result'];
+    dPrint(78678);
     Events events = Events.fromJson(res);
+    dPrint(752);
 
     bool update_skills_map = false;
     if (filters.skills_names.isEmpty) {
+      dPrint(987);
       update_skills_map = true;
     } else {
+      dPrint(780);
       events_loop:
       for (Event e in events.list) {
         for (int skill in e.skills){
@@ -209,14 +215,15 @@ Future<Events> fetchEvents(String event_query, AppService app_service, Filters f
         }
       }
     }
+    dPrint(78235);
     if (update_skills_map) {
       filters.skills_names = (await fetchSkills('', app_service)).to_dict();
     }
+    dPrint(67986);
+
     return events;
-  } else {
-    app_service.set_access_token(null);
-    throw Exception('Failed to load Event');
   }
+
 }
 
 
@@ -242,8 +249,8 @@ FutureMap postEvents(Map<String, dynamic> body, AppService app_service) async {
   if (response['status_code'] == 200 || response['status_code'] == 201) {
     var res  = response['result'];
     return res;
-  } else {
-    app_service.set_access_token(null);
+  }
+  else {
     throw Exception('Failed to load Event');
   }
 }
@@ -260,8 +267,8 @@ FutureMap activate_deactivate_event(int event_id, bool activate, AppService app_
 
   if (response['status_code'] >= 200 && response['status_code'] <= 300) {
     return response['result'];
-  } else {
-    app_service.set_access_token(null);
+  }
+  else {
     throw Exception('Failed to load Event');
   }
 }
@@ -277,7 +284,6 @@ FutureMap subscribe_unsubscribe_event(int event_id, bool activate, AppService ap
   if (response['status_code'] == 200 || response['status_code'] == 204) {
     return response['result'];
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load Event');
   }
 }

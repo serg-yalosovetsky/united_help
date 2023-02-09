@@ -32,8 +32,6 @@ void registerHive() async {
 	final appDocumentDirectory = await getApplicationDocumentsDirectory();
 	await Hive.initFlutter(appDocumentDirectory.path);
 	Hive.registerAdapter(HivePushNotificationAdapter());
-	await Hive.openBox('notifications');
-	await Hive.openBox<int>('counter');
 }
 
 

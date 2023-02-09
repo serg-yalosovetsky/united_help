@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:rate_limiter/rate_limiter.dart';
 import 'package:united_help/models/profile.dart';
 
 import '../providers/appservice.dart';
@@ -85,9 +86,9 @@ Future<Comments> fetchComments(String event_query, AppService app_service) async
     var c = Comments.fromJson(response['result']);
     dPrint(c);
     return c;
-  } else {
-    app_service.set_access_token(null);
-    throw Exception('Failed to load Comments');
+  }
+  else {
+    throw Exception('Failed to load Event');
   }
 }
 

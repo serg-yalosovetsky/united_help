@@ -38,7 +38,7 @@ class EventListOrganizerScreen extends StatefulWidget {
 }
 
 class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
-	late Future<Events> futureEvents;
+	late Future<Events?> futureEvents;
 	late AppService app_service;
 	late Filters filters;
 
@@ -52,13 +52,13 @@ class _EventListOrganizerScreenState extends State<EventListOrganizerScreen> {
 
 	@override
 	Widget build(BuildContext context) {
-		dPrint('futureEvents');
+		dPrint('events list organizer');
 		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {
 				return Center(
-		  			child: FutureBuilder<Events>(
+		  			child: FutureBuilder<Events?>(
 		  				future: futureEvents,
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {

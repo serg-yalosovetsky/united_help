@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:rate_limiter/rate_limiter.dart';
 import 'package:united_help/services/urls.dart';
 
 import '../providers/appservice.dart';
@@ -13,10 +14,11 @@ typedef FutureMap = Future<Map<String, dynamic>> ;
 class Requests {
 
   FutureMap refreshing_token(String refresh_token, String server_url) async {
-    Map response_map = {};
-
+    Map<String, dynamic> response_map = {};
+    String url = '${server_url}$refresh_token_url/';
+    dPrint('url=$url');
     await http.post(
-      Uri.parse('${server_url}$refresh_token_url/'),
+      Uri.parse(url),
       body: json.encode({
         "refresh": refresh_token,
       }),
@@ -25,13 +27,16 @@ class Requests {
         HttpHeaders.acceptHeader: 'application/json; charset=utf-8',
       },
     ).then((response) {
+      dPrint('response=${response.statusCode}');
+      dPrint('response ${response.statusCode==200}');
       response_map = jsonDecode(utf8.decode(response.bodyBytes));
+      dPrint('response_map=$response_map');
       if (response.statusCode == 200) {
-        return {'success': true,
+        response_map = {'success': true,
                 'access_token': response_map['access'],};
       }
       else {
-        return {
+        response_map = {
           'success': false,
           'status_code': response.statusCode,
           'error': response.body,
@@ -42,13 +47,13 @@ class Requests {
 
       dPrint("Error: $error");
       response_map['error'] = error;
-      return {
+      response_map = {
         'success': false,
         'error': error,
         };
       }
     );
-    return {'success': false,};
+    return response_map;
   }
 
   FutureMap authenticate(String username, String password, String server_url) async {
@@ -134,11 +139,24 @@ class Requests {
   //   return clear_get(url, access_token);
   // }
 
+  // FutureMap get_wrapper = throttle((String url, AppService app_service) async {
+  //   String? access_token = await app_service.get_access_token();
+  //   dPrint('access_token = $access_token');
+  //   var r = await get(url, access_token);
+  //   dPrint(r);
+  //   if (r == null || r['status_code'] == 403){
+  //     app_service.set_access_token(null);
+  //     return get(url, await app_service.get_access_token());
+  //   }
+  //   return r;
+  // }, const Duration(seconds: 2)) as FutureMap;
 
   FutureMap get_wrapper(String url, AppService app_service) async {
-    var r = await get(url, await app_service.get_access_token());
+    String? access_token = await app_service.get_access_token();
+    dPrint('access_token = $access_token');
+    var r = await get(url, access_token);
+    dPrint(r);
     if (r == null || r['status_code'] == 403){
-      // await app_service.relogin();
       app_service.set_access_token(null);
       return get(url, await app_service.get_access_token());
     }

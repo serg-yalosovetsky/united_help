@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_marker/marker_icon.dart';
 import 'package:flutter/material.dart';
@@ -178,6 +179,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData _locationData;
+  late Future<Events?> futureEvents;
 
 
   Future<LocationData?> init_location() async {
@@ -212,10 +214,19 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   void initState() {
     _app_service = Provider.of<AppService>(context, listen: false);
     filters = Provider.of<Filters>(context, listen: false);
+
+
+    String full_event_query = '';
+
+    if (_app_service.event_query.isNotEmpty)
+      full_event_query += '?${_app_service.event_query}';
+    futureEvents = fetchEvents(full_event_query, _app_service, filters);
+
+
+
     init_location().then(
         (result) {
           dPrint("result: $result");
-          setState(() {});
         }
       );
     super.initState();
@@ -228,6 +239,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     String full_event_query = '';
+    dPrint('home_map');
+
     if (_app_service.event_query.isNotEmpty)
       full_event_query += '?${_app_service.event_query}';
 
@@ -256,9 +269,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               );
             }),
 
-        body: FutureBuilder<Events>(
+        body: FutureBuilder<Events?>(
           future: fetchEvents(full_event_query, _app_service, filters),
-          builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<Events?> snapshot) {
             if (snapshot.hasData && snapshot.data != null) {
               markers = get_markers(snapshot.data!.list);
               events = snapshot.data!.list;
@@ -395,6 +408,8 @@ class build_stack_map_card extends StatelessWidget {
       employment_string = show_nice_time(event.start_time, event.end_time);
     else if (event.employment == 2)
       employment_string = show_nice_time(event.start_time);
+    double unitHeightValue = MediaQuery.of(context).size.height * 0.01;
+    double multiplier = 25;
     return GestureDetector(
       onTap: () {if (fun!=null) fun();},
       onDoubleTap: () {Navigator.of(context).push(
@@ -441,9 +456,15 @@ class build_stack_map_card extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(2, 0, 0, 7),
-                    child: Text(
+                    child: AutoSizeText(
                       trim_text(event.name),
-                      style: StyleConstant.bold_main,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: ColorConstant.Black_volonterka,
+                        fontSize: 18,
+                        fontFamily: 'SF Pro Text',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   Padding(
@@ -454,8 +475,9 @@ class build_stack_map_card extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(0,0,6,0),
                           child: Icon(Icons.access_time_outlined),
                         ),
-                        Text(
+                        AutoSizeText(
                             employment_string,
+                            maxLines: 1,
                             style: const TextStyle(
                               fontSize: 17,
                               color: Color(0xFF7C7C7C),
@@ -465,21 +487,27 @@ class build_stack_map_card extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0,0,6,0),
-                        child: Icon(Icons.location_on),
-                      ),
-                      Text(
-                        event.location,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          color: Color(0xFF7C7C7C),
-                          fontWeight: FontWeight.w400,
+                  Flexible(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0,0,6,0),
+                          child: Icon(Icons.location_on),
                         ),
-                      ),
-                    ],
+                        Flexible(
+                          child: AutoSizeText(
+                            event.location,
+                            maxLines: 1,
+                             style: const TextStyle(
+                              fontSize: 17,
+                              color: Color(0xFF7C7C7C),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                 ],

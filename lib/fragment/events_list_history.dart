@@ -31,13 +31,14 @@ class EventListHistoryScreen extends StatefulWidget {
 		required this.event_query,
 		this.is_listview = true,
 	});
+	late Future<Events?> futureEvents;
 
 	@override
 	State<EventListHistoryScreen> createState() => _EventListHistoryScreenState();
 }
 
 class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
-	late Future<Events> futureEvents;
+	late Future<Events?> futureEvents;
 	late AppService app_service;
 	late Filters filters;
 
@@ -45,15 +46,16 @@ class _EventListHistoryScreenState extends State<EventListHistoryScreen> {
 	void initState() {
 		app_service = Provider.of<AppService>(context, listen: false);
 		filters = Provider.of<Filters>(context, listen: false);
-
+		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 		super.initState();
 	}
-
 	@override
 	Widget build(BuildContext context) {
-				return Center(
-		  			child: FutureBuilder<Events>(
-		  				future: fetchEvents(widget.event_query, app_service, filters),
+		dPrint('events_list_history');
+
+		return Center(
+		  			child: FutureBuilder<Events?>(
+		  				future: futureEvents,
 		  				builder: (context, snapshot) {
 		  					if (snapshot.hasData) {
 									if (snapshot.data!.count <= 0){

@@ -10,6 +10,7 @@ import 'package:united_help/services/authenticate.dart';
 
 import '../constants/styles.dart';
 import '../providers/filters.dart';
+import '../services/debug_print.dart';
 import '../services/show_nice_time.dart';
 import 'get_location_permission.dart';
 import 'no_actual_events.dart';
@@ -33,19 +34,20 @@ class EventListScreen extends StatefulWidget {
 }
 
 class _EventListScreenState extends State<EventListScreen> {
-	late Future<Events> futureEvents;
+	late Future<Events?> futureEvents;
 	late AppService app_service;
 	late Filters filters;
 	@override
 	void initState() {
+
 		app_service = Provider.of<AppService>(context, listen: false);
 		filters = Provider.of<Filters>(context, listen: false);
-
+		futureEvents = fetchEvents(widget.event_query, app_service, filters);
 		super.initState();
 	}
 
 	push_event_screen(AsyncSnapshot<Events> snapshot, int index) async {
-		Profile owner = await fetchProfile('${snapshot.data!.list[index].owner}/', app_service);
+		// Profile owner = await fetchProfile('${snapshot.data!.list[index].owner}/', app_service);
 		Navigator.of(context).push(
 			MaterialPageRoute(
 				builder: (context) => EventScreen(
@@ -59,16 +61,13 @@ class _EventListScreenState extends State<EventListScreen> {
 
 	@override
 	Widget build(BuildContext context) {
+		dPrint('events_list');
 
 		return Consumer<AppService>(
 		  builder: (context, cart, child) {
-				String full_event_query = widget.event_query;
-				if (app_service.event_query.isNotEmpty) {
-				  full_event_query += '?${app_service.event_query}';
-				}
-				return FutureBuilder<Events>(
-					future: fetchEvents(full_event_query, app_service, filters),
-					builder: (BuildContext context, AsyncSnapshot<Events> snapshot) {
+				return FutureBuilder<Events?>(
+					future: futureEvents,
+					builder: (BuildContext context, AsyncSnapshot<Events?> snapshot) {
 						if (snapshot.hasData) {
 
 									if (snapshot.data!.count <= 0){
@@ -161,7 +160,7 @@ Widget card_builder(event) {
 						minWidth: 70,
 						minHeight: 80,
 						maxWidth: double.infinity,
-						maxHeight: 330,
+						maxHeight: 370,
 					),
 					child: Column(
 							mainAxisSize: MainAxisSize.min,
@@ -180,7 +179,11 @@ Widget card_builder(event) {
 										children: [
 											Container(
 												margin: const EdgeInsets.fromLTRB(20, 20, 10, 0),
-												child: Text(event.name, style: StyleConstant.bold_header,),
+												child: Text(
+													event.name,
+													style: StyleConstant.bold_header,
+													maxLines: 2,
+												),
 											),
 											const Spacer(),
 											Container(

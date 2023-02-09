@@ -145,8 +145,8 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
 
-    // dPrint(User.fromJson(json['user']));
-    // dPrint(Profile.fromJson(json));
+    dPrint(User.fromJson(json['user']));
+    dPrint(Profile.fromJson(json));
 
     return UserProfile(
       user: User.fromJson(json['user']),
@@ -245,7 +245,6 @@ Future<Profiles> fetchProfiles(String profile_query, AppService app_service) asy
     var r = Profiles.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load Profile');
   }
 }
@@ -266,7 +265,6 @@ Future<Profile> fetchProfile(String profile_query, AppService app_service) async
     var r = Profile.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load Profile');
   }
 }
@@ -280,7 +278,6 @@ Future<String> fetchProfileImage(AppService app_service) async {
     var res  = response['result'];
     return res['image'];
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load image');
   }
 }
@@ -296,7 +293,6 @@ Future<Users> fetchUsers(String user_query, AppService app_service) async {
     var r = Users.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load User');
   }
 }
@@ -311,21 +307,24 @@ Future<User> fetchUser(String user_query, AppService app_service) async {
     var r = User.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load User');
   }
 }
 
 
 Future<UserProfile> fetchUserProfile(String profile_query, AppService app_service) async {
+  dPrint('profile_query= $profile_query');
   var r = Requests();
 
   String url = '${app_service.server_url}$userprofile_url/';
   if (profile_query.isEmpty || profile_query == '0') {
-    url += '${app_service.user?.id}';
+    url += app_service.role.name;
   } else {
     url += '$profile_query';
   }
+  dPrint('user= ${app_service.user}');
+  dPrint('url= $url');
+
 
   final response = await r.get_wrapper(url, app_service);
 
@@ -334,7 +333,6 @@ Future<UserProfile> fetchUserProfile(String profile_query, AppService app_servic
     var r = UserProfile.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load UserProfile');
   }
 }
@@ -367,7 +365,6 @@ Future<dynamic> fetchContacts(String profile_query, AppService app_service) asyn
       };
     }
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load UserProfile');
   }
 }
@@ -384,7 +381,6 @@ FutureMap postFirebaseToken(String token, AppService app_service) async {
   if (response['status_code'] == 200) {
     return response;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to add new token');
   }
 }

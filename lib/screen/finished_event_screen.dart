@@ -28,7 +28,6 @@ Future<Event> fetchEvent(int event_id, AppService app_service) async {
 	if (response['status_code'] == 200) {
 		return Event.fromJson(response['result']);
 	} else {
-		app_service.set_access_token(null);
 		throw Exception('Failed to load Event');
 	}
 }

@@ -167,7 +167,6 @@ Future<Skills> fetchSkills(String skill_query, AppService app_service) async {
     var r = Skills.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load Skills');
   }
 }
@@ -186,7 +185,6 @@ Future<Cities> fetchCities(String city_query, AppService app_service) async {
     var r = Cities.fromJson(res);
     return r;
   } else {
-    app_service.set_access_token(null);
     throw Exception('Failed to load Cities');
   }
 }

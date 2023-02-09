@@ -280,20 +280,50 @@ class AppService with ChangeNotifier {
 
 
   Future<String?> get_access_token() async {
+    dPrint('get_access_token');
+    dPrint(11);
     String? access_token = await secure_storage.read(key: access_key);
+    dPrint(12);
+    bool is_login = false;
+    dPrint(13);
     if (access_token == null){
-        bool is_login = await relogin();
+      dPrint(14);
+        is_login = await relogin();
+      dPrint(15);
         dPrint('token valid on relogin =$is_login');
+      dPrint(16);
         if (!is_login) {
+          dPrint(17);
           is_login = await login();
+          dPrint(18);
           dPrint('token valid on login =$is_login');
-          if (is_login) return await secure_storage.read(key: access_key);
+          dPrint(19);
         }
+      dPrint(20);
 
-      loginState = false;
-      return null;
     }
-    return access_token;
+    else {
+      is_login = true;
+    }
+
+    dPrint(21);
+    if (is_login){
+      dPrint(22);
+      loginState = true;
+      dPrint(23);
+      var _access_key = await secure_storage.read(key: access_key);
+      dPrint('_access_key= $_access_key');
+      return _access_key;
+      dPrint(24);
+    }
+    else {
+    dPrint(25);
+      loginState = false;
+    dPrint(26);
+      return null;
+    dPrint(27);
+    }
+    dPrint(28);
   }
 
   set loginState(bool state) {
@@ -312,6 +342,11 @@ class AppService with ChangeNotifier {
     if (username != null && password != null) {
       result = await r.authenticate(username, password, server_url);
       dPrint(result);
+    }
+    else {
+      dPrint('no username or password');
+      loginState = false;
+      return false;
     }
 
     if (result['success'] != null && result['success']){
@@ -337,16 +372,27 @@ class AppService with ChangeNotifier {
     if (refresh_token != null) {
       result = await r.refreshing_token(refresh_token, server_url);
       dPrint('result= $result');
-    }
-    else return false;
+      dPrint(0);
 
+    }
+    else {
+      dPrint(1);
+      return false;
+    }
+
+    dPrint(2);
     if (result['success']){
-      await secure_storage.write(key: access_key, value: result[access_key]);
+      dPrint(3);
+      await secure_storage.write(key: access_key, value: result['access_token']);
+      dPrint(await secure_storage.read(key: refresh_key));
       _loginState = true;
+      dPrint(5);
       notifyListeners();
+      dPrint(6);
       return true;
     }
 
+    dPrint(7);
     return false;
   }
 
@@ -363,8 +409,6 @@ class AppService with ChangeNotifier {
       dPrint(result);
     }
     else {
-      print(7);
-
       return false;
     }
 
@@ -413,7 +457,9 @@ class AppService with ChangeNotifier {
         loginState = false;
       }
     }
+    if (user == null || user?.id == null){
 
+    }
     _initialized = true;
 
     notifyListeners();
